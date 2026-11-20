@@ -265,7 +265,8 @@ extension MangaCollectionViewController {
         guard
             indexPaths.count == 1,
             let indexPath = indexPaths.first,
-            let entry = dataSource.itemIdentifier(for: indexPath)
+            let entry = dataSource.itemIdentifier(for: indexPath),
+            !(SourceManager.shared.store.source(for: entry.sourceKey)?.runner is any VideoSourceRunner)
         else {
             return nil
         }

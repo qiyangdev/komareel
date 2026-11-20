@@ -582,6 +582,7 @@ extension SourceManager {
     enum CustomSourceKind {
         case demo
         case local
+        case sampleVideo
         case komga(ServerConfig)
         case kavita(ServerConfig)
         case suwayomi(ServerConfig)
@@ -602,6 +603,8 @@ extension SourceManager {
                 config = CustomSourceConfig.local
             case .demo:
                 config = CustomSourceConfig.demo
+            case .sampleVideo:
+                config = CustomSourceConfig.sampleVideo
             case .komga(let serverConfig), .kavita(let serverConfig), .suwayomi(let serverConfig):
                 let name = serverConfig.name
                 let server = serverConfig.server
@@ -612,7 +615,7 @@ extension SourceManager {
                     case .komga: KomgaSourceRunner.sourceKeyPrefix
                     case .kavita: KavitaSourceRunner.sourceKeyPrefix
                     case .suwayomi: SuwayomiSourceRunner.sourceKeyPrefix
-                    case .local, .demo: unreachable()
+                    case .local, .demo, .sampleVideo: unreachable()
                 }
                 let nameEncoded = name.lowercased().replacingOccurrences(of: " ", with: "-")
                 var key = "\(keyPrefix).\(nameEncoded)"
@@ -629,7 +632,7 @@ extension SourceManager {
                     case .komga: CustomSourceConfig.komga(configValues)
                     case .kavita: CustomSourceConfig.kavita(configValues)
                     case .suwayomi: CustomSourceConfig.suwayomi(configValues)
-                    case .local, .demo: unreachable()
+                    case .local, .demo, .sampleVideo: unreachable()
                 }
 
                 // register details
@@ -650,12 +653,19 @@ extension SourceManager {
         }
         let source = config.toSource()
 
-        // add to coredata
-        await CoreDataManager.shared.container.performBackgroundTask { context in
-            let result = CoreDataManager.shared.createSource(source: source, context: context)
+        let saved = await CoreDataManager.shared.container.performBackgroundTask { context in
+            let existing = CoreDataManager.shared.getSource(key: source.key, context: context)
+            let result = existing ?? CoreDataManager.shared.createSource(source: source, context: context)
             result.customSource = config.encode() as NSObject
-            try? context.save()
+            do {
+                try context.save()
+                return true
+            } catch {
+                LogManager.logger.error("Failed to save built-in source \(source.key): \(error)")
+                return false
+            }
         }
+        guard saved else { return nil }
 
         sourcesByKey[source.key] = source
 
@@ -837,6 +847,7 @@ extension SourceManager {
 
         let reservedPrefixes = [
             "local",
+            SampleVideoSourceRunner.sourceKey,
             KomgaSourceRunner.sourceKeyPrefix,
             KavitaSourceRunner.sourceKeyPrefix,
             SuwayomiSourceRunner.sourceKeyPrefix

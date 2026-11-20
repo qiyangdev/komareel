@@ -114,6 +114,13 @@ struct HomeGridView: View {
         }
         .buttonStyle(MangaGridButtonStyle())
         .contextMenu {
+            libraryActions(for: entry, inLibrary: inLibrary)
+        }
+    }
+
+    @ViewBuilder
+    private func libraryActions(for entry: AidokuRunner.Manga, inLibrary: Bool) -> some View {
+        if !(source.runner is any VideoSourceRunner) {
             // add a remove button for manga from the local source
             if entry.isLocal() {
                 Button(role: .destructive) {

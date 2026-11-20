@@ -16,6 +16,7 @@ struct AddSourceView: View {
     @State private var allSourcesInstalled: Bool = false
 
     @State private var hasLocalSourceInstalled: Bool
+    @State private var hasSampleVideoSourceInstalled: Bool
     @State private var loadedInitial = false
     @State private var importing = false
     @State private var searching = false
@@ -25,6 +26,7 @@ struct AddSourceView: View {
     @State private var showKavitaSetup = false
     @State private var showSuwayomiSetup = false
     @State private var showImportFailAlert = false
+    @State private var showVideoInstallFailAlert = false
 
     @State private var searchFocused: Bool? = false
 
@@ -32,6 +34,9 @@ struct AddSourceView: View {
 
     init(externalSources: [ExternalSourceInfo]) {
         allExternalSources = externalSources
+        _hasSampleVideoSourceInstalled = State(
+            initialValue: CoreDataManager.shared.hasSource(key: SampleVideoSourceRunner.sourceKey, context: CoreDataManager.shared.context)
+        )
         _hasLocalSourceInstalled = State(
             initialValue: CoreDataManager.shared.hasSource(key: LocalSourceRunner.sourceKey, context: CoreDataManager.shared.context)
         )
@@ -174,6 +179,9 @@ struct AddSourceView: View {
             } message: {
                 Text(NSLocalizedString("SOURCE_IMPORT_FAIL_TEXT"))
             }
+            .alert("Couldn’t add Video Samples", isPresented: $showVideoInstallFailAlert) {
+                Button(NSLocalizedString("OK"), role: .cancel) {}
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     CloseButton {
@@ -196,8 +204,10 @@ struct AddSourceView: View {
         }
         .interactiveDismissDisabled(searching)
         .onReceive(NotificationCenter.default.publisher(for: .sourceLoaded)) { output in
-            if let key = output.object as? String, key == LocalSourceRunner.sourceKey {
-                hasLocalSourceInstalled = true
+            switch output.object as? String {
+                case LocalSourceRunner.sourceKey: hasLocalSourceInstalled = true
+                case SampleVideoSourceRunner.sourceKey: hasSampleVideoSourceInstalled = true
+                default: break
             }
         }
         .task {
@@ -250,6 +260,27 @@ struct AddSourceView: View {
                     }
                 )
                 .background(NavigationLink("", destination: LocalSetupView(), isActive: $showLocalSetup).hidden())
+            }
+
+            if !hasSampleVideoSourceInstalled {
+                ExternalSourceTableCell(
+                    source: .init(
+                        sourceId: SampleVideoSourceRunner.sourceKey,
+                        name: SampleVideoSourceRunner.name,
+                        languages: ["multi"],
+                        version: 1,
+                        contentRating: .safe
+                    ),
+                    subtitle: String(localized: "HLS and MP4 samples"),
+                    onGet: {
+                        guard await SourceManager.shared.createCustomSource(.sampleVideo) != nil else {
+                            showVideoInstallFailAlert = true
+                            return false
+                        }
+                        dismiss()
+                        return true
+                    }
+                )
             }
 
             ExternalSourceTableCell(

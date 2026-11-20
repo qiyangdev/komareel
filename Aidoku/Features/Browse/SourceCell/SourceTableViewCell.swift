@@ -191,6 +191,9 @@ class SourceTableViewCell: UITableViewCell {
         selectionStyle = info.disabled || section == .updates ? .none : .default
 
         imageTask?.cancel()
+        let isSampleVideoSource = info.sourceId == SampleVideoSourceRunner.sourceKey
+        iconView.contentMode = isSampleVideoSource ? .center : .scaleToFill
+        iconView.backgroundColor = isSampleVideoSource ? tintColor.withAlphaComponent(0.1) : .clear
 
         // load icon
         if let iconUrl = info.iconUrl {
@@ -201,6 +204,11 @@ class SourceTableViewCell: UITableViewCell {
             switch info.sourceId {
                 case LocalSourceRunner.sourceKey:
                     iconView.image = UIImage.local
+                case SampleVideoSourceRunner.sourceKey:
+                    iconView.image = UIImage(
+                        systemName: "play.rectangle.fill",
+                        withConfiguration: UIImage.SymbolConfiguration(pointSize: iconSize * 0.5)
+                    )
                 case let x where x.hasPrefix(KomgaSourceRunner.sourceKeyPrefix):
                     iconView.image = UIImage.komga
                 case let x where x.hasPrefix(KavitaSourceRunner.sourceKeyPrefix):

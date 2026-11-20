@@ -57,6 +57,15 @@ struct MangaView: View {
     }
 
     var body: some View {
+        if let source = viewModel.source, let runner = source.runner as? any VideoSourceRunner {
+            VideoDetailsView(source: source, runner: runner, manga: viewModel.manga)
+        } else {
+            readerDetails
+        }
+    }
+
+    @ViewBuilder
+    private var readerDetails: some View {
         let list = ScrollViewReader { proxy in
             List(selection: $selectedChapters) {
                 headerView

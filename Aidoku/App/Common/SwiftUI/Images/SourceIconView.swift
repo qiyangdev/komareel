@@ -19,6 +19,16 @@ struct SourceIconView: View {
                 imageUrl: imageUrl,
                 iconSize: iconSize
             )
+        } else if sourceId == SampleVideoSourceRunner.sourceKey {
+            Image(systemName: "play.rectangle.fill")
+                .font(.system(size: iconSize * 0.5))
+                .foregroundStyle(.tint)
+                .frame(width: iconSize, height: iconSize)
+                .background(
+                    Color.accentColor.opacity(0.1),
+                    in: RoundedRectangle(cornerRadius: iconSize * 0.225)
+                )
+                .accessibilityHidden(true)
         } else {
             let imageName = switch sourceId {
                 case LocalSourceRunner.sourceKey: "local"
