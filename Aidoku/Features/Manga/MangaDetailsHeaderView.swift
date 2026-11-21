@@ -9,7 +9,6 @@ import SwiftUI
 import AidokuRunner
 import MarkdownUI
 import NukeUI
-import SafariServices
 
 struct MangaDetailsHeaderView: View {
     @Binding var source: AidokuRunner.Source?
@@ -48,12 +47,9 @@ struct MangaDetailsHeaderView: View {
     @State private var readButtonDisabled = true
     @State private var animationTrigger = false
     @State private var longHeldBookmark = false
-    @State private var longHeldSafari = false
     @State private var isTracking = false
     @State private var hasAvailableTrackers = false
     @State private var showLibraryRemoveConfirm = false
-
-    static let coverWidth: CGFloat = 114
 
     init(
         source: Binding<AidokuRunner.Source?>,
@@ -111,112 +107,21 @@ struct MangaDetailsHeaderView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack(spacing: 12) {
-                VStack(spacing: 0) {
-                    Spacer(minLength: 0)
-
-                    Button {
-                        coverPressed = true
-                    } label: {
-                        // 2:3 aspect ratio
-                        MangaCoverView(
-                            source: source,
-                            coverImage: manga.cover ?? "",
-                            width: Self.coverWidth,
-                            height: Self.coverWidth * 3/2
-                        )
-                        .id(manga.cover ?? "")
-                    }
-                    .buttonStyle(DarkOverlayButtonStyle())
-                    .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
-                    .matchedTransitionSourcePlease(id: manga.identifier, in: transitionNamespace)
-                }
-
-                VStack(alignment: .leading, spacing: 0) {
-                    Spacer(minLength: 0)
-
-                    Button {
-                        onTitlePressed?()
-                    } label: {
-                        Text(manga.title)
-                            .lineLimit(4)
-                            .font(.system(.title2).weight(.semibold))
-                            .foregroundStyle(.primary)
-                            .minimumScaleFactor(0.75)
-                            .contentTransitionDisabledPlease()
-                            .multilineTextAlignment(.leading)
-                            .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.borderless)
-                    .padding(.bottom, 4)
-
-                    if let authors = manga.authors, !authors.isEmpty {
-                        let label = Text(authors.joined(separator: ", "))
-                            .lineLimit(1)
-                            .foregroundStyle(.secondary)
-                            .font(.callout)
-                            .padding(.bottom, 6)
-                            .textSelection(.enabled)
-                            .transition(.opacity)
-
-                        if let source, source.supportsAuthorSearch {
-                            Button {
-                                // we'll need a better ui in the future for different author selection
-                                guard let author = authors.first else { return }
-
-                                let viewController = MangaListViewController(source: source, title: author)
-                                viewController.getEntries = { page in
-                                    try await source.getSearchMangaList(query: nil, page: page, filters: [
-                                        .text(id: "author", value: author)
-                                    ])
-                                }
-                                path.push(viewController)
-                            } label: {
-                                label
-                            }
-                            .buttonStyle(.borderless)
-                        } else {
-                            label
-                        }
-                    }
-
-                    labelsView
-
-                    buttonsView
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .frame(height: 174)
-            .padding(.bottom, 14)
-            .padding(.horizontal, 20)
-
-            if let description = manga.description, !description.isEmpty {
-                ExpandableTextView(text: description, expanded: $descriptionExpanded)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.bottom, 12)
-                    .padding(.horizontal, 20)
-                    .foregroundStyle(.secondary)
-            }
-
-            tagsView
-
-            // read button
-            Button {
-                onReadButtonPressed?()
-            } label: {
-                Text(readButtonText)
-                    .frame(maxWidth: .infinity)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .font(.system(size: 14, weight: .medium))
-            .padding(11)
-            .foregroundStyle(.white)
-            .background(Color.accentColor)
-            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-            .padding(.bottom, 20)
-            .padding(.horizontal, 20)
-            .allowsHitTesting(!readButtonDisabled)
+            MediaDetailsHeaderView(
+                source: source,
+                manga: manga,
+                path: path,
+                bookmarked: bookmarked,
+                transitionNamespace: transitionNamespace,
+                descriptionExpanded: $descriptionExpanded,
+                actionTitle: Text(readButtonText),
+                actionEnabled: !readButtonDisabled,
+                onCoverPressed: { coverPressed = true },
+                onTitlePressed: { onTitlePressed?() },
+                onPrimaryAction: { onReadButtonPressed?() },
+                metadata: { authorView },
+                actions: { buttonsView }
+            )
 
             // hide the chapter list header if there are no chapters and the other downloads header is shown
             if !(manga.chapters ?? chapters).isEmpty || !hasOtherDownloads {
@@ -272,31 +177,36 @@ struct MangaDetailsHeaderView: View {
         }
     }
 
-    @ContentBuilder
-    var labelsView: some View {
-        if manga.status != .unknown || (manga.contentRating != .unknown && manga.contentRating != .safe) || (bookmarked && source != nil) {
-            HStack(spacing: 6) {
-                if manga.status != .unknown {
-                    LabelView(text: manga.status.title)
+    @ViewBuilder
+    private var authorView: some View {
+        if let authors = manga.authors, !authors.isEmpty {
+            let label = Text(authors.joined(separator: ", "))
+                .lineLimit(1)
+                .foregroundStyle(.secondary)
+                .font(.callout)
+                .padding(.bottom, 6)
+                .textSelection(.enabled)
+                .transition(.opacity)
+
+            if let source, source.supportsAuthorSearch {
+                Button {
+                    // we'll need a better ui in the future for different author selection
+                    guard let author = authors.first else { return }
+
+                    let viewController = MangaListViewController(source: source, title: author)
+                    viewController.getEntries = { page in
+                        try await source.getSearchMangaList(query: nil, page: page, filters: [
+                            .text(id: "author", value: author)
+                        ])
+                    }
+                    path.push(viewController)
+                } label: {
+                    label
                 }
-                if manga.contentRating != .unknown && manga.contentRating != .safe {
-                    LabelView(
-                        text: manga.contentRating.title,
-                        background: manga.contentRating == .suggestive
-                            ? .orange.opacity(0.3)
-                            : .red.opacity(0.3)
-                    )
-                }
-                if let source, bookmarked {
-                    LabelView(
-                        text: source.name,
-                        background: Color(red: 0.25, green: 0.55, blue: 1).opacity(0.3)
-                    )
-                }
+                .buttonStyle(.borderless)
+            } else {
+                label
             }
-            .padding(.bottom, 8)
-            .animation(.default, value: manga.status)
-            .animation(.default, value: bookmarked)
         }
     }
 
@@ -358,62 +268,8 @@ struct MangaDetailsHeaderView: View {
             }
 
             if let url = manga.url {
-                Button {
-                    guard url.scheme == "http" || url.scheme == "https" else { return }
-                    path.present(SFSafariViewController(url: url))
-                } label: {
-                    Image(systemName: "safari")
-                }
-                .buttonStyle(MangaActionButtonStyle())
-                .transition(.opacity)
-                .simultaneousGesture(
-                    LongPressGesture()
-                        .onEnded { finished in
-                            if finished {
-                                UIPasteboard.general.string = url.absoluteString
-                                longHeldSafari = true
-                            }
-                        }
-                )
-                .alert(
-                    NSLocalizedString("LINK_COPIED"),
-                    isPresented: $longHeldSafari
-                ) {
-                    Button(NSLocalizedString("OK"), role: .cancel) {}
-                } message: {
-                    Text(NSLocalizedString("LINK_COPIED_TEXT"))
-                }
+                MediaDetailsSourceButton(url: url, path: path)
             }
-        }
-    }
-
-    @ContentBuilder
-    var tagsView: some View {
-        if let tags = manga.tags, !tags.isEmpty {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 10) {
-                    ForEach(manga.tags ?? [], id: \.self) { tag in
-                        let label = TagView(text: tag)
-                        if let source, let filter = source.matchingGenreFilter(for: tag) {
-                            Button {
-                                let viewController = MangaListViewController(source: source, title: tag)
-                                viewController.getEntries = { page in
-                                    try await source.getSearchMangaList(query: nil, page: page, filters: [
-                                        filter
-                                    ])
-                                }
-                                path.push(viewController)
-                            } label: {
-                                label
-                            }
-                        } else {
-                            label
-                        }
-                    }
-                }
-                .padding(.horizontal, 20)
-            }
-            .padding(.bottom, 16)
         }
     }
 
@@ -509,23 +365,7 @@ struct LabelView: View {
     }
 }
 
-private struct TagView: View {
-    let text: String
-
-    var body: some View {
-        Text(text)
-            .lineLimit(1)
-            .foregroundStyle(.secondary)
-            .font(.footnote)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 5)
-            .textSelection(.enabled)
-            .background(Color(UIColor.tertiarySystemFill))
-            .clipShape(RoundedRectangle(cornerRadius: 100))
-    }
-}
-
-private struct MangaActionButtonStyle: ButtonStyle {
+struct MangaActionButtonStyle: ButtonStyle {
     var selected = false
 
     func makeBody(configuration: Configuration) -> some View {

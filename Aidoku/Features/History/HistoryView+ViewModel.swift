@@ -372,6 +372,7 @@ extension HistoryView.ViewModel {
         let progress: Int16
         let total: Int16
         let completed: Bool
+        let videoPosition: Double?
     }
 
     // fetch history objects from core data and process them into history entries
@@ -389,7 +390,8 @@ extension HistoryView.ViewModel {
                         dateRead: $0.dateRead,
                         progress: $0.progress,
                         total: $0.total,
-                        completed: $0.completed
+                        completed: $0.completed,
+                        videoPosition: $0.videoPosition?.doubleValue
                     )
                 }
         }
@@ -447,7 +449,9 @@ extension HistoryView.ViewModel {
                 chapterId: obj.chapterId,
                 date: obj.dateRead ?? Date.distantPast,
                 currentPage: obj.completed ? -1 : Int(obj.progress),
-                totalPages: Int(obj.total)
+                totalPages: Int(obj.total),
+                videoPosition: obj.videoPosition,
+                videoCompleted: obj.videoPosition.map { _ in obj.completed }
             )
             var arr = newHistoryData[days] ?? []
             arr.append(newEntry)

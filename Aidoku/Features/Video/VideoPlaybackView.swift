@@ -89,14 +89,14 @@ struct VideoPlaybackView: View {
                 guard url.scheme?.lowercased() == "https", url.host != nil else {
                     throw URLError(.unsupportedURL)
                 }
-                session = VideoPlaybackSession(url: url, manga: manga.identifier, episodeKey: episode.key)
+                session = VideoPlaybackSession(url: url, manga: manga, episode: episode)
             } catch {
                 if !Task.isCancelled { failed = true }
             }
         }
         .onDisappear { session?.stop() }
         .onChangeWrapper(of: scenePhase) { _, phase in
-            if phase == .background { session?.saveProgress() }
+            if phase == .background { session?.saveProgress(force: true) }
         }
     }
 }
@@ -106,28 +106,29 @@ private final class VideoPlaybackSession {
     let player: AVPlayer
     let item: AVPlayerItem
 
-    private let manga: MangaIdentifier
-    private let episodeKey: String
+    private let manga: AidokuRunner.Manga
+    private let episode: AidokuRunner.Chapter
     private var timeObserver: Any?
     private var started = false
     private var ready = false
     private var stopped = false
     private var completed = false
     private var lastSavedPosition: Double?
+    private var lastSavedAt: Date?
 
-    init(url: URL, manga: MangaIdentifier, episodeKey: String) {
+    init(url: URL, manga: AidokuRunner.Manga, episode: AidokuRunner.Chapter) {
         let item = AVPlayerItem(url: url)
         self.item = item
         self.player = AVPlayer(playerItem: item)
         self.manga = manga
-        self.episodeKey = episodeKey
+        self.episode = episode
     }
 
     func start() async {
         guard !started, !stopped else { return }
         started = true
 
-        if let progress = VideoHistory.progress(for: manga)[episodeKey],
+        if let progress = VideoHistory.progress(for: manga.identifier)[episode.key],
            !progress.completed,
            progress.position.isFinite,
            progress.position > 0,
@@ -147,32 +148,45 @@ private final class VideoPlaybackSession {
         player.play()
     }
 
-    func saveProgress(completed: Bool = false) {
+    func saveProgress(completed: Bool = false, force: Bool = false) {
         guard ready, !stopped, !self.completed, !AppSettings.general.incognitoMode.get() else { return }
+        let now = Date.now
+        if !force, !completed, let lastSavedAt, now.timeIntervalSince(lastSavedAt) < 10 { return }
         let position = player.currentTime().seconds
         let duration = item.duration.seconds
         guard position.isFinite, duration.isFinite, duration > 0, completed || position >= 1 else { return }
         let savedPosition = completed ? duration : min(position, duration)
         guard completed || lastSavedPosition != savedPosition else { return }
 
+        let firstSave = lastSavedPosition == nil
+        guard VideoHistory.save(
+            .init(position: savedPosition, duration: duration, completed: completed, updatedAt: now),
+            manga: manga,
+            episode: episode
+        ) else { return }
         self.completed = completed
         lastSavedPosition = savedPosition
-        VideoHistory.save(
-            .init(position: savedPosition, duration: duration, completed: completed, updatedAt: .now),
-            manga: manga,
-            episodeKey: episodeKey
-        )
+        lastSavedAt = now
+        if firstSave || completed {
+            notifyHistoryChanged()
+        }
     }
 
     func stop() {
         guard !stopped else { return }
         player.pause()
-        saveProgress()
+        saveProgress(force: true)
+        if lastSavedPosition != nil, !completed { notifyHistoryChanged() }
         stopped = true
         if let timeObserver {
             player.removeTimeObserver(timeObserver)
             self.timeObserver = nil
         }
         player.replaceCurrentItem(with: nil)
+    }
+
+    private func notifyHistoryChanged() {
+        let id = ChapterIdentifier(sourceKey: manga.sourceKey, mangaKey: manga.key, chapterKey: episode.key)
+        NotificationCenter.default.post(name: .historySet, object: (chapterId: id, page: -1))
     }
 }

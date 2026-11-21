@@ -229,6 +229,7 @@ extension DownloadManager {
 
     /// Download given chapters from a manga.
     func download(manga: AidokuRunner.Manga, chapters: [AidokuRunner.Chapter]) async {
+        if let source = await SourceManager.shared.source(for: manga.sourceKey), await source.isVideoSource { return }
         let downloads = await queue.add(chapters: chapters, manga: manga, autoStart: true)
         NotificationCenter.default.post(
             name: .downloadsQueued,

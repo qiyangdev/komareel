@@ -190,7 +190,10 @@ struct HistoryView: View {
             chapter: viewModel.chapterCache[entry.chapterId]
         ) {
             if let manga {
-                path.push(MangaViewController(manga: manga, parent: path.rootViewController))
+                path.push(MangaViewController(
+                    manga: manga, parent: path.rootViewController,
+                    chapterKey: entry.videoPosition == nil ? nil : entry.chapterId.chapterKey
+                ))
             }
         }
         .equatable()
@@ -264,12 +267,13 @@ struct HistoryView: View {
         openingLastRead = true
         defer { openingLastRead = false }
 
-        let mangaId = await CoreDataManager.shared.container.performBackgroundTask { context in
+        let recent = await CoreDataManager.shared.container.performBackgroundTask { context in
             CoreDataManager.shared.getRecentHistory(limit: 1, offset: 0, context: context)
                 .first
-                .map { $0.identifier.mangaIdentifier }
+                .map { (id: $0.identifier, isVideo: $0.videoPosition != nil) }
         }
-        guard let mangaId else { return }
+        guard let recent else { return }
+        let mangaId = recent.id.mangaIdentifier
 
         var manga = viewModel.mangaCache[mangaId]
         if manga == nil {
@@ -279,6 +283,19 @@ struct HistoryView: View {
                     context: context
                 )?.toNewManga()
             }
+        }
+
+        if recent.isVideo {
+            guard
+                let root = path.rootViewController,
+                root.view.window != nil,
+                root.navigationController?.topViewController === root,
+                let source = SourceManager.shared.store.source(for: mangaId.sourceKey),
+                source.isVideoSource
+            else { return }
+            let target = manga ?? AidokuRunner.Manga(sourceKey: mangaId.sourceKey, key: mangaId.mangaKey, title: "")
+            path.push(MangaViewController(source: source, manga: target, parent: root, chapterKey: recent.id.chapterKey))
+            return
         }
 
         let (chapters, nextChapter) = await MangaManager.shared.getNextChapter(
@@ -417,7 +434,11 @@ private struct HistoryEntryCell: View, @MainActor Equatable {
             // no volume or chapter number, just use the title
             components.append(title)
         }
-        if let currentPage = entry.currentPage, let totalPages = entry.totalPages, currentPage > 0, currentPage < totalPages {
+        if entry.videoCompleted == true {
+            components.append(String(localized: "Watched"))
+        } else if let position = entry.videoPosition, let time = Self.videoPositionFormatter.string(from: position) {
+            components.append(String(localized: "Resume at \(time)"))
+        } else if let currentPage = entry.currentPage, let totalPages = entry.totalPages, currentPage > 0, currentPage < totalPages {
             components.append(String(format: NSLocalizedString("PAGE_X_OF_X"), currentPage, totalPages))
         }
         let formatter = DateFormatter()
@@ -426,6 +447,14 @@ private struct HistoryEntryCell: View, @MainActor Equatable {
         components.append(formatter.string(from: entry.date))
         return components.joined(separator: " - ")
     }
+
+    private static let videoPositionFormatter: DateComponentsFormatter = {
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.minute, .second]
+        formatter.unitsStyle = .positional
+        formatter.zeroFormattingBehavior = .pad
+        return formatter
+    }()
 
     static func == (lhs: HistoryEntryCell, rhs: HistoryEntryCell) -> Bool {
         lhs.entry == rhs.entry && lhs.manga == rhs.manga && lhs.chapter == rhs.chapter

@@ -120,46 +120,44 @@ struct HomeGridView: View {
 
     @ViewBuilder
     private func libraryActions(for entry: AidokuRunner.Manga, inLibrary: Bool) -> some View {
-        if !source.isVideoSource {
-            // add a remove button for manga from the local source
-            if entry.isLocal() {
-                Button(role: .destructive) {
-                    Task {
-                        await LocalFileManager.shared.removeManga(with: entry.key)
-                        NotificationCenter.default.post(name: .init("refresh-content"), object: nil)
-                    }
-                } label: {
-                    Label(NSLocalizedString("REMOVE"), systemImage: "trash")
+        // add a remove button for manga from the local source
+        if entry.isLocal() {
+            Button(role: .destructive) {
+                Task {
+                    await LocalFileManager.shared.removeManga(with: entry.key)
+                    NotificationCenter.default.post(name: .init("refresh-content"), object: nil)
                 }
+            } label: {
+                Label(NSLocalizedString("REMOVE"), systemImage: "trash")
             }
-            if inLibrary {
-                Button(role: .destructive) {
-                    bookmarkedItems.remove(entry.key)
-                    Task {
-                        await MangaManager.shared.removeFromLibrary(mangaId: entry.identifier)
-                    }
-                } label: {
-                    Label(NSLocalizedString("REMOVE_FROM_LIBRARY"), systemImage: "trash")
+        }
+        if inLibrary {
+            Button(role: .destructive) {
+                bookmarkedItems.remove(entry.key)
+                Task {
+                    await MangaManager.shared.removeFromLibrary(mangaId: entry.identifier)
                 }
-            } else {
-                Button {
-                    Task {
-                        if await MangaManager.shouldAskForCategories() {
-                            // open category select view
-                            let viewController = UINavigationController(rootViewController: CategorySelectViewController(manga: entry))
-                            path.present(viewController)
-                        } else {
-                            // add to library
-                            bookmarkedItems.insert(entry.key)
-                            await MangaManager.shared.addToLibrary(
-                                manga: entry,
-                                fetchMangaDetails: true
-                            )
-                        }
+            } label: {
+                Label(NSLocalizedString("REMOVE_FROM_LIBRARY"), systemImage: "trash")
+            }
+        } else {
+            Button {
+                Task {
+                    if await MangaManager.shouldAskForCategories() {
+                        // open category select view
+                        let viewController = UINavigationController(rootViewController: CategorySelectViewController(manga: entry))
+                        path.present(viewController)
+                    } else {
+                        // add to library
+                        bookmarkedItems.insert(entry.key)
+                        await MangaManager.shared.addToLibrary(
+                            manga: entry,
+                            fetchMangaDetails: true
+                        )
                     }
-                } label: {
-                    Label(NSLocalizedString("ADD_TO_LIBRARY"), systemImage: "plus.circle")
                 }
+            } label: {
+                Label(NSLocalizedString("ADD_TO_LIBRARY"), systemImage: "plus.circle")
             }
         }
     }

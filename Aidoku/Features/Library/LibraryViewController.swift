@@ -1319,7 +1319,13 @@ extension LibraryViewController {
             return
         }
 
-        if AppSettings.library.opensReaderView.get() {
+        if AppSettings.library.opensReaderView.get(),
+           let source = SourceManager.shared.store.source(for: info.id.sourceKey), source.isVideoSource
+        {
+            navigationController?.pushViewController(
+                MangaViewController(source: source, manga: info, parent: self, openAction: .read), animated: true
+            )
+        } else if AppSettings.library.opensReaderView.get() {
             Task {
                 // get next chapter to read
                 let (sortedChapters, nextChapter) = await MangaManager.shared.getNextChapter(mangaId: info.id)
@@ -1573,7 +1579,8 @@ extension LibraryViewController {
 
             if
                 manga.id.sourceKey != LocalSourceRunner.sourceKey,
-                SourceManager.shared.store.isInstalled(sourceKey: manga.id.sourceKey)
+                let source = SourceManager.shared.store.source(for: manga.id.sourceKey),
+                !source.isVideoSource
             {
                 bottomMenuChildren.append(UIMenu(
                     title: NSLocalizedString("DOWNLOAD"),

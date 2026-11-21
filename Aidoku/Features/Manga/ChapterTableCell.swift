@@ -17,6 +17,8 @@ struct ChapterTableCell: View {
     let downloadStatus: DownloadStatus
     var downloadProgress: Float?
     let displayMode: ChapterTitleDisplayMode
+    var titleOverride: String?
+    var progressSubtitle: Text?
 
     var downloaded: Bool {
         downloadStatus == .finished
@@ -47,13 +49,13 @@ struct ChapterTableCell: View {
             }
 
             VStack(alignment: .leading, spacing: 8 / 3) {
-                let title = chapter.formattedTitle(forceMode: displayMode)
+                let title = titleOverride ?? chapter.formattedTitle(forceMode: displayMode)
                 Text(title)
                     .foregroundStyle(locked || read ? .secondary : .primary)
                     .font(.system(size: 16))
                     .lineLimit(1)
-                if let subtitle = chapter.formattedSubtitle(page: page, sourceKey: sourceKey) {
-                    Text(subtitle)
+                if let subtitle = progressSubtitle ?? chapter.formattedSubtitle(page: page, sourceKey: sourceKey).map(Text.init(verbatim:)) {
+                    subtitle
                         .foregroundStyle(.secondary)
                         .font(.system(size: 14))
                         .lineLimit(1)
