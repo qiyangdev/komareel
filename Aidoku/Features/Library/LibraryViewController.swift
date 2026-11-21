@@ -1320,7 +1320,7 @@ extension LibraryViewController {
         }
 
         if AppSettings.library.opensReaderView.get(),
-           let source = SourceManager.shared.store.source(for: info.id.sourceKey), source.isVideoSource
+           let source = SourceManager.shared.store.source(for: info.id.sourceKey), source.isPlayableMedia
         {
             navigationController?.pushViewController(
                 MangaViewController(source: source, manga: info, parent: self, openAction: .read), animated: true
@@ -1580,7 +1580,7 @@ extension LibraryViewController {
             if
                 manga.id.sourceKey != LocalSourceRunner.sourceKey,
                 let source = SourceManager.shared.store.source(for: manga.id.sourceKey),
-                !source.isVideoSource
+                !source.isPlayableMedia
             {
                 bottomMenuChildren.append(UIMenu(
                     title: NSLocalizedString("DOWNLOAD"),

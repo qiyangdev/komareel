@@ -2,7 +2,7 @@ import AidokuRunner
 import CoreData
 import Foundation
 
-struct VideoProgress: Sendable {
+struct MediaPlaybackProgress: Sendable {
     let position: Double
     let duration: Double
     let completed: Bool
@@ -10,10 +10,10 @@ struct VideoProgress: Sendable {
 }
 
 @MainActor
-enum VideoHistory {
-    static func progress(for manga: MangaIdentifier) -> [String: VideoProgress] {
+enum MediaPlaybackHistory {
+    static func progress(for manga: MangaIdentifier) -> [String: MediaPlaybackProgress] {
         let histories = CoreDataManager.shared.getHistoryForManga(mangaId: manga, context: CoreDataManager.shared.context)
-        return Dictionary(histories.compactMap { history -> (String, VideoProgress)? in
+        return Dictionary(histories.compactMap { history -> (String, MediaPlaybackProgress)? in
             guard
                 let position = history.videoPosition?.doubleValue,
                 let duration = history.videoDuration?.doubleValue
@@ -25,7 +25,7 @@ enum VideoHistory {
         }, uniquingKeysWith: { $0.updatedAt >= $1.updatedAt ? $0 : $1 })
     }
 
-    static func save(_ progress: VideoProgress, manga: AidokuRunner.Manga, episode: AidokuRunner.Chapter) -> Bool {
+    static func save(_ progress: MediaPlaybackProgress, manga: AidokuRunner.Manga, episode: AidokuRunner.Chapter) -> Bool {
         guard !AppSettings.general.incognitoMode.get() else { return false }
         let database = CoreDataManager.shared
         let context = database.container.newBackgroundContext()
@@ -52,7 +52,7 @@ enum VideoHistory {
                 try context.save()
                 return true
             } catch {
-                LogManager.logger.error("Failed to save video history: \(error)")
+                LogManager.logger.error("Failed to save media playback history: \(error)")
                 return false
             }
         }

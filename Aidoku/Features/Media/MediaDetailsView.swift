@@ -1,7 +1,7 @@
 import AidokuRunner
 import SwiftUI
 
-struct VideoDetailsView: View {
+struct MediaDetailsView: View {
     let source: AidokuRunner.Source
     let manga: AidokuRunner.Manga
     let path: NavigationCoordinator
@@ -9,8 +9,9 @@ struct VideoDetailsView: View {
     let autoplay: Bool
 
     @State private var details: AidokuRunner.Manga?
-    @State private var progress: [String: VideoProgress] = [:]
+    @State private var progress: [String: MediaPlaybackProgress] = [:]
     @State private var selectedEpisode: AidokuRunner.Chapter?
+    private let audio = AudioPlaybackController.shared
     @State private var failed = false
     @State private var bookmarked = false
     @State private var changingBookmark = false
@@ -20,6 +21,7 @@ struct VideoDetailsView: View {
     @State private var customCover: String?
     @Namespace private var transitionNamespace
 
+    private var isAudio: Bool { source.mediaType == .audio }
     private var episodes: [AidokuRunner.Chapter] { details?.chapters ?? [] }
     private var nextEpisode: AidokuRunner.Chapter? {
         resumeEpisode ?? episodes.first { progress[$0.key]?.completed != true } ?? episodes.first
@@ -40,9 +42,9 @@ struct VideoDetailsView: View {
     }
 
     private var playbackTitle: Text {
-        if resumeEpisode != nil { return Text("Continue Watching") }
-        if nextEpisode != nil { return Text("Play Video") }
-        if failed { return Text("Video Unavailable") }
+        if resumeEpisode != nil { return isAudio ? Text("Continue Listening") : Text("Continue Watching") }
+        if nextEpisode != nil { return isAudio ? Text("Play Audio") : Text("Play Video") }
+        if failed { return isAudio ? Text("Audio Unavailable") : Text("Video Unavailable") }
         if details == nil { return Text(NSLocalizedString("LOADING_ELLIPSIS")) }
         return Text("No episodes available")
     }
@@ -71,7 +73,7 @@ struct VideoDetailsView: View {
                     onTitlePressed: {
                         (path.rootViewController?.tabBarController as? TabBarController)?.search(for: presentedManga.title)
                     },
-                    onPrimaryAction: { selectedEpisode = nextEpisode },
+                    onPrimaryAction: { if let nextEpisode { play(nextEpisode) } },
                     metadata: {
                         if let authors = presentedManga.authors, !authors.isEmpty {
                             Text(authors.joined(separator: ", "))
@@ -111,8 +113,8 @@ struct VideoDetailsView: View {
                 .listRowSeparator(.hidden)
             } else {
                 ForEach(episodes) { episode in
-                    VideoEpisodeRow(source: source, episode: episode, progress: progress[episode.key]) {
-                        selectedEpisode = episode
+                    MediaEpisodeRow(source: source, episode: episode, progress: progress[episode.key]) {
+                        play(episode)
                     }
                     .listRowInsets(.zero)
                 }
@@ -150,7 +152,11 @@ struct VideoDetailsView: View {
         }
         .refreshable { await load() }
         .fullScreenCover(item: $selectedEpisode, onDismiss: refreshProgress) { episode in
-            VideoPlaybackView(manga: details ?? manga, episode: episode, source: source)
+            if isAudio {
+                AudioPlaybackView(player: audio)
+            } else {
+                VideoPlaybackView(manga: details ?? manga, episode: episode, source: source)
+            }
         }
         .fullScreenCover(
             isPresented: $showingCover,
@@ -194,8 +200,13 @@ struct VideoDetailsView: View {
         }
     }
 
+    private func play(_ episode: AidokuRunner.Chapter) {
+        if isAudio { audio.open(manga: presentedManga, episode: episode, source: source) }
+        selectedEpisode = episode
+    }
+
     private func refreshProgress() {
-        progress = VideoHistory.progress(for: manga.identifier)
+        progress = MediaPlaybackHistory.progress(for: manga.identifier)
     }
 
     private func refreshBookmark() async {
@@ -240,9 +251,9 @@ struct VideoDetailsView: View {
             if !didHandleInitialPlayback {
                 didHandleInitialPlayback = true
                 if let initialEpisodeKey {
-                    selectedEpisode = episodes.first { $0.key == initialEpisodeKey }
-                } else if autoplay {
-                    selectedEpisode = nextEpisode
+                    if let episode = episodes.first(where: { $0.key == initialEpisodeKey }) { play(episode) }
+                } else if autoplay, let nextEpisode {
+                    play(nextEpisode)
                 }
             }
         } catch {
@@ -251,10 +262,10 @@ struct VideoDetailsView: View {
     }
 }
 
-private struct VideoEpisodeRow: View {
+private struct MediaEpisodeRow: View {
     let source: AidokuRunner.Source
     let episode: AidokuRunner.Chapter
-    let progress: VideoProgress?
+    let progress: MediaPlaybackProgress?
     let play: () -> Void
 
     var body: some View {
@@ -276,7 +287,7 @@ private struct VideoEpisodeRow: View {
 
     private var progressSubtitle: Text? {
         guard let progress else { return nil }
-        if progress.completed { return Text("Watched") }
+        if progress.completed { return source.mediaType == .audio ? Text("Listened") : Text("Watched") }
         return Self.positionFormatter.string(from: progress.position).map { Text("Resume at \($0)") }
     }
 

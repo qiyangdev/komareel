@@ -16,6 +16,8 @@ class TabBarController: UITabBarController {
 
     private var settingsPath: NavigationCoordinator?
     private var previousSelectedIndex: Int?
+    private var isLibraryRefreshing = false
+    private var hasAudioEpisode = false
 
     private weak var historyNavigationController: UINavigationController?
     private weak var searchNavigationController: UINavigationController?
@@ -24,7 +26,7 @@ class TabBarController: UITabBarController {
 
     private lazy var libraryProgressView = CircularProgressView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
 
-    private lazy var libraryRefreshAccessory: UIView = {
+    private lazy var libraryRefreshAccessory: UITabAccessory = {
         let view = UIView()
 
         let label = UILabel()
@@ -35,24 +37,6 @@ class TabBarController: UITabBarController {
         libraryProgressView.radius = 12
         libraryProgressView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(libraryProgressView)
-
-        if #unavailable(iOS 26) {
-            // add styling for older versions without the bottom accessory view
-            let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .systemMaterial))
-            backgroundView.layer.cornerRadius = 48 / 2
-            backgroundView.layer.borderColor = UIColor.quaternarySystemFill.cgColor
-            backgroundView.layer.borderWidth = 1
-            backgroundView.clipsToBounds = true
-            backgroundView.translatesAutoresizingMaskIntoConstraints = false
-            view.insertSubview(backgroundView, at: 0)
-
-            NSLayoutConstraint.activate([
-                backgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                backgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                backgroundView.topAnchor.constraint(equalTo: view.topAnchor),
-                backgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-            ])
-        }
 
         NSLayoutConstraint.activate([
             label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
@@ -66,7 +50,18 @@ class TabBarController: UITabBarController {
             libraryProgressView.heightAnchor.constraint(equalToConstant: 20)
         ])
 
-        return view
+        return UITabAccessory(contentView: view)
+    }()
+
+    private lazy var audioPlaybackAccessory: UITabAccessory = {
+        let host = UIHostingController(rootView: AudioPlaybackAccessoryView(player: .shared) { [weak self] in
+            self?.openNowPlaying()
+        })
+        addChild(host)
+        host.view.backgroundColor = .clear
+        let accessory = UITabAccessory(contentView: host.view)
+        host.didMove(toParent: self)
+        return accessory
     }()
 
     override func viewDidLoad() {
@@ -188,6 +183,16 @@ class TabBarController: UITabBarController {
         let updateCount = AppSettings.browse.updateCount.get()
         browseViewController.tabBarItem.badgeValue = updateCount > 0 ? String(updateCount) : nil
 
+        AudioPlaybackController.shared.$episode
+            .map { $0 != nil }
+            .removeDuplicates()
+            .sink { [weak self] hasEpisode in
+                guard let self else { return }
+                self.hasAudioEpisode = hasEpisode
+                self.updateBottomAccessory()
+            }
+            .store(in: &cancellables)
+
         NotificationCenter.default.publisher(for: .init(AppSettings.general.incognitoMode.key))
             .sink { [weak self] _ in
                 self?.updateFrame(animated: true)
@@ -237,46 +242,45 @@ extension TabBarController {
 
     func showLibraryRefreshView() {
         libraryProgressView.setProgress(value: 0, withAnimation: false)
-
-        if #available(iOS 26.0, *) {
-            setBottomAccessory(.init(contentView: libraryRefreshAccessory), animated: true)
-        } else {
-            libraryRefreshAccessory.layer.opacity = 0
-            view.insertSubview(libraryRefreshAccessory, belowSubview: tabBar)
-            UIView.animate(withDuration: 0.5) {
-                self.libraryRefreshAccessory.layer.opacity = 1
-            }
-        }
+        isLibraryRefreshing = true
+        updateBottomAccessory()
     }
 
     func setLibraryRefreshProgress(_ progress: Float) {
         libraryProgressView.setProgress(value: progress, withAnimation: true)
     }
 
-    func hideAccessoryView() {
-        if #available(iOS 26.0, *) {
-            setBottomAccessory(nil, animated: true)
+    func hideLibraryRefreshView() {
+        isLibraryRefreshing = false
+        updateBottomAccessory()
+    }
+
+    private func updateBottomAccessory() {
+        let accessory: UITabAccessory?
+        if isLibraryRefreshing {
+            accessory = libraryRefreshAccessory
+        } else if hasAudioEpisode {
+            accessory = audioPlaybackAccessory
         } else {
-            UIView.animate(withDuration: 0.5) {
-                self.libraryRefreshAccessory.layer.opacity = 0
-            } completion: { _ in
-                self.libraryRefreshAccessory.removeFromSuperview()
-            }
+            accessory = nil
+        }
+
+        if bottomAccessory !== accessory {
+            setBottomAccessory(accessory, animated: true)
         }
     }
 
-    override func viewDidLayoutSubviews() {
-        if #unavailable(iOS 26.0) {
-            let height: CGFloat = 48
-            let padding: CGFloat = 16
+    private func openNowPlaying() {
+        guard presentedViewController == nil, AudioPlaybackController.shared.episode != nil else { return }
+        let controller = UIHostingController(rootView: AudioPlaybackView(player: .shared) { [weak self] in
+            self?.dismiss(animated: true)
+        })
+        controller.modalPresentationStyle = .fullScreen
+        present(controller, animated: true)
+    }
 
-            libraryRefreshAccessory.frame = CGRect(
-                x: tabBar.frame.origin.x + view.safeAreaInsets.left + padding,
-                y: tabBar.frame.origin.y - height - padding / 2,
-                width: tabBar.frame.width - padding * 2 - view.safeAreaInsets.left - view.safeAreaInsets.right,
-                height: height
-            )
-        }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         updateFrame()
     }
 

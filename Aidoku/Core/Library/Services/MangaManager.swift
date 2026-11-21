@@ -459,7 +459,7 @@ extension MangaManager {
 
         // wait 0.5s for final progress animation to complete
         try? await Task.sleep(nanoseconds: 500_000_000)
-        await tabController?.hideAccessoryView()
+        await tabController?.hideLibraryRefreshView()
 
         NotificationCenter.default.post(name: .updateLibrary, object: nil)
 

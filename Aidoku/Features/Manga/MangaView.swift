@@ -57,8 +57,8 @@ struct MangaView: View {
     }
 
     var body: some View {
-        if let source = viewModel.source, source.isVideoSource {
-            VideoDetailsView(
+        if let source = viewModel.source, source.isPlayableMedia {
+            MediaDetailsView(
                 source: source, manga: viewModel.manga, path: path,
                 initialEpisodeKey: targetChapterKey, autoplay: openAction != nil
             )

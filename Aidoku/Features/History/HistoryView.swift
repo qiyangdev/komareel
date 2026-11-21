@@ -270,7 +270,7 @@ struct HistoryView: View {
         let recent = await CoreDataManager.shared.container.performBackgroundTask { context in
             CoreDataManager.shared.getRecentHistory(limit: 1, offset: 0, context: context)
                 .first
-                .map { (id: $0.identifier, isVideo: $0.videoPosition != nil) }
+                .map { (id: $0.identifier, isPlayback: $0.videoPosition != nil) }
         }
         guard let recent else { return }
         let mangaId = recent.id.mangaIdentifier
@@ -285,13 +285,13 @@ struct HistoryView: View {
             }
         }
 
-        if recent.isVideo {
+        if recent.isPlayback {
             guard
                 let root = path.rootViewController,
                 root.view.window != nil,
                 root.navigationController?.topViewController === root,
                 let source = SourceManager.shared.store.source(for: mangaId.sourceKey),
-                source.isVideoSource
+                source.isPlayableMedia
             else { return }
             let target = manga ?? AidokuRunner.Manga(sourceKey: mangaId.sourceKey, key: mangaId.mangaKey, title: "")
             path.push(MangaViewController(source: source, manga: target, parent: root, chapterKey: recent.id.chapterKey))
@@ -435,7 +435,7 @@ private struct HistoryEntryCell: View, @MainActor Equatable {
             components.append(title)
         }
         if entry.videoCompleted == true {
-            components.append(String(localized: "Watched"))
+            components.append(source?.mediaType == .audio ? String(localized: "Listened") : String(localized: "Watched"))
         } else if let position = entry.videoPosition, let time = Self.videoPositionFormatter.string(from: position) {
             components.append(String(localized: "Resume at \(time)"))
         } else if let currentPage = entry.currentPage, let totalPages = entry.totalPages, currentPage > 0, currentPage < totalPages {

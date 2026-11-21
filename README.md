@@ -1,6 +1,8 @@
 # KomaReel
 
-A manga reader and video player with extensible sources, based on [Aidoku](https://github.com/Aidoku/Aidoku).
+A manga reader and media player with extensible sources, based on [Aidoku](https://github.com/Aidoku/Aidoku).
+
+Requires iOS 26.0 or later.
 
 <p>
 	<img src="https://raw.githubusercontent.com/Aidoku/Website/refs/heads/main/static/images/library-noframe.png" width="25%" alt="Library">
