@@ -120,7 +120,7 @@ struct HomeGridView: View {
 
     @ViewBuilder
     private func libraryActions(for entry: AidokuRunner.Manga, inLibrary: Bool) -> some View {
-        if !(source.runner is any VideoSourceRunner) {
+        if !source.isVideoSource {
             // add a remove button for manga from the local source
             if entry.isLocal() {
                 Button(role: .destructive) {

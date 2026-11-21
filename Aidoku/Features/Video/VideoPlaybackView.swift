@@ -6,7 +6,7 @@ import SwiftUI
 struct VideoPlaybackView: View {
     let manga: AidokuRunner.Manga
     let episode: AidokuRunner.Chapter
-    let runner: any VideoSourceRunner
+    let source: AidokuRunner.Source
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.scenePhase) private var scenePhase
@@ -84,7 +84,7 @@ struct VideoPlaybackView: View {
             loading = true
             failed = false
             do {
-                let url = try await runner.videoURL(manga: manga, episode: episode)
+                let url = try await source.videoURL(manga: manga, episode: episode)
                 try Task.checkCancellation()
                 guard url.scheme?.lowercased() == "https", url.host != nil else {
                     throw URLError(.unsupportedURL)

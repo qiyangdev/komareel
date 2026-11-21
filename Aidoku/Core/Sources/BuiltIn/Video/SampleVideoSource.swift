@@ -1,10 +1,6 @@
 import AidokuRunner
 import Foundation
 
-protocol VideoSourceRunner: AidokuRunner.Runner {
-    func videoURL(manga: AidokuRunner.Manga, episode: AidokuRunner.Chapter) async throws -> URL
-}
-
 extension AidokuRunner.Source {
     static func sampleVideo() -> AidokuRunner.Source {
         .init(

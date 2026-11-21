@@ -3,7 +3,6 @@ import SwiftUI
 
 struct VideoDetailsView: View {
     let source: AidokuRunner.Source
-    let runner: any VideoSourceRunner
     let manga: AidokuRunner.Manga
 
     @State private var details: AidokuRunner.Manga?
@@ -65,7 +64,7 @@ struct VideoDetailsView: View {
         .listStyle(.insetGrouped)
         .navigationBarTitleDisplayMode(.inline)
         .fullScreenCover(item: $selectedEpisode, onDismiss: refreshProgress) { episode in
-            VideoPlaybackView(manga: manga, episode: episode, runner: runner)
+            VideoPlaybackView(manga: details ?? manga, episode: episode, source: source)
         }
         .onAppear(perform: refreshProgress)
         .task { await load() }

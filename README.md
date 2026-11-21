@@ -24,6 +24,12 @@ The [video development branch](https://github.com/qiyangdev/Aidoku/tree/feat/vid
 
 To try it, check out `feat/video-sources`, open `Aidoku.xcodeproj` in Xcode, and run the `Aidoku` scheme on an iPhone simulator. In the app, open **Browse → Add Source → Video Samples**.
 
+### WASM video extensions
+
+Install a video `.aix` through the same source list or file import as manga extensions. In the API 0.7 `Payload/source.json`, set `"mediaType": "video"` inside `config`. Other manifest fields and the WASM ABI follow the standard Aidoku source format.
+
+Use the existing catalog and detail functions for shows and episodes. Return each episode as a chapter from `get_manga_update`. For the selected episode, `get_page_list` must return exactly one URL page containing a direct HTTPS playback URL, such as an HLS playlist or MP4. The app resolves the URL when playback starts or is retried. Page context does not supply playback headers, so use a URL the player can request directly, such as a signed URL.
+
 ## Upstream Aidoku
 
 Official Aidoku installation options, including TestFlight and AltStore, are documented on the [Aidoku website](https://aidoku.app). Official IPA downloads are available from [upstream releases](https://github.com/Aidoku/Aidoku/releases).

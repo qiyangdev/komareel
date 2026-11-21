@@ -57,8 +57,8 @@ struct MangaView: View {
     }
 
     var body: some View {
-        if let source = viewModel.source, let runner = source.runner as? any VideoSourceRunner {
-            VideoDetailsView(source: source, runner: runner, manga: viewModel.manga)
+        if let source = viewModel.source, source.isVideoSource {
+            VideoDetailsView(source: source, manga: viewModel.manga)
         } else {
             readerDetails
         }
