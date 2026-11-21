@@ -28,7 +28,7 @@ struct AudioPlaybackView: View {
     @ViewBuilder private var playbackContent: some View {
         if player.status == .ready, let session = player.session, let episode = player.episode {
             let artwork = MediaPlaybackArtwork(source: episode.source, cover: episode.manga.cover ?? "")
-            NativeMediaPlayer(session: session, continuesAfterDismissal: true, artwork: artwork)
+            NativeAudioPlayer(session: session, artwork: artwork)
                 .id(ObjectIdentifier(session))
         }
     }

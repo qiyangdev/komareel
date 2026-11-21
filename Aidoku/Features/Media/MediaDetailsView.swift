@@ -10,7 +10,8 @@ struct MediaDetailsView: View {
 
     @State private var details: AidokuRunner.Manga?
     @State private var progress: [String: MediaPlaybackProgress] = [:]
-    @State private var selectedEpisode: AidokuRunner.Chapter?
+    @State private var selectedAudioEpisode: AidokuRunner.Chapter?
+    @State private var videoPlayback: FullScreenVideoPlayback?
     private let audio = AudioPlaybackController.shared
     @State private var failed = false
     @State private var bookmarked = false
@@ -151,12 +152,8 @@ struct MediaDetailsView: View {
             }
         }
         .refreshable { await load() }
-        .fullScreenCover(item: $selectedEpisode, onDismiss: refreshProgress) { episode in
-            if isAudio {
-                AudioPlaybackView(player: audio)
-            } else {
-                VideoPlaybackView(manga: details ?? manga, episode: episode, source: source)
-            }
+        .fullScreenCover(item: $selectedAudioEpisode, onDismiss: refreshProgress) { _ in
+            AudioPlaybackView(player: audio)
         }
         .fullScreenCover(
             isPresented: $showingCover,
@@ -201,8 +198,17 @@ struct MediaDetailsView: View {
     }
 
     private func play(_ episode: AidokuRunner.Chapter) {
-        if isAudio { audio.open(manga: presentedManga, episode: episode, source: source) }
-        selectedEpisode = episode
+        if isAudio {
+            audio.open(manga: presentedManga, episode: episode, source: source)
+            selectedAudioEpisode = episode
+        } else if videoPlayback == nil, let presenter = path.navigationController?.topViewController ?? path.rootViewController {
+            let playback = FullScreenVideoPlayback(manga: details ?? manga, episode: episode, source: source) {
+                videoPlayback = nil
+                refreshProgress()
+            }
+            videoPlayback = playback
+            playback.present(from: presenter)
+        }
     }
 
     private func refreshProgress() {

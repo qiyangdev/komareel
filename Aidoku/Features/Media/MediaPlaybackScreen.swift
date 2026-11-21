@@ -71,49 +71,31 @@ struct MediaPlaybackScreen<PlayerContent: View>: View {
     }
 }
 
-struct NativeMediaPlayer: UIViewControllerRepresentable {
+struct NativeAudioPlayer: UIViewControllerRepresentable {
     let session: MediaPlaybackSession
-    var continuesAfterDismissal = false
-    var artwork: MediaPlaybackArtwork?
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(session: session, stopOnDismantle: !continuesAfterDismissal)
-    }
+    let artwork: MediaPlaybackArtwork
 
     func makeUIViewController(context: Context) -> AVPlayerViewController {
         let controller = AVPlayerViewController()
-        if continuesAfterDismissal {
-            controller.updatesNowPlayingInfoCenter = false
-            controller.allowsPictureInPicturePlayback = false
-        }
+        controller.updatesNowPlayingInfoCenter = false
+        controller.allowsPictureInPicturePlayback = false
         controller.videoGravity = .resizeAspect
         controller.player = session.player
-        if let artwork {
-            controller.loadViewIfNeeded()
-            if let overlay = controller.contentOverlayView {
-                let host = UIHostingController(rootView: artwork)
-                controller.addChild(host)
-                host.view.isUserInteractionEnabled = false
-                host.view.backgroundColor = .clear
-                host.view.frame = overlay.bounds
-                host.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-                overlay.addSubview(host.view)
-                host.didMove(toParent: controller)
-            }
+        controller.loadViewIfNeeded()
+        if let overlay = controller.contentOverlayView {
+            let host = UIHostingController(rootView: artwork)
+            controller.addChild(host)
+            host.view.isUserInteractionEnabled = false
+            host.view.backgroundColor = .clear
+            host.view.frame = overlay.bounds
+            host.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            overlay.addSubview(host.view)
+            host.didMove(toParent: controller)
         }
         return controller
     }
 
     func updateUIViewController(_ controller: AVPlayerViewController, context: Context) {}
-
-    static func dismantleUIViewController(_ controller: AVPlayerViewController, coordinator: Coordinator) {
-        if coordinator.stopOnDismantle { coordinator.session.stop() }
-    }
-
-    struct Coordinator {
-        let session: MediaPlaybackSession
-        let stopOnDismantle: Bool
-    }
 }
 
 struct MediaPlaybackArtwork: View {
