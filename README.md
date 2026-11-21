@@ -1,6 +1,6 @@
 # KomaReel
 
-A manga reader and media player with extensible sources, based on [Aidoku](https://github.com/Aidoku/Aidoku).
+A manga and text reader with audio and video playback, based on [Aidoku](https://github.com/Aidoku/Aidoku).
 
 Requires iOS 26.0 or later.
 
@@ -31,6 +31,12 @@ To try it, open `Aidoku.xcodeproj` in Xcode and run the `Aidoku` scheme on an iP
 Install a video `.aix` through the same source list or file import as manga extensions. In the API 0.7 `Payload/source.json`, set `"mediaType": "video"` inside `config`. Other manifest fields and the WASM ABI follow the standard Aidoku source format.
 
 Use the existing catalog and detail functions for shows and episodes. Return each episode as a chapter from `get_manga_update`. For the selected episode, `get_page_list` must return exactly one URL page containing a direct HTTPS playback URL, such as an HLS playlist or MP4. The app resolves the URL when playback starts or is retried. Page context does not supply playback headers, so use a URL the player can request directly, such as a signed URL.
+
+## WASM text extensions
+
+Set `"mediaType": "text"` inside `config` in `Payload/source.json` to open chapters directly in the text reader. Use the existing catalog and chapter functions, and return one `PageContent::text` containing UTF-8 Markdown from `get_page_list` for each chapter. KomaReel lays out the chapter according to the reader's paged or scrolling preference.
+
+Set `"showsListCovers": false` inside `config` to hide covers in the source home page's list rows and loading skeletons. The default is `true`.
 
 ## Upstream Aidoku
 

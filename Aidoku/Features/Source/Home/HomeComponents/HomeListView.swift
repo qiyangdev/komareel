@@ -10,6 +10,8 @@ import SafariServices
 import SwiftUI
 
 struct HomeListView: View {
+    static let coverlessRowSpacing: CGFloat = 12
+
     let source: AidokuRunner.Source
     let component: HomeComponent
     let partial: Bool
@@ -77,7 +79,7 @@ struct HomeListView: View {
             }
 
             if partial && entries.isEmpty {
-                PlaceholderMangaHomeList.mainView(itemCount: 6)
+                PlaceholderMangaHomeList.mainView(itemCount: 6, showsCovers: source.showsListCovers)
                     .redacted(reason: .placeholder)
                     .shimmering()
             } else {
@@ -104,7 +106,7 @@ struct HomeListView: View {
                         )
                         .frame(height: height)
                     } else {
-                        LazyVStack {
+                        LazyVStack(spacing: source.showsListCovers ? nil : Self.coverlessRowSpacing) {
                             ForEach(entries.indices, id: \.self) { offset in
                                 view(
                                     for: entries[offset],
@@ -150,19 +152,23 @@ struct HomeListView: View {
 
     @ContentBuilder
     func view(for entry: HomeComponent.Value.Link, position: Int) -> some View {
+        let showsCovers = source.showsListCovers
+        let isBookmarked: Bool = if case .manga(let manga) = entry.value {
+            (usesBookmarksState ? bookmarkedItemsState : bookmarkedItems).contains(manga.key)
+        } else {
+            false
+        }
         let label = HStack(spacing: 12) {
-            let mangaKey: String? = switch entry.value {
-                case .manga(let manga): manga.key
-                default: nil
+            if showsCovers {
+                MangaCoverView(
+                    source: source,
+                    coverImage: entry.imageUrl ?? "",
+                    width: 100 * 2/3,
+                    height: 100,
+                    downsampleWidth: 200,
+                    bookmarked: isBookmarked
+                )
             }
-            MangaCoverView(
-                source: source,
-                coverImage: entry.imageUrl ?? "",
-                width: 100 * 2/3,
-                height: 100,
-                downsampleWidth: 200,
-                bookmarked: mangaKey.flatMap { (usesBookmarksState ? bookmarkedItemsState : bookmarkedItems).contains($0) } ?? false
-            )
 
             let titleStack = VStack(alignment: .leading, spacing: 4) {
                 Text(entry.title)
@@ -218,8 +224,15 @@ struct HomeListView: View {
             }
 
             Spacer()
+
+            if !showsCovers && isBookmarked {
+                Image(systemName: "bookmark.fill")
+                    .foregroundStyle(.tint)
+            }
         }
         .padding(.horizontal)
+        .padding(.vertical, showsCovers ? 0 : 8)
+        .contentShape(Rectangle())
         if let value = entry.value {
             Button {
                 switch value {
@@ -293,6 +306,7 @@ struct HomeListView: View {
 struct PlaceholderMangaHomeList: View {
     var showTitle = true
     var itemCount = 5
+    var showsCovers = true
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -303,31 +317,57 @@ struct PlaceholderMangaHomeList: View {
                     .padding(.horizontal)
             }
 
-            Self.mainView(itemCount: itemCount)
+            Self.mainView(itemCount: itemCount, showsCovers: showsCovers)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .redacted(reason: .placeholder)
         .shimmering()
     }
 
-    static func mainView(itemCount: Int) -> some View {
-        LazyVStack {
-            ForEach(0..<itemCount, id: \.self) { _ in
-                HStack {
-                    Rectangle()
-                        .fill(Color(.secondarySystemFill))
-                        .frame(width: 100 * 2/3, height: 100)
-                        .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
+    static func mainView(itemCount: Int, showsCovers: Bool = true) -> some View {
+        LazyVStack(spacing: showsCovers ? nil : HomeListView.coverlessRowSpacing) {
+            ForEach(0..<itemCount, id: \.self) { index in
+                if showsCovers {
+                    HStack {
+                        Rectangle()
+                            .fill(Color(.secondarySystemFill))
+                            .frame(width: 100 * 2/3, height: 100)
+                            .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
 
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Loading Title")
-                        Text("Loading")
-                            .foregroundStyle(.secondary)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Loading Title")
+                            Text("Loading")
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
                     }
-                    Spacer()
+                    .padding(.horizontal)
+                } else {
+                    CoverlessListPlaceholderRow(index: index)
                 }
-                .padding(.horizontal)
             }
         }
+    }
+}
+
+private struct CoverlessListPlaceholderRow: View {
+    private static let widthFractions: [CGFloat] = [0.86, 0.70, 0.92, 0.76, 0.82]
+
+    let index: Int
+
+    @ScaledMetric(relativeTo: .body) private var lineHeight: CGFloat = 22
+
+    var body: some View {
+        GeometryReader { geometry in
+            let fraction = Self.widthFractions[index % Self.widthFractions.count]
+            RoundedRectangle(cornerRadius: 3)
+                .fill(Color(.secondarySystemFill))
+                .frame(width: geometry.size.width * fraction, height: geometry.size.height * 0.6)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        }
+        .frame(height: lineHeight)
+        .padding(.horizontal)
+        .padding(.vertical, 8)
+        .accessibilityHidden(true)
     }
 }

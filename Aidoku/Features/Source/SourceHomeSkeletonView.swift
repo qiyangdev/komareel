@@ -35,7 +35,7 @@ struct SourceHomeSkeletonView: View {
                     case 2:
                         PlaceholderMangaScroller()
                     case 3, 4:
-                        PlaceholderMangaHomeList(itemCount: components[idx][1])
+                        PlaceholderMangaHomeList(itemCount: components[idx][1], showsCovers: source.showsListCovers)
                     case 5:
                         PlaceholderHomeFiltersView()
                     case 6:

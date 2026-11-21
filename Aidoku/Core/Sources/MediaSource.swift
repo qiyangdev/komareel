@@ -3,6 +3,7 @@ import Foundation
 
 enum SourceMediaType: String {
     case manga
+    case text
     case video
     case audio
 }
@@ -12,35 +13,48 @@ protocol VideoSourceRunner: AidokuRunner.Runner {
 }
 
 extension AidokuRunner.Source {
-    private struct MediaManifest: Decodable {
+    private final class SourceManifest: Decodable {
         struct Configuration: Decodable {
             let mediaType: String?
+            let showsListCovers: Bool?
         }
 
         let config: Configuration?
+
+        init() {
+            config = nil
+        }
     }
 
     // Cache by loaded source instance so reinstalling a package reads its new manifest.
-    @MainActor private static let mediaTypes = NSMapTable<AidokuRunner.Source, NSString>(
+    @MainActor private static let sourceManifests = NSMapTable<AidokuRunner.Source, SourceManifest>(
         keyOptions: [.weakMemory, .objectPointerPersonality],
         valueOptions: .strongMemory
     )
 
-    @MainActor var mediaType: SourceMediaType {
-        if runner is any VideoSourceRunner { return .video }
-        guard isExternal, let url else { return .manga }
-        if let cached = Self.mediaTypes.object(forKey: self) {
-            return SourceMediaType(rawValue: cached as String) ?? .manga
+    @MainActor private var manifestConfiguration: SourceManifest.Configuration? {
+        guard isExternal, let url else { return nil }
+        if let cached = Self.sourceManifests.object(forKey: self) {
+            return cached.config
         }
 
-        let manifest = try? Data(contentsOf: url.appendingPathComponent("source.json"))
-        let value = manifest.flatMap { try? JSONDecoder().decode(MediaManifest.self, from: $0) }?.config?.mediaType
-        let type = value.flatMap(SourceMediaType.init(rawValue:)) ?? .manga
-        Self.mediaTypes.setObject(type.rawValue as NSString, forKey: self)
-        return type
+        let data = try? Data(contentsOf: url.appendingPathComponent("source.json"))
+        let manifest = data.flatMap { try? JSONDecoder().decode(SourceManifest.self, from: $0) } ?? SourceManifest()
+        Self.sourceManifests.setObject(manifest, forKey: self)
+        return manifest.config
     }
 
-    @MainActor var isPlayableMedia: Bool { mediaType != .manga }
+    @MainActor var mediaType: SourceMediaType {
+        if runner is any VideoSourceRunner { return .video }
+        return manifestConfiguration?.mediaType.flatMap(SourceMediaType.init(rawValue:)) ?? .manga
+    }
+
+    @MainActor var showsListCovers: Bool { manifestConfiguration?.showsListCovers ?? true }
+
+    @MainActor var isPlayableMedia: Bool {
+        let type = mediaType
+        return type == .audio || type == .video
+    }
 
     @MainActor
     func playbackURL(manga: AidokuRunner.Manga, episode: AidokuRunner.Chapter) async throws -> URL {

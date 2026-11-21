@@ -685,6 +685,12 @@ extension ReaderViewController {
 // MARK: - Reading Mode
 extension ReaderViewController {
     func setReadingMode(_ mode: String?) {
+        if source?.mediaType == .text {
+            readingMode = .ltr
+            setReader(.text)
+            return
+        }
+
         switch mode {
             case "rtl": readingMode = .rtl
             case "ltr": readingMode = .ltr

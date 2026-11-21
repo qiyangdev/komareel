@@ -54,7 +54,7 @@ struct HomeChapterListView: View {
             }
 
             if partial && entries.isEmpty {
-                PlaceholderMangaHomeList.mainView(itemCount: 6)
+                PlaceholderMangaHomeList.mainView(itemCount: 6, showsCovers: source.showsListCovers)
                     .redacted(reason: .placeholder)
                     .shimmering()
             } else {
@@ -78,7 +78,7 @@ struct HomeChapterListView: View {
                         )
                         .frame(height: height)
                     } else {
-                        LazyVStack {
+                        LazyVStack(spacing: source.showsListCovers ? nil : HomeListView.coverlessRowSpacing) {
                             ForEach(entries.indices, id: \.self) { offset in
                                 view(for: entries[offset])
                             }
@@ -104,18 +104,22 @@ struct HomeChapterListView: View {
 
     @ContentBuilder
     func view(for entry: MangaWithChapter) -> some View {
+        let showsCovers = source.showsListCovers
+        let isBookmarked = bookmarkedItems.contains(entry.manga.key)
         Button {
             path.push(MangaViewController(source: source, manga: entry.manga, parent: path.rootViewController))
         } label: {
             HStack(spacing: 12) {
-                MangaCoverView(
-                    source: source,
-                    coverImage: entry.manga.cover ?? "",
-                    width: 100 * 2/3,
-                    height: 100,
-                    downsampleWidth: 200,
-                    bookmarked: bookmarkedItems.contains(entry.manga.key)
-                )
+                if showsCovers {
+                    MangaCoverView(
+                        source: source,
+                        coverImage: entry.manga.cover ?? "",
+                        width: 100 * 2/3,
+                        height: 100,
+                        downsampleWidth: 200,
+                        bookmarked: isBookmarked
+                    )
+                }
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(entry.manga.title)
@@ -133,8 +137,13 @@ struct HomeChapterListView: View {
                     }
                 }
                 Spacer()
+                if !showsCovers && isBookmarked {
+                    Image(systemName: "bookmark.fill")
+                        .foregroundStyle(.tint)
+                }
             }
             .padding(.horizontal)
+            .padding(.vertical, showsCovers ? 0 : 8)
         }
         .foregroundStyle(.primary)
         .multilineTextAlignment(.leading)

@@ -234,7 +234,7 @@ struct SourceHomeContentView: View {
                     case .default:
                         HomeGridView.placeholder(width: width)
                     case .list:
-                        PlaceholderMangaHomeList(showTitle: false)
+                        PlaceholderMangaHomeList(showTitle: false, showsCovers: source.showsListCovers)
                 }
             }
         }
