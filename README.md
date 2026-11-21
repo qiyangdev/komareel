@@ -1,6 +1,6 @@
-# Aidoku
+# KomaReel
 
-This is an independently maintained fork of [Aidoku](https://github.com/Aidoku/Aidoku), an open-source manga reader for iOS, iPadOS, and macOS. Development here focuses on extending Aidoku's source system to support video playback alongside manga reading.
+A manga reader and video player with extensible sources, based on [Aidoku](https://github.com/Aidoku/Aidoku).
 
 <p>
 	<img src="https://raw.githubusercontent.com/Aidoku/Website/refs/heads/main/static/images/library-noframe.png" width="25%" alt="Library">
@@ -20,9 +20,9 @@ This is an independently maintained fork of [Aidoku](https://github.com/Aidoku/A
 
 ## Video sources
 
-The [video development branch](https://github.com/qiyangdev/Aidoku/tree/feat/video-sources) adds a built-in **Video Samples** source. It supports searchable samples, HLS and MP4 playback with native controls, and local per-episode progress for resuming playback.
+The built-in **Video Samples** source supports searchable samples, HLS and MP4 playback with native controls, and local per-episode progress for resuming playback.
 
-To try it, check out `feat/video-sources`, open `Aidoku.xcodeproj` in Xcode, and run the `Aidoku` scheme on an iPhone simulator. In the app, open **Browse → Add Source → Video Samples**.
+To try it, open `Aidoku.xcodeproj` in Xcode and run the `Aidoku` scheme on an iPhone simulator. In the app, open **Browse → Add Source → Video Samples**.
 
 ### WASM video extensions
 
