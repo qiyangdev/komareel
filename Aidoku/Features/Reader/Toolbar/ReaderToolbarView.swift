@@ -5,145 +5,112 @@
 //  Created by Skitty on 8/15/22.
 //
 
-import Combine
 import UIKit
 
-class ReaderToolbarView: UIView {
-    var currentPageValue: Int? {
-        didSet {
-            if oldValue != currentPageValue {
-                let feedbackGenerator = UISelectionFeedbackGenerator()
-                feedbackGenerator.selectionChanged()
-            }
-        }
-    }
+final class ReaderToolbarView: UIView {
     var currentPage: Int? {
-        didSet { updatePageLabels() }
+        didSet { updateAccessibilityValue() }
     }
     var totalPages: Int? {
-        didSet { updatePageLabels() }
+        didSet {
+            sliderView.isEnabled = (totalPages ?? 0) > 1
+            updateAccessibilityValue()
+        }
     }
 
     let sliderView = ReaderSliderView()
-    private let incognitoModeLabel = UILabel()
-    private let currentPageLabel = UILabel()
-    private let pagesLeftLabel = UILabel()
+    weak var pagePreviewHost: UIView?
 
-    private var cancellables: [AnyCancellable] = []
+    private let feedback = UISelectionFeedbackGenerator()
+    private var previewPage: Int?
+
+    private let pageLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFontMetrics(forTextStyle: .subheadline).scaledFont(
+            for: .monospacedDigitSystemFont(ofSize: 15, weight: .semibold)
+        )
+        label.adjustsFontForContentSizeCategory = true
+        label.textColor = .label
+        label.textAlignment = .center
+        return label
+    }()
+
+    private lazy var pagePreview: UIVisualEffectView = {
+        let preview = UIVisualEffectView(effect: UIBlurEffect(style: .systemThickMaterial))
+        preview.clipsToBounds = true
+        preview.isUserInteractionEnabled = false
+        preview.accessibilityElementsHidden = true
+        preview.contentView.addSubview(pageLabel)
+        return preview
+    }()
 
     init() {
         super.init(frame: .zero)
-        configure()
-        constrain()
-        observe()
+        sliderView.isEnabled = false
+        sliderView.accessibilityLabel = NSLocalizedString("PAGE_PLURAL")
+        sliderView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(sliderView)
+
+        NSLayoutConstraint.activate([
+            sliderView.topAnchor.constraint(equalTo: topAnchor),
+            sliderView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            sliderView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            sliderView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12)
+        ])
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configure() {
-        incognitoModeLabel.font = .systemFont(ofSize: 10)
-        incognitoModeLabel.textColor = .secondaryLabel
-        incognitoModeLabel.textAlignment = .left
-        incognitoModeLabel.isHidden = !AppSettings.general.incognitoMode.get()
-        addSubview(incognitoModeLabel)
-
-        currentPageLabel.font = .systemFont(ofSize: 10)
-        currentPageLabel.textAlignment = .center
-        currentPageLabel.sizeToFit()
-        addSubview(currentPageLabel)
-
-        pagesLeftLabel.font = .systemFont(ofSize: 10)
-        pagesLeftLabel.textColor = .secondaryLabel
-        pagesLeftLabel.textAlignment = .right
-        addSubview(pagesLeftLabel)
-
-        sliderView.semanticContentAttribute = .playback // for rtl languages
-        addSubview(sliderView)
+    func beginPagePreview() {
+        guard let host = pagePreviewHost, sliderView.isEnabled else { return }
+        host.addSubview(pagePreview)
+        feedback.prepare()
+        displayPage(currentPage ?? 1)
     }
 
-    func constrain() {
-        incognitoModeLabel.translatesAutoresizingMaskIntoConstraints = false
-        currentPageLabel.translatesAutoresizingMaskIntoConstraints = false
-        pagesLeftLabel.translatesAutoresizingMaskIntoConstraints = false
-        sliderView.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            incognitoModeLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            incognitoModeLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
-
-            currentPageLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            currentPageLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
-
-            pagesLeftLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            pagesLeftLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
-
-            sliderView.heightAnchor.constraint(equalToConstant: 12),
-            sliderView.topAnchor.constraint(equalTo: topAnchor, constant: 10),
-            sliderView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
-            sliderView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12)
-        ])
-    }
-
-    func observe() {
-        NotificationCenter.default.publisher(for: .init(AppSettings.general.incognitoMode.key))
-            .sink { [weak self] _ in
-                self?.incognitoModeLabel.isHidden = !AppSettings.general.incognitoMode.get()
-            }
-            .store(in: &cancellables)
-    }
-
-    // allow slider thumb to be touched outside bounds
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        for subview in subviews where subview is ReaderSliderView {
-            if subview.subviews.contains(where: { $0.bounds.contains(convert(point, to: $0)) }) {
-                return subview
-            }
-        }
-        return super.hitTest(point, with: event)
+    func endPagePreview() {
+        pagePreview.removeFromSuperview()
+        previewPage = nil
+        updateAccessibilityValue()
     }
 
     func displayPage(_ page: Int) {
-        guard let totalPages = totalPages else {
-            return
+        guard sliderView.isScrubbing, let page = boundedPage(page) else { return }
+        if page != previewPage {
+            if previewPage != nil { feedback.selectionChanged() }
+            previewPage = page
         }
-        var page = page
-        if page > totalPages {
-            page = totalPages
-        } else if page < 1 {
-            page = 1
-        }
-        currentPageLabel.text = String(format: NSLocalizedString("%i_OF_%i"), page, totalPages)
-        currentPageValue = page
-    }
-
-    func updatePageLabels() {
-        guard var currentPage = currentPage, let totalPages = totalPages else {
-            currentPageLabel.text = nil
-            pagesLeftLabel.text = nil
-            return
-        }
-
-        if currentPage > totalPages {
-            currentPage = totalPages
-        } else if currentPage < 1 {
-            currentPage = 1
-        }
-        let pagesLeft = totalPages - currentPage
-        currentPageLabel.text = String(format: NSLocalizedString("%i_OF_%i"), currentPage, totalPages)
-        if pagesLeft < 1 {
-            pagesLeftLabel.text = nil
-        } else {
-            pagesLeftLabel.text = pagesLeft == 1
-                ? NSLocalizedString("ONE_PAGE_LEFT")
-                : String(format: NSLocalizedString("%i_PAGES_LEFT"), pagesLeft)
-        }
-        incognitoModeLabel.text = NSLocalizedString("INCOGNITO_MODE")
+        updateAccessibilityValue()
+        guard let host = pagePreview.superview else { return }
+        pageLabel.text = sliderView.accessibilityValue
+        let textSize = pageLabel.intrinsicContentSize
+        let width = max(64, textSize.width + 24)
+        let height = max(32, textSize.height + 12)
+        let thumb = sliderView.convert(sliderView.thumbCenter, to: host)
+        let safeBounds = host.bounds.inset(by: host.safeAreaInsets).insetBy(dx: 12, dy: 0)
+        let x = min(max(thumb.x - width / 2, safeBounds.minX), max(safeBounds.minX, safeBounds.maxX - width))
+        pagePreview.frame = CGRect(x: x, y: thumb.y - height - 24, width: width, height: height)
+        pagePreview.layer.cornerRadius = height / 2
+        pageLabel.frame = pagePreview.bounds
     }
 
     func updateSliderPosition() {
-        guard let currentPage = currentPage, let totalPages = totalPages else { return }
+        guard let currentPage, let totalPages else { return }
         sliderView.move(toValue: CGFloat(currentPage - 1) / max(CGFloat(totalPages - 1), 1))
+    }
+
+    private func boundedPage(_ page: Int) -> Int? {
+        guard let totalPages, totalPages > 0 else { return nil }
+        return min(max(page, 1), totalPages)
+    }
+
+    private func updateAccessibilityValue() {
+        guard let page = boundedPage(previewPage ?? currentPage ?? 1), let totalPages else {
+            sliderView.accessibilityValue = nil
+            return
+        }
+        sliderView.accessibilityValue = String(format: NSLocalizedString("%i_OF_%i"), page, totalPages)
     }
 }

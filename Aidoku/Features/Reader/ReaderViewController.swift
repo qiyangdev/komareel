@@ -230,21 +230,14 @@ class ReaderViewController: BaseObservingViewController {
         loadNavbarTitle()
 
         // toolbar view
+        toolbarView.pagePreviewHost = view
+        toolbarView.sliderView.addTarget(self, action: #selector(sliderStarted), for: .editingDidBegin)
         toolbarView.sliderView.addTarget(self, action: #selector(sliderMoved(_:)), for: .valueChanged)
         toolbarView.sliderView.addTarget(self, action: #selector(sliderStopped(_:)), for: .editingDidEnd)
         toolbarView.translatesAutoresizingMaskIntoConstraints = false
         let toolbarButtonItemView = UIBarButtonItem(customView: toolbarView)
-        toolbarButtonItemView.customView?.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        if #available(iOS 26.0, *) {
-            toolbarViewWidthConstraint = toolbarButtonItemView.customView?.widthAnchor.constraint(
-                equalToConstant: node.bounds.width - 32 - 10
-            )
-            // shift down farther to account for different toolbar and slider knob size
-            toolbarButtonItemView.customView?.transform = CGAffineTransform(translationX: 0, y: -5)
-        } else {
-            toolbarViewWidthConstraint = toolbarButtonItemView.customView?.widthAnchor.constraint(equalToConstant: view.bounds.width)
-            toolbarButtonItemView.customView?.transform = CGAffineTransform(translationX: 0, y: -10)
-        }
+        toolbarView.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        toolbarViewWidthConstraint = toolbarView.widthAnchor.constraint(equalToConstant: max(node.bounds.width - 42, 0))
 
         add(child: descriptionButtonController)
         view.addSubview(autoScrollButton)
@@ -438,6 +431,7 @@ class ReaderViewController: BaseObservingViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
+        toolbarView.endPagePreview()
         (reader as? ReaderWebtoonViewController)?.stopAutoScroll()
 
         if !chaptersToRemoveDownload.isEmpty {
@@ -458,12 +452,9 @@ class ReaderViewController: BaseObservingViewController {
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
+        toolbarView.endPagePreview()
         coordinator.animate(alongsideTransition: nil) { _ in
-            if #available(iOS 26.0, *) {
-                self.toolbarViewWidthConstraint?.constant = size.width - 32 - 10
-            } else {
-                self.toolbarViewWidthConstraint?.constant = size.width
-            }
+            self.toolbarViewWidthConstraint?.constant = max(size.width - 42, 0)
         }
     }
 }
@@ -674,10 +665,18 @@ extension ReaderViewController {
         dismiss(animated: true)
     }
 
+    @objc private func sliderStarted() {
+        toolbarView.beginPagePreview()
+    }
+
     @objc func sliderMoved(_ sender: ReaderSliderView) {
         reader?.sliderMoved(value: sender.currentValue)
+        if !sender.isScrubbing {
+            reader?.sliderStopped(value: sender.currentValue)
+        }
     }
     @objc func sliderStopped(_ sender: ReaderSliderView) {
+        toolbarView.endPagePreview()
         reader?.sliderStopped(value: sender.currentValue)
     }
 }
@@ -1179,7 +1178,7 @@ extension ReaderViewController: @MainActor ReaderHoldingDelegate {
     }
 
     func setSliderOffset(_ offset: CGFloat) {
-        toolbarView.sliderView.currentValue = offset
+        toolbarView.sliderView.move(toValue: offset)
     }
 
     func setCompleted() {
@@ -1629,6 +1628,7 @@ extension ReaderViewController {
     func hideBars() {
         guard let navigationController else { return }
 
+        toolbarView.endPagePreview()
         UIView.animate(withDuration: CATransaction.animationDuration()) {
             self.statusBarHidden = true
             self.setNeedsStatusBarAppearanceUpdate()
