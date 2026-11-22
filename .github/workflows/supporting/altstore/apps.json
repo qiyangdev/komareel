@@ -1,40 +1,23 @@
 {
-  "name": "Aidoku Source",
-  "identifier": "app.aidoku.altstore",
-  "sourceURL": "https://raw.githubusercontent.com/Aidoku/Aidoku/refs/heads/altstore/apps.json",
-  "subtitle": "Home of Aidoku, free and open source manga reader for iOS and iPadOS",
-  "description": "This is the AltStore Source for Aidoku, free and open source manga reader for iOS and iPadOS.\n\nFor full details on what's included, check the website: https://aidoku.app/",
-  "website": "https://aidoku.app/",
+  "name": "Komareel Source",
+  "identifier": "dev.qiyang.komareel.altstore",
+  "sourceURL": "https://raw.githubusercontent.com/qiyangdev/komareel/refs/heads/altstore/apps.json",
+  "subtitle": "Komareel for iOS and iPadOS",
+  "description": "An open source manga and text reader with audio and video playback for iOS and iPadOS.",
+  "website": "https://github.com/qiyangdev/komareel",
   "featuredApps": [
-    "app.aidoku.Aidoku"
+    "dev.qiyang.komareel"
   ],
   "apps": [
     {
-      "name": "Aidoku",
-      "bundleIdentifier": "app.aidoku.Aidoku",
-      "developerName": "Skitty",
-      "subtitle": "Free and open source manga reader for iOS and iPadOS",
-      "localizedDescription": "A free and open source manga reading application for iOS and iPadOS.",
-      "iconURL": "https://aidoku.app/images/apple-touch-icon.png",
+      "name": "Komareel",
+      "bundleIdentifier": "dev.qiyang.komareel",
+      "developerName": "qiyangdev",
+      "subtitle": "Manga, text, audio, and video",
+      "localizedDescription": "An open source manga and text reader with audio and video playback for iOS and iPadOS.",
+      "iconURL": "https://raw.githubusercontent.com/qiyangdev/komareel/refs/heads/main/Komareel/App/Resources/Assets.xcassets/AppIcon.appiconset/Icon.png",
       "tintColor": "ff375f",
       "category": "entertainment",
-      "screenshots": [
-        {
-          "imageURL": "https://aidoku.app/images/library.png",
-          "width": 450,
-          "height": 908
-        },
-        {
-          "imageURL": "https://aidoku.app/images/source.png",
-          "width": 450,
-          "height": 908
-        },
-        {
-          "imageURL": "https://aidoku.app/images/reader.png",
-          "width": 450,
-          "height": 908
-        }
-      ],
       "appPermissions": {
         "entitlements": [
           "aps-environment",
@@ -46,13 +29,12 @@
           "com.apple.developer.user-fonts"
         ],
         "privacy": {
-          "NSFaceIDUsageDescription": "Aidoku needs FaceID permissions for user-defined settings",
-          "NSPhotoLibraryUsageDescription": "Aidoku needs permission to save pages in your photo library",
-          "NSLocalNetworkUsageDescription": "Aidoku needs permission to connect to local Komga servers"
+          "NSFaceIDUsageDescription": "Komareel needs FaceID permissions for user-defined settings",
+          "NSPhotoLibraryUsageDescription": "Komareel needs permission to save pages in your photo library",
+          "NSLocalNetworkUsageDescription": "Komareel needs permission to connect to local Komga and Kavita servers"
         }
       },
-      "versions": [
-      ]
+      "versions": []
     }
   ],
   "news": []

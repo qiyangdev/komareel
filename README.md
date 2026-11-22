@@ -1,4 +1,4 @@
-# KomaReel
+# Komareel
 
 A manga and text reader with audio and video playback, based on [Aidoku](https://github.com/Aidoku/Aidoku).
 
@@ -24,11 +24,13 @@ Requires iOS 26.0 or later.
 
 The built-in **Video Samples** source supports searchable samples, HLS and MP4 playback with native controls, and local per-episode progress for resuming playback.
 
-To try it, open `Aidoku.xcodeproj` in Xcode and run the `Aidoku` scheme on an iPhone simulator. In the app, open **Browse → Add Source → Video Samples**.
+To try it, open `Komareel.xcodeproj` in Xcode and run the `Komareel` scheme on an iPhone simulator. In the app, open **Browse → Add Source → Video Samples**.
 
 ## JavaScript extensions
 
 Import a `.krx` file from **Browse → Add Source → Import Source**, or install one from a source list. The archive contains `Payload/source.json` with `"scriptAPI": 1` and `Payload/main.js` with the script. Source IDs stay consistent across packages and versions.
+
+Use `komareel://addSourceList?url=<encoded-source-list-url>` to open a source list in the app.
 
 Scripts export `search`, `details`, and `pages` through `globalThis.source`. Declare optional methods such as `listing` in the manifest's `exports` array. The runtime provides asynchronous HTTP requests, HTML and XML XPath, source settings, and a source-scoped WebView for pages that need a browser. Scripts can send incremental homepage and detail results with `await Komareel.publish(value)`. See the [Komareel sources repository](https://github.com/qiyangdev/komareel-sources) for examples.
 

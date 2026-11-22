@@ -1,0 +1,17 @@
+//
+//  Komareel.xcconfig
+//  Komareel
+//
+//  Created by Nikolai Schumacher on 17.05.25.
+//
+
+// base identifiers
+PRODUCT_BUNDLE_IDENTIFIER   = dev.qiyang.komareel
+
+// ----- iCloud / CloudKit -----
+ICLOUD_CONTAINER_ID         = iCloud.$(PRODUCT_BUNDLE_IDENTIFIER)
+UBIQUITY_KVSTORE_ID         = $(TeamIdentifierPrefix)$(PRODUCT_BUNDLE_IDENTIFIER)
+
+// Store build
+// Dev / sideload build (leave flag 'CANONICAL_BUILD' undefined)
+OTHER_SWIFT_FLAGS = $(inherited) -DCANONICAL_BUILD
