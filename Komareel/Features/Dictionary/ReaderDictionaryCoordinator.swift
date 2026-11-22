@@ -57,7 +57,6 @@ final class ReaderDictionaryCoordinator {
         self.owner = owner
     }
 
-    @available(iOS 18.0, *)
     @discardableResult
     @MainActor
     func performLookup(
@@ -238,7 +237,6 @@ final class ReaderDictionaryCoordinator {
         }
     }
 
-    @available(iOS 18.0, *)
     @MainActor
     func updateSelectionHighlight(text: String, charRects: [CGRect]) {
         guard let owner else { return }
@@ -288,7 +286,6 @@ final class ReaderDictionaryCoordinator {
         selectionHighlightView = nil
     }
 
-    @available(iOS 18.0, *)
     private func addLookupHighlight(for entries: [LookupResult], charRects: [CGRect]) {
         guard
             let owner,

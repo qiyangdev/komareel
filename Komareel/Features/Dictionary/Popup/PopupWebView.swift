@@ -73,7 +73,6 @@ class AudioHandler: NSObject, WKURLSchemeHandler {
     }
 }
 
-@available(iOS 18.0, *)
 class ImageHandler: NSObject, WKURLSchemeHandler {
     func webView(_ webView: WKWebView, start task: WKURLSchemeTask) {
         guard let requestUrl = task.request.url,
@@ -160,7 +159,6 @@ class ImageHandler: NSObject, WKURLSchemeHandler {
 //    }
 //}
 
-@available(iOS 18.0, *)
 struct PopupWebView: UIViewRepresentable {
     let content: String
     let position: CGPoint

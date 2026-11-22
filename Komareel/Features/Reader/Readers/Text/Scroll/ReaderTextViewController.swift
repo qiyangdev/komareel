@@ -49,13 +49,6 @@ class ReaderTextViewController: BaseViewController {
     private var lastReportedPage = 0
     private var needsPageCountUpdate = false
 
-    /// Tracks the last known safe area insets so we can compensate content offset
-    /// when bars show/hide with `contentInsetAdjustmentBehavior = .never`.
-    private var lastSafeAreaInsets: UIEdgeInsets?
-    /// When true, suppresses hosting controller size invalidation to prevent
-    /// layout passes from undoing offset compensation during bar transitions.
-    private var isSafeAreaTransitioning = false
-
     // MARK: - Scroll Position Persistence
 
     /// Load previously saved reading progress for a chapter.
@@ -123,12 +116,8 @@ class ReaderTextViewController: BaseViewController {
                 textColor: Color(uiColor: ReaderTextTheme.getCurrentText())
             )
         )
-        if #available(iOS 16.0, *) {
-            hc.sizingOptions = .intrinsicContentSize
-        }
-        if #available(iOS 16.4, *) {
-            hc.safeAreaRegions = []
-        }
+        hc.sizingOptions = .intrinsicContentSize
+        hc.safeAreaRegions = []
         hc.view.backgroundColor = .clear
         return hc
     }
@@ -308,43 +297,15 @@ class ReaderTextViewController: BaseViewController {
     override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
         let newInsets = view.safeAreaInsets
-        defer { lastSafeAreaInsets = newInsets }
 
         // Keep content inset in sync so the scroll view allows scrolling
         // past the content top (text starts below the navigation bar).
         scrollView.contentInset = UIEdgeInsets(top: newInsets.top, left: 0, bottom: newInsets.bottom, right: 0)
         scrollView.verticalScrollIndicatorInsets = scrollView.contentInset
-
-        guard let lastInsets = lastSafeAreaInsets else { return }
-        let topDelta = newInsets.top - lastInsets.top
-        guard topDelta != 0 else { return }
-
-        // On iOS 16.4+, safeAreaRegions = [] on the hosting controllers prevents
-        // them from resizing when bars show/hide — no compensation needed.
-        // On older iOS, suppress invalidation and compensate the offset manually.
-        if #unavailable(iOS 16.4) {
-            isSafeAreaTransitioning = true
-            setHostingControllerInvalidation(suppressed: true)
-            scrollView.contentOffset.y += topDelta
-        }
-    }
-
-    private func setHostingControllerInvalidation(suppressed: Bool) {
-        for hc in allHostingControllers {
-            (hc as? HostingController<ReaderTextView>)?.suppressInvalidation = suppressed
-        }
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-
-        // During bar show/hide on iOS < 16.4, skip layout updates to prevent
-        // content shifting, then clear the suppression flags for the next pass.
-        if isSafeAreaTransitioning {
-            isSafeAreaTransitioning = false
-            setHostingControllerInvalidation(suppressed: false)
-            return
-        }
 
         for hc in allHostingControllers {
             hc.view.invalidateIntrinsicContentSize()

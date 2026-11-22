@@ -21,7 +21,6 @@ enum DictionaryType: String {
     case kanji = "Kanji"
 }
 
-@available(iOS 18.0, macOS 15.0, *)
 @Observable
 @MainActor
 class DictionaryManager {
@@ -519,7 +518,6 @@ class DictionaryManager {
     }
 }
 
-@available(iOS 18.0, *)
 extension DictionaryManager {
     func toggleDictionary(id: UUID, enabled: Bool, type: DictionaryType) {
         switch type {

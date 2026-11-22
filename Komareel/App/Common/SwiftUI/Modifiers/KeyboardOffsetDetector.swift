@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-@available(iOS 16.0, *)
 private struct KeyboardOffsetDetector: ViewModifier {
     @Binding var offset: CGFloat
 
@@ -43,10 +42,6 @@ private struct KeyboardOffsetDetector: ViewModifier {
 
 extension View {
     func detectKeyboardOffset(_ offset: Binding<CGFloat>) -> some View {
-        if #available(iOS 16.0, *) {
-            return modifier(KeyboardOffsetDetector(offset: offset))
-        } else {
-            return self
-        }
+        modifier(KeyboardOffsetDetector(offset: offset))
     }
 }

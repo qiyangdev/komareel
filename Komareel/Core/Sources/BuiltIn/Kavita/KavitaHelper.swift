@@ -221,11 +221,7 @@ struct KavitaHelper: Sendable {
     private static func makeFormatter(_ format: String) -> DateFormatter {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = if #available(iOS 16.0, macOS 13.0, *) {
-            .gmt
-        } else {
-            .init(secondsFromGMT: 0)
-        }
+        formatter.timeZone = .gmt
         formatter.dateFormat = format
         return formatter
     }

@@ -85,22 +85,8 @@ struct ListingsHeaderView: View {
                             .font(.footnote.weight(.medium))
                             .foregroundStyle(active ? Color.white : Color.primary)
 
-                        if #available(iOS 26.0, *) {
-                            label
-                                .glassEffect(active ? .regular.tint(.accentColor) : .regular)
-                        } else {
-                            label
-                                .background(
-                                    RoundedRectangle(cornerRadius: 100)
-                                        .fill(
-                                            Color(
-                                                uiColor: active
-                                                    ? .tintColor
-                                                    : .secondarySystemFill
-                                            )
-                                        )
-                                )
-                        }
+                        label
+                            .glassEffect(active ? .regular.tint(.accentColor) : .regular)
                     }
                 }
             }
@@ -141,7 +127,6 @@ struct ListingsHeaderView: View {
     }
 }
 
-@available(iOS 17.0, macOS 14.0, *)
 #Preview {
     @Previewable @State var selectedListing = 0
     @Previewable @State var listings: [KomareelSourceKit.Listing] = [

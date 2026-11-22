@@ -189,7 +189,7 @@ private struct CustomSearchBar: UIViewControllerRepresentable {
         func show() {
             parent?.navigationItem.searchController = searchController
             parent?.navigationItem.hidesSearchBarWhenScrolling = hidesSearchBarWhenScrolling
-            if #available(iOS 16.0, *), stacked {
+            if stacked {
                 parent?.navigationItem.preferredSearchBarPlacement = .stacked
             }
 

@@ -44,141 +44,70 @@ extension View {
 extension View {
     @ContentBuilder
     func offsetListSeparator() -> some View {
-        if #available(iOS 16.0, *) {
-            self.alignmentGuide(.listRowSeparatorLeading) { d in
-                d[.leading]
-            }
-        } else {
-            self
+        self.alignmentGuide(.listRowSeparatorLeading) { d in
+            d[.leading]
         }
     }
 }
 
 extension View {
     func scrollClipDisabledPlease() -> some View {
-        if #available(iOS 17.0, macOS 14.0, *) {
-            return self.scrollClipDisabled()
-        } else {
-            return self
-        }
+        self.scrollClipDisabled()
     }
 
     func scrollTargetLayoutPlease(isEnabled: Bool = true) -> some View {
-        if #available(iOS 17.0, macOS 14.0, *) {
-            return self.scrollTargetLayout(isEnabled: isEnabled)
-        } else {
-            return self
-        }
+        self.scrollTargetLayout(isEnabled: isEnabled)
     }
 
     func scrollViewAlignedPlease() -> some View {
-        if #available(iOS 17.0, macOS 14.0, *) {
-            return self.scrollTargetBehavior(.viewAligned)
-        } else {
-            return self
-        }
+        self.scrollTargetBehavior(.viewAligned)
     }
 
-//    func scrollPagingPlease() -> some View {
-//        if #available(iOS 17.0, macOS 14.0, *) {
-//            return self.scrollTargetBehavior(.paging)
-//        } else {
-//            return self
-//        }
-//    }
-
     func scrollBackgroundHiddenPlease() -> some View {
-        if #available(iOS 16.0, macOS 13.0, *) {
-            return self.scrollContentBackground(.hidden)
-        } else {
-            return self.introspect(.scrollView, on: .iOS(.v15)) { scrollView in
-                scrollView.backgroundColor = .clear
-            }
-        }
+        self.scrollContentBackground(.hidden)
     }
 
     func scrollPositionPlease(id: Binding<(some Hashable)?>, anchor: UnitPoint? = nil) -> some View {
-        if #available(iOS 17.0, *) {
-            return self.scrollPosition(id: id, anchor: anchor)
-        } else {
-            return self
-        }
+        self.scrollPosition(id: id, anchor: anchor)
     }
 
     func contentTransitionDisabledPlease() -> some View {
-        if #available(iOS 16.0, macOS 13.0, *) {
-            return self.contentTransition(.identity)
-        } else {
-            return self
-        }
+        self.contentTransition(.identity)
     }
 
     func listSectionSpacingPlease(_ spacing: CGFloat) -> some View {
-        if #available(iOS 17.0, *) {
-            return self.listSectionSpacing(spacing)
-        } else {
-            return self
-        }
+        self.listSectionSpacing(spacing)
     }
 
     func scrollDismissesKeyboardInteractively() -> some View {
-        if #available(iOS 16.0, *) {
-            return self.scrollDismissesKeyboard(.interactively)
-        } else {
-            return self
-        }
+        self.scrollDismissesKeyboard(.interactively)
     }
 
     func scrollDismissesKeyboardImmediately() -> some View {
-        if #available(iOS 16.0, *) {
-            return self.scrollDismissesKeyboard(.immediately)
-        } else {
-            return self
-        }
+        self.scrollDismissesKeyboard(.immediately)
     }
 
     func contentMarginsPlease(
         _ edges: Edge.Set = .all,
         _ length: CGFloat?,
     ) -> some View {
-        if #available(iOS 17.0, *) {
-            return self.contentMargins(edges, length)
-        } else {
-            return self
-        }
-
+        self.contentMargins(edges, length)
     }
 
     func matchedTransitionSourcePlease(id: some Hashable, in namespace: Namespace.ID) -> some View {
-        if #available(iOS 18.0, *) {
-            return self.matchedTransitionSource(id: id, in: namespace)
-        } else {
-            return self
-        }
+        self.matchedTransitionSource(id: id, in: namespace)
     }
 
     func navigationTransitionZoom(sourceID: some Hashable, in namespace: Namespace.ID) -> some View {
-        if #available(iOS 18.0, *) {
-            return self.navigationTransition(.zoom(sourceID: sourceID, in: namespace))
-        } else {
-            return self
-        }
+        self.navigationTransition(.zoom(sourceID: sourceID, in: namespace))
     }
 
     func menuActionDismissDisabled() -> some View {
-        if #available(iOS 16.4, *) {
-            return self.menuActionDismissBehavior(.disabled)
-        } else {
-            return self
-        }
+        self.menuActionDismissBehavior(.disabled)
     }
 
     func centerScrollAnchorPlease() -> some View {
-        if #available(iOS 18.0, *) {
-            return self.defaultScrollAnchor(.center, for: .alignment)
-        } else {
-            return self
-        }
+        self.defaultScrollAnchor(.center, for: .alignment)
     }
 
     func onChangeWrapper<V: Equatable>(
@@ -186,31 +115,16 @@ extension View {
         initial: Bool = false,
         _ action: @escaping (_ oldValue: V, _ newValue: V) -> Void
     ) -> some View {
-        if #available(iOS 17.0, *) {
-            return self.onChange(of: value, initial: initial, action)
-        } else {
-            return self.onChange(of: value) { newValue in
-                action(newValue, newValue)
-            }
-        }
+        self.onChange(of: value, initial: initial, action)
     }
 }
 
 extension View {
     @ContentBuilder
     func tag<T: Hashable>(_ tag: T, selectable: Bool) -> some View {
-        if #available(iOS 17.0, macOS 14.0, *) {
-            self
-                .tag(tag)
-                .selectionDisabled(!selectable)
-        } else {
-            if selectable {
-                self.tag(tag)
-            } else {
-                // not setting a tag makes items not selectable ios <17
-                self
-            }
-        }
+        self
+            .tag(tag)
+            .selectionDisabled(!selectable)
     }
 }
 
@@ -238,22 +152,13 @@ extension View {
                 case .easeInOut:
                     .easeInOut(duration: duration)
             }
-            // todo: this has some bugs
-//            if #available(iOS 17.0, *) {
-//                withAnimation(animation) {
-//                    execute()
-//                } completion: {
-//                    continuation.resume()
-//                }
-//            } else {
-                withAnimation(animation) {
-                    execute()
-                }
+            withAnimation(animation) {
+                execute()
+            }
 
-                DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
-                    continuation.resume()
-                }
-//            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+                continuation.resume()
+            }
         }
     }
 
@@ -310,33 +215,5 @@ extension View {
 extension View {
     @ContentBuilder func modifier<Content: View>(@ContentBuilder _ transform: (Self) -> Content) -> some View {
         transform(self)
-    }
-}
-
-extension View {
-    @ContentBuilder
-    func confirmationDialogOrAlert<S, A, M>(
-        _ title: S,
-        isPresented: Binding<Bool>,
-        titleVisibility: Visibility = .automatic,
-        @ContentBuilder actions: () -> A,
-        @ContentBuilder message: () -> M
-    ) -> some View where S: StringProtocol, A: View, M: View {
-        if #available(iOS 26.0, *) {
-            self.alert(
-                title,
-                isPresented: isPresented,
-                actions: actions,
-                message: message
-            )
-        } else {
-            self.confirmationDialog(
-                title,
-                isPresented: isPresented,
-                titleVisibility: titleVisibility,
-                actions: actions,
-                message: message
-            )
-        }
     }
 }

@@ -9,7 +9,6 @@ import KomareelSourceKit
 import SwiftUI
 import UIKit
 
-@available(iOS 18.0, *)
 struct DictionaryVocabDetailsView: View {
     @State var entry: VocabEntry
 
@@ -195,7 +194,7 @@ struct DictionaryVocabDetailsView: View {
                 await loadSource()
             }
         }
-        .introspect(.navigationStack, on: .iOS(.v18, .v26, .v27)) { entity in
+        .introspect(.navigationStack, on: .iOS(.v26, .v27)) { entity in
             path = NavigationCoordinator(rootViewController: entity)
         }
     }
@@ -280,7 +279,6 @@ struct DictionaryVocabDetailsView: View {
     }
 }
 
-@available(iOS 18.0, *)
 private struct ClozeTextEditor: UIViewRepresentable {
     @Binding var text: String
     @Binding var clozeOffset: Int?

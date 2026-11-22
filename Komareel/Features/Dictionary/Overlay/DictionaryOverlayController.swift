@@ -27,7 +27,6 @@ final class DictionaryOverlayController: NSObject {
 
     private weak var activeButton: DictionaryOverlayButton?
 
-    @available(iOS 18.0, *)
     func render(overlays: [TextRecognizer.ParagraphOverlay]) {
         clear()
         guard let containerView else { return }

@@ -45,7 +45,7 @@ class LibraryViewController: OldMangaCollectionViewController {
             action: action
         )
         item.title = NSLocalizedString(titleKey)
-        if #available(iOS 26.0, *), !sharesBackground {
+        if !sharesBackground {
             item.sharesBackground = false
         }
         return item
@@ -135,9 +135,6 @@ class LibraryViewController: OldMangaCollectionViewController {
             action: #selector(removeSelectedFromLibrary)
         )
         deleteButton.image = UIImage(systemName: "trash")
-        if #unavailable(iOS 26.0) {
-            deleteButton.tintColor = .systemRed
-        }
 
         let addButton = UIBarButtonItem(
             title: nil,
@@ -328,9 +325,7 @@ class LibraryViewController: OldMangaCollectionViewController {
                 self.updateEmptyStack()
                 self.updateDataSource()
                 self.updateMoreMenu()
-                if #available(iOS 26.0, *) {
-                    self.updateFilterMenuState()
-                }
+                self.updateFilterMenuState()
             }
         }
         addObserver(forName: .updateLibraryLock) { [weak self] _ in
@@ -576,26 +571,16 @@ extension LibraryViewController {
                 UIView.animate(withDuration: CATransaction.animationDuration()) {
                     self.navigationController?.isToolbarHidden = false
                     self.navigationController?.toolbar.alpha = 1
-                    if #available(iOS 26.0, *) {
-                        // hide tab bar on iOS 26 (it covers the toolbar)
-                        self.tabBarController?.isTabBarHidden = true
-                    }
+                    // hide tab bar on iOS 26 (it covers the toolbar)
+                    self.tabBarController?.isTabBarHidden = true
                 }
             }
             // show add to category button if categories exist
             if viewModel.categories.isEmpty {
-                if #available(iOS 16.0, *) {
-                    toolbarItems?.last?.isHidden = true
-                } else {
-                    toolbarItems?.last?.image = nil
-                }
+                toolbarItems?.last?.isHidden = true
             } else {
                 if !self.viewModel.categories.isEmpty {
-                    if #available(iOS 16.0, *) {
-                        toolbarItems?.last?.isHidden = false
-                    } else {
-                        toolbarItems?.last?.image = UIImage(systemName: "folder.badge.plus")
-                    }
+                    toolbarItems?.last?.isHidden = false
                 }
             }
             // enable items
@@ -606,10 +591,8 @@ extension LibraryViewController {
             // fade out toolbar
             UIView.animate(withDuration: CATransaction.animationDuration()) {
                 self.navigationController?.toolbar.alpha = 0
-                if #available(iOS 26.0, *) {
-                    // reshow tab bar on iOS 26
-                    self.tabBarController?.isTabBarHidden = false
-                }
+                // reshow tab bar on iOS 26
+                self.tabBarController?.isTabBarHidden = false
             } completion: { _ in
                 self.navigationController?.isToolbarHidden = true
             }
@@ -699,10 +682,8 @@ extension LibraryViewController {
         let viewController = UIHostingController(rootView: DownloadQueueView())
         viewController.navigationItem.largeTitleDisplayMode = .never
         viewController.navigationItem.title = NSLocalizedString("DOWNLOAD_QUEUE")
-        if #available(iOS 26.0, *) {
-            viewController.preferredTransition = .zoom { _ in
-                self.downloadBarButton
-            }
+        viewController.preferredTransition = .zoom { _ in
+            self.downloadBarButton
         }
         viewController.modalPresentationStyle = .pageSheet
         present(viewController, animated: true)
@@ -960,11 +941,7 @@ extension LibraryViewController {
         Task {
             await viewModel.toggleFilter(method: method, value: value)
             updateDataSource()
-            if #available(iOS 26.0, *) {
-                updateFilterMenuState()
-            } else {
-                updateMoreMenu()
-            }
+            updateFilterMenuState()
         }
     }
 
@@ -1015,7 +992,6 @@ extension LibraryViewController {
         return options.joined(separator: NSLocalizedString("FILTER_SEPARATOR"))
     }
 
-    @available(iOS 26.0, *)
     func updateFilterMenuState() {
         // _contextMenuInteraction only exists on ios 26+
         // a similar thing could probably be achieved on lower versions by putting a UIButton in the bar button custom view
@@ -1166,11 +1142,7 @@ extension LibraryViewController {
                 completion([])
                 return
             }
-            let attributes: UIMenuElement.Attributes = if #available(iOS 16.0, *) {
-                .keepsMenuPresented
-            } else {
-                []
-            }
+            let attributes: UIMenuElement.Attributes = .keepsMenuPresented
             let filters = UIMenu(
                 title: NSLocalizedString("BUTTON_FILTER"),
                 subtitle: self.filtersSubtitle(),
@@ -1242,15 +1214,13 @@ extension LibraryViewController {
             ]
         )
 
-        if #available(iOS 26.0, *) {
-            if !viewModel.filters.isEmpty {
-                moreBarButton.isSelected = true
-                moreBarButton.image = UIImage(systemName: "line.3.horizontal.decrease")?
-                    .withTintColor(.white, renderingMode: .alwaysOriginal)
-            } else {
-                moreBarButton.isSelected = false
-                moreBarButton.image = UIImage(systemName: "ellipsis")
-            }
+        if !viewModel.filters.isEmpty {
+            moreBarButton.isSelected = true
+            moreBarButton.image = UIImage(systemName: "line.3.horizontal.decrease")?
+                .withTintColor(.white, renderingMode: .alwaysOriginal)
+        } else {
+            moreBarButton.isSelected = false
+            moreBarButton.image = UIImage(systemName: "ellipsis")
         }
     }
 }
@@ -1309,11 +1279,7 @@ extension LibraryViewController {
             } else if let cell = cell as? MangaListCell {
                 cell.setSelected(true)
             }
-            if #available(iOS 17.5, *) {
-                UISelectionFeedbackGenerator().selectionChanged(at: cell.center)
-            } else {
-                UISelectionFeedbackGenerator().selectionChanged()
-            }
+            UISelectionFeedbackGenerator().selectionChanged(at: cell.center)
             updateNavbarItems()
             updateToolbar()
             return
@@ -1350,21 +1316,19 @@ extension LibraryViewController {
                         readerViewController: readerController,
                         mangaInfo: info
                     )
-                    if #available(iOS 18.0, *) {
-                        navigationController.preferredTransition = .zoom { context in
-                            guard
-                                let navigationController = context.zoomedViewController as? ReaderNavigationController,
-                                let info = navigationController.mangaInfo,
-                                let indexPath = self.dataSource.indexPath(for: info),
-                                let cell = self.collectionView.cellForItem(at: indexPath)
-                            else {
-                                return nil
-                            }
-                            if let cell = cell as? MangaListCell {
-                                return cell.coverImageView
-                            } else {
-                                return cell.contentView
-                            }
+                    navigationController.preferredTransition = .zoom { context in
+                        guard
+                            let navigationController = context.zoomedViewController as? ReaderNavigationController,
+                            let info = navigationController.mangaInfo,
+                            let indexPath = self.dataSource.indexPath(for: info),
+                            let cell = self.collectionView.cellForItem(at: indexPath)
+                        else {
+                            return nil
+                        }
+                        if let cell = cell as? MangaListCell {
+                            return cell.coverImageView
+                        } else {
+                            return cell.contentView
                         }
                     }
                     navigationController.modalPresentationStyle = .fullScreen

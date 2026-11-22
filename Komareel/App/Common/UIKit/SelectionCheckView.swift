@@ -39,10 +39,8 @@ class SelectionCheckView: UIView {
         )
         checkmarkImageView.tintColor = .white
         checkmarkImageView.contentMode = .scaleAspectFit
-        if #available(iOS 26.0, *) {
-            // fix initial animation not working
-            checkmarkImageView.addSymbolEffect(.disappear, animated: false)
-        }
+        // fix initial animation not working
+        checkmarkImageView.addSymbolEffect(.disappear, animated: false)
         return checkmarkImageView
     }()
 
@@ -112,49 +110,39 @@ class SelectionCheckView: UIView {
         guard isSelected != selected else { return }
         isSelected = selected
         if selected {
-            if #available(iOS 26.0, *) {
-                selectedView.layer.removeAllAnimations()
-                unselectedView.layer.removeAllAnimations()
-                selectedView.alpha = 1
+            selectedView.layer.removeAllAnimations()
+            unselectedView.layer.removeAllAnimations()
+            selectedView.alpha = 1
 
-                checkmarkImageView.addSymbolEffect(.drawOn, animated: animated)
-            }
+            checkmarkImageView.addSymbolEffect(.drawOn, animated: animated)
             checkmarkImageView.isHidden = false
             selectedView.isHidden = false
             if style == .bordered {
                 unselectedView.layer.borderColor = UIColor.white.cgColor
             }
         } else if !checkmarkImageView.isHidden {
-            if #available(iOS 26.0, *) {
-                checkmarkImageView.addSymbolEffect(.disappear, animated: animated)
+            checkmarkImageView.addSymbolEffect(.disappear, animated: animated)
 
-                selectedView.layer.removeAllAnimations()
-                unselectedView.layer.removeAllAnimations()
+            selectedView.layer.removeAllAnimations()
+            unselectedView.layer.removeAllAnimations()
 
-                if animated {
-                    UIView.animate(withDuration: CATransaction.animationDuration() / 2) {
-                        self.selectedView.alpha = 0
-                        if self.style == .bordered {
-                            self.unselectedView.layer.borderColor = UIColor.systemGray3.cgColor
-                        }
-                    } completion: { finished in
-                        if finished {
-                            self.checkmarkImageView.isHidden = true
-                            self.selectedView.isHidden = true
-                            self.selectedView.alpha = 1
-                        }
+            if animated {
+                UIView.animate(withDuration: CATransaction.animationDuration() / 2) {
+                    self.selectedView.alpha = 0
+                    if self.style == .bordered {
+                        self.unselectedView.layer.borderColor = UIColor.systemGray3.cgColor
                     }
-                } else {
-                    checkmarkImageView.isHidden = true
-                    selectedView.isHidden = true
-                    selectedView.alpha = 1
-                    if style == .bordered {
-                        unselectedView.layer.borderColor = UIColor.systemGray3.cgColor
+                } completion: { finished in
+                    if finished {
+                        self.checkmarkImageView.isHidden = true
+                        self.selectedView.isHidden = true
+                        self.selectedView.alpha = 1
                     }
                 }
             } else {
                 checkmarkImageView.isHidden = true
                 selectedView.isHidden = true
+                selectedView.alpha = 1
                 if style == .bordered {
                     unselectedView.layer.borderColor = UIColor.systemGray3.cgColor
                 }

@@ -47,17 +47,10 @@ struct MigrateSelectSeriesView: View {
             navigationController.toolbar.alpha = 1
         }
 
-        if #available(iOS 26.0, *) {
-            list
-                .toolbar {
-                    toolbarContentiOS26
-                }
-        } else {
-            list
-                .toolbar {
-                    toolbarContentiOS18
-                }
-        }
+        list
+            .toolbar {
+                toolbarContentiOS26
+            }
     }
 
     @ContentBuilder
@@ -88,7 +81,6 @@ struct MigrateSelectSeriesView: View {
         }
     }
 
-    @available(iOS 26.0, *)
     @ContentBuilder
     var toolbarContentiOS26: some ToolbarContent {
         commonToolbarContent

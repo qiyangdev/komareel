@@ -230,11 +230,7 @@ class ReaderPageViewController: BaseObservingViewController {
             } else if let image = pageView?.imageView.image {
                 PageBackground.choose(for: image, isLandscape: {
                     let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene
-                    let orientation = if #available(iOS 16.0, *) {
-                        scene?.effectiveGeometry.interfaceOrientation
-                    } else {
-                        scene?.interfaceOrientation
-                    }
+                    let orientation = scene?.effectiveGeometry.interfaceOrientation
                     return orientation?.isLandscape ?? false
                 }())
             } else {

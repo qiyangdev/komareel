@@ -34,7 +34,6 @@ class GIFImageNode: ASControlNode {
         }
     }
 
-    @available(iOS 16.0, *)
     var imageAnalaysisInteraction: ImageAnalysisInteraction? {
         imageView?.interactions.first(where: { $0 is ImageAnalysisInteraction }) as? ImageAnalysisInteraction
     }
@@ -94,7 +93,6 @@ class GIFImageNode: ASControlNode {
     }
 
     @MainActor
-    @available(iOS 16.0, *)
     func removeImageAnalysisInteraction() {
         guard
             let imageView,

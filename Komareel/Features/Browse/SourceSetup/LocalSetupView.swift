@@ -22,19 +22,9 @@ struct LocalSetupView: View {
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                if #available(iOS 26.0, *) {
-                    Button(role: .confirm) {
-                        Task {
-                            await submit()
-                        }
-                    }
-                } else {
-                    Button {
-                        Task {
-                            await submit()
-                        }
-                    } label: {
-                        Text(NSLocalizedString("ADD")).bold()
+                Button(role: .confirm) {
+                    Task {
+                        await submit()
                     }
                 }
             }

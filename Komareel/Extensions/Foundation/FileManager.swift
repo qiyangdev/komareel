@@ -60,15 +60,7 @@ extension URL {
     }
 
     func append(path: String) -> URL {
-        if #available(iOS 16.0, macOS 13.0, *) {
-            return appending(path: path)
-        } else {
-            var url = self
-            for component in path.split(separator: "/") {
-                url = url.appendingPathComponent(String(component))
-            }
-            return url
-        }
+        appending(path: path)
     }
 }
 

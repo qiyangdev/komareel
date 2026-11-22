@@ -7,7 +7,6 @@
 
 import UIKit
 
-@available(iOS 18.0, *)
 private actor DictionaryTextAnalysisQueue {
     static let shared = DictionaryTextAnalysisQueue()
 
@@ -39,7 +38,6 @@ private actor DictionaryTextAnalysisQueue {
     }
 }
 
-@available(iOS 18.0, *)
 enum DictionaryTextAnalysisScheduler {
     static func cancel(
         task: inout Task<Void, Never>?,

@@ -29,7 +29,6 @@ extension ReaderReaderDelegate {
     }
 }
 
-@available(iOS 18.0, *)
 protocol ReaderDictionaryReader: ReaderReaderDelegate {
     /// Returns recognized text at the given point (in the reader's view coordinates)
     /// along with the character rect for popup positioning and per-character rects for highlighting.

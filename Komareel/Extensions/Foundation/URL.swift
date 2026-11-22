@@ -50,11 +50,7 @@ extension URL {
 
 extension URL {
     var domain: String? {
-        let host = if #available(iOS 16.0, macOS 13.0, *) {
-            host(percentEncoded: false)
-        } else {
-            host
-        }
+        let host = host(percentEncoded: false)
         if let host, host.hasPrefix("www.") {
             return String(host.dropFirst(4))
         } else {
@@ -63,10 +59,6 @@ extension URL {
     }
 
     var percentEncodedPath: String {
-        if #available(iOS 16.0, macOS 13.0, *) {
-            path(percentEncoded: true)
-        } else {
-            path
-        }
+        path(percentEncoded: true)
     }
 }

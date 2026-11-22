@@ -33,7 +33,6 @@ final class DictionaryOverlayButton: UIButton {
     private var localCharHits: [LocalCharHit] = []
     private var renderedSegmentLabels: [UILabel] = []
 
-    @available(iOS 18.0, *)
     func apply(overlay: TextRecognizer.ParagraphOverlay) {
         overlayText = overlay.text
         frame = overlay.rect
@@ -79,7 +78,6 @@ final class DictionaryOverlayButton: UIButton {
         return .init(text: matchedText, contextText: overlayText, localRect: hit.localRect, localRects: localRects)
     }
 
-    @available(iOS 18.0, *)
     private func configureLabelsAndHits(for overlay: TextRecognizer.ParagraphOverlay) {
         renderedSegmentLabels.forEach { $0.removeFromSuperview() }
         renderedSegmentLabels.removeAll()
@@ -134,7 +132,6 @@ final class DictionaryOverlayButton: UIButton {
         }
     }
 
-    @available(iOS 18.0, *)
     private func renderedCharHits(
         in label: UILabel,
         displayText: String,
@@ -193,7 +190,7 @@ final class DictionaryOverlayButton: UIButton {
     }
 
     private func resolveMatchedText(from text: String) -> String {
-        guard #available(iOS 18.0, *), let first = LookupEngine.shared.lookup(text).first else { return text }
+        guard let first = LookupEngine.shared.lookup(text).first else { return text }
 
         let matched = String(first.matched)
         let expression = String(first.term.expression)

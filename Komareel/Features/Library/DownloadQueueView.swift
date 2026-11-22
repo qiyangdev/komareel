@@ -19,12 +19,6 @@ struct DownloadQueueView: View {
             List {
                 if isPaused {
                     Section {
-                        let padding: CGFloat = if #available(iOS 26.0, *) {
-                            // ios 26 uses larger list cells
-                            16
-                        } else {
-                            12
-                        }
                         HStack {
                             Text(NSLocalizedString("DOWNLOADING_PAUSED"))
                             Spacer()
@@ -35,7 +29,7 @@ struct DownloadQueueView: View {
                             }
                             .buttonStyle(.borderless)
                         }
-                        .padding(padding)
+                        .padding(16)
                         .background(
                             Color(uiColor: .init(dynamicProvider: { collection in
                                 if collection.userInterfaceStyle == .dark {

@@ -63,7 +63,7 @@ struct ReaderSettingsView: View {
             List {
                 generalSection
 
-                if #available(iOS 18.0, *), reader != .text {
+                if reader != .text {
                     dictionarySection
                 }
 
@@ -340,7 +340,6 @@ extension ReaderSettingsView {
         }
     }
 
-    @available(iOS 18.0, *)
     var dictionarySection: some View {
         Section {
             SettingView(

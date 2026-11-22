@@ -25,12 +25,7 @@ struct DictionarySettings: Sendable {
         ]
     }
 
-    let enable = SettingsKey<Bool>("Dictionary.enable", default: false, requires: {
-        if #unavailable(iOS 18.0) {
-            return false
-        }
-        return nil
-    })
+    let enable = SettingsKey<Bool>("Dictionary.enable", default: false)
     let lookupGesture = SettingsKey<LookupGesture>("Dictionary.lookupGesture", default: .singleTap)
     let updateInterval = SettingsKey<UpdateInterval>("Dictionary.updateInterval", default: .never)
     let lastUpdate = SettingsKey<Date>("Dictionary.lastUpdate", default: Date.distantPast)

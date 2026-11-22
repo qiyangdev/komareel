@@ -331,20 +331,10 @@ struct SelfHostedSourceSetupView: View {
                 Button {
                     submit()
                 } label: {
-                    if #available(iOS 26.0, *) {
-                        if isLoading {
-                            ProgressView().progressViewStyle(.circular)
-                        } else {
-                            Text(NSLocalizedString("CONTINUE"))
-                        }
+                    if isLoading {
+                        ProgressView().progressViewStyle(.circular)
                     } else {
-                        ZStack(alignment: .trailing) {
-                            if isLoading {
-                                ProgressView().progressViewStyle(.circular)
-                            }
-                            Text(NSLocalizedString("CONTINUE"))
-                                .opacity(isLoading ? 0 : 1) // fixes weird transition animation
-                        }
+                        Text(NSLocalizedString("CONTINUE"))
                     }
                 }
                 .disabled(submitDisabled)

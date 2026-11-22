@@ -25,11 +25,7 @@ struct LocalFileImportView: View {
 
     var body: some View {
         let contentView = ContentView(fileInfo: fileInfo, fullyPresented: $fullyPresented)
-        if #available(iOS 16.0, *) {
-            PresentationDetentHandler(fullyPresented: $fullyPresented) {
-                contentView
-            }
-        } else {
+        PresentationDetentHandler(fullyPresented: $fullyPresented) {
             contentView
         }
     }
@@ -520,22 +516,17 @@ extension LocalFileImportView.ContentView {
                         .fontWeight(.medium)
 
                     TextFieldWrapper {
-                        if #available(iOS 16.0, *) {
-                            TextField(NSLocalizedString("DESCRIPTION"), text: $seriesDescription, axis: .vertical)
-                                .autocorrectionDisabled()
-                                .lineLimit(4)
-                                .foregroundStyle(Color.clear)
-                                .overlay {
-                                    TextEditor(text: $seriesDescription)
-                                        .scrollClipDisabledPlease()
-                                        .scrollContentBackground(.hidden)
-                                        .padding(.horizontal, -5)
-                                        .padding(.vertical, -8)
-                                }
-                        } else {
-                            TextField(NSLocalizedString("DESCRIPTION"), text: $seriesDescription)
-                                .autocorrectionDisabled()
-                        }
+                        TextField(NSLocalizedString("DESCRIPTION"), text: $seriesDescription, axis: .vertical)
+                            .autocorrectionDisabled()
+                            .lineLimit(4)
+                            .foregroundStyle(Color.clear)
+                            .overlay {
+                                TextEditor(text: $seriesDescription)
+                                    .scrollClipDisabledPlease()
+                                    .scrollContentBackground(.hidden)
+                                    .padding(.horizontal, -5)
+                                    .padding(.vertical, -8)
+                            }
                     }
                 }
             }
@@ -689,8 +680,6 @@ extension LocalFileImportView.ContentView {
 
 // MARK: PresentationDetentHandler
 // handles the sheet changing from a half sheet to a full screen
-// only supported on ios 16+
-@available(iOS 16.0, *)
 private struct PresentationDetentHandler<Content: View & Sendable>: View {
     @Binding var fullyPresented: Bool
     @ContentBuilder let content: Content
@@ -718,7 +707,6 @@ private struct PresentationDetentHandler<Content: View & Sendable>: View {
     }
 }
 
-@available(iOS 17.0, *)
 #Preview {
     @Previewable @State var presenting = false
 

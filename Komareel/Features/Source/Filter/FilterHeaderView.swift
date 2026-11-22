@@ -131,40 +131,15 @@ struct FilterHeaderView: View {
             .padding(.vertical, 6)
             .font(.caption.weight(.medium))
 
-            if #available(iOS 26.0, *) {
-                if enabledFilters.isEmpty {
-                    label.glassEffect(.regular, in: .circle)
-                } else {
-                    label.glassEffect(.regular, in: .capsule)
-                }
+            if enabledFilters.isEmpty {
+                label.glassEffect(.regular, in: .circle)
             } else {
-                label
-                    .background(
-                        Group {
-                            if enabledFilters.isEmpty {
-                                Circle()
-                            } else {
-                                // allow space for the badge
-                                RoundedRectangle(cornerRadius: 100)
-                            }
-                        }
-                            .foregroundColor(.init(uiColor: .secondarySystemFill))
-                    )
-                    .overlay {
-                        if enabledFilters.isEmpty {
-                            Circle()
-                                .stroke(Color(uiColor: .tertiarySystemFill), style: .init(lineWidth: 1))
-                        } else {
-                            RoundedRectangle(cornerRadius: 100)
-                                .stroke(Color(uiColor: .tertiarySystemFill), style: .init(lineWidth: 1))
-                        }
-                    }
+                label.glassEffect(.regular, in: .capsule)
             }
         }
     }
 }
 
-@available(iOS 17.0, macOS 14.0, *)
 #Preview {
     @Previewable @State var enabledFilters: [FilterValue] = []
     return FilterHeaderView(

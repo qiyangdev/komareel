@@ -14,9 +14,7 @@ class TrackerModalViewController: MiniModalViewController {
     private lazy var swiftuiViewController: UIHostingController<TrackerListView> = {
         let swiftuiViewController = UIHostingController(rootView: TrackerListView(manga: manga))
         swiftuiViewController.view.backgroundColor = .clear
-        if #available(iOS 16.0, *) {
-            swiftuiViewController.sizingOptions = [.intrinsicContentSize]
-        }
+        swiftuiViewController.sizingOptions = [.intrinsicContentSize]
         return swiftuiViewController
     }()
 

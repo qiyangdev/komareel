@@ -285,11 +285,7 @@ extension LocalFileNameParser {
 
     // Remove leading zeroes from numbers, e.g., "001" -> "1"
     private static func removeLeadingZeroes(_ value: String) -> String {
-        let value = if #available(iOS 16.0, macOS 13.0, *) {
-            value.trimmingPrefix(while: { $0 == "0" })
-        } else {
-            value.drop(while: { $0 == "0" })
-        }
+        let value = value.trimmingPrefix(while: { $0 == "0" })
         if value.isEmpty {
             return "0"
         } else {

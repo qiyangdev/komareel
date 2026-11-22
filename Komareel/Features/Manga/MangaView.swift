@@ -125,11 +125,11 @@ struct MangaView: View {
             .refreshable {
                 await viewModel.refresh()
             }
-            .introspect(.list, on: .iOS(.v18, .v26, .v27)) { list in
+            .introspect(.list, on: .iOS(.v26, .v27)) { list in
                 refreshController.list = list
             }
             .navigationBarTitleDisplayMode(.inline)
-            .confirmationDialogOrAlert(
+            .alert(
                 NSLocalizedString("REMOVE_ALL_DOWNLOADS"),
                 isPresented: $showRemoveAllConfirm,
                 actions: {
@@ -144,7 +144,7 @@ struct MangaView: View {
                     Text(NSLocalizedString("REMOVE_ALL_DOWNLOADS_CONFIRM"))
                 }
             )
-            .confirmationDialogOrAlert(
+            .alert(
                 NSLocalizedString("REMOVE_DOWNLOADS"),
                 isPresented: $showRemoveSelectedConfirm,
                 actions: {
@@ -232,17 +232,13 @@ struct MangaView: View {
                     UIView.animate(withDuration: 0.3) {
                         navigationController.isToolbarHidden = false
                         navigationController.toolbar.alpha = 1
-                        if #available(iOS 26.0, *) {
-                            navigationController.tabBarController?.isTabBarHidden = true
-                        }
+                        navigationController.tabBarController?.isTabBarHidden = true
                     }
                 } else {
                     navigationController.setDismissGesturesEnabled(true)
                     UIView.animate(withDuration: 0.3) {
                         navigationController.toolbar.alpha = 0
-                        if #available(iOS 26.0, *) {
-                            navigationController.tabBarController?.isTabBarHidden = false
-                        }
+                        navigationController.tabBarController?.isTabBarHidden = false
                     } completion: { _ in
                         navigationController.isToolbarHidden = true
                     }
@@ -269,23 +265,10 @@ struct MangaView: View {
             .clearsStaleListSelection(selectedChapters)
         }
 
-        if #available(iOS 26.0, *) {
-            list
-                .toolbar {
-                    toolbarContentiOS26
-                }
-        } else {
-            list
-                .toolbar {
-                    toolbarContentBase
-
-                    ToolbarItemGroup(placement: .bottomBar) {
-                        if editMode == .active {
-                            toolbar
-                        }
-                    }
-                }
-        }
+        list
+            .toolbar {
+                toolbarContentiOS26
+            }
     }
 }
 
@@ -345,7 +328,7 @@ extension MangaView {
         }
         .padding(.top, {
             // add a little spacing above on ios 15, since the separator ends up hidden
-            if #available(iOS 16.0, *) { 0 } else { 0.5 }
+            0
         }())
         .listRowSeparator(.hidden)
         .listRowInsets(.zero)
@@ -361,7 +344,7 @@ extension MangaView {
         let downloadStatus = viewModel.downloadStatus[chapter.key, default: .none]
         let downloaded = downloadStatus == .finished
         let locked = chapter.locked && !downloaded
-        let opacity: Double = if #available(iOS 17.0, *), locked {
+        let opacity: Double = if locked {
             0.5
         } else {
             1
@@ -656,7 +639,6 @@ extension MangaView {
         }
     }
 
-    @available(iOS 26.0, *)
     @ContentBuilder
     var toolbarContentiOS26: some ToolbarContent {
         toolbarContentBase
@@ -1011,14 +993,13 @@ private struct RightNavbarButton: View, Equatable {
                         } label: {
                             Label(NSLocalizedString("MIGRATE"), systemImage: "arrow.left.arrow.right")
                         }
-                        if #available(iOS 18.0, *) { // only for system versions supporting swipe down to dismiss
-                            Button {
-                                Task {
-                                    await refresh()
-                                }
-                            } label: {
-                                Label(NSLocalizedString("REFRESH_DETAILS"), systemImage: "arrow.clockwise")
+                        // only for system versions supporting swipe down to dismiss
+                        Button {
+                            Task {
+                                await refresh()
                             }
+                        } label: {
+                            Label(NSLocalizedString("REFRESH_DETAILS"), systemImage: "arrow.clockwise")
                         }
                     }
                 }
@@ -1065,9 +1046,7 @@ private class RefreshController: ObservableObject {
 
     func refresh() {
         guard let list, let refreshControl = list.refreshControl else { return }
-        if #available(iOS 17.4, *) {
-            list.stopScrollingAndZooming() // fixes not scrolling down after refresh finishes
-        }
+        list.stopScrollingAndZooming() // fixes not scrolling down after refresh finishes
         list.setContentOffset(CGPoint(x: 0, y: -list.safeAreaInsets.top - refreshControl.frame.height), animated: true)
         refreshControl.beginRefreshing()
         refreshControl.sendActions(for: .valueChanged)

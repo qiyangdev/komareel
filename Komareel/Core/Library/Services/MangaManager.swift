@@ -394,7 +394,7 @@ extension MangaManager {
         self.skipReachabilityCheck = skipReachabilityCheck
 
 #if !targetEnvironment(simulator)
-        if #available(iOS 26.0, *), AppSettings.library.backgroundRefresh.get(), !ProcessInfo.processInfo.isMacCatalystApp {
+        if AppSettings.library.backgroundRefresh.get(), !ProcessInfo.processInfo.isMacCatalystApp {
             let request = BGContinuedProcessingTaskRequest(
                 identifier: Self.taskIdentifier,
                 title: NSLocalizedString("REFRESHING_LIBRARY"),
@@ -439,7 +439,7 @@ extension MangaManager {
                             tabController?.setLibraryRefreshProgress(Float(progress.fractionCompleted))
                             task?.progress.totalUnitCount = progress.totalUnitCount
                             task?.progress.completedUnitCount = progress.completedUnitCount
-                            if #available(iOS 26.0, *), let task = task as? BGContinuedProcessingTask {
+                            if let task = task as? BGContinuedProcessingTask {
                                 task.updateTitle(
                                     NSLocalizedString("REFRESHING_LIBRARY"),
                                     subtitle: String(format: NSLocalizedString("%i_OF_%i"), progress.completedUnitCount, progress.totalUnitCount)
@@ -722,22 +722,14 @@ extension MangaManager {
         // upload cover image to Documents/Covers/id.png
         let documentsDirectory = FileManager.default.documentDirectory
         let targetDirectory = documentsDirectory.appendingPathComponent("Covers")
-        let ext = if #available(iOS 17.0, *) {
-            "heic"
-        } else {
-            "png"
-        }
+        let ext = "heic"
         var targetUrl = targetDirectory.appendingPathComponent(UUID().uuidString).appendingPathExtension(ext)
         while targetUrl.exists {
             targetUrl = targetDirectory.appendingPathComponent(UUID().uuidString).appendingPathExtension(ext)
         }
         targetDirectory.createDirectory()
         do {
-            let data = if #available(iOS 17.0, *) {
-                cover.heicData()
-            } else {
-                cover.pngData()
-            }
+            let data = cover.heicData()
             try data?.write(to: targetUrl)
         } catch {
             LogManager.logger.error("MangaManager.setMangaCover: \(error.localizedDescription)")

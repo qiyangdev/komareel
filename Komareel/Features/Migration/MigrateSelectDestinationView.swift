@@ -147,12 +147,6 @@ extension MigrateSelectDestinationView {
 private extension View {
     @ContentBuilder
     func cellButtonFix() -> some View {
-        if #available(iOS 16.0, *) {
-            self
-        } else {
-            self
-                .contentShape(Rectangle()) // to make the entire cell selectable and not just the text
-                .buttonStyle(.borderless)
-        }
+        self
     }
 }

@@ -19,11 +19,7 @@ enum Settings {
     }()
 
     private static let sourceLanguageCodes: [String] = {
-        var languageCodes = if #available(iOS 16, *) {
-            Locale.LanguageCode.isoLanguageCodes.map { $0.identifier }
-        } else {
-            Locale.isoLanguageCodes
-        }
+        var languageCodes = Locale.LanguageCode.isoLanguageCodes.map { $0.identifier }
 
         languageCodes.sort {
             SourceLanguage.compare($0, $1) == .orderedAscending
@@ -74,20 +70,16 @@ enum Settings {
                 ))
             )
         ] + {
-            if #available(iOS 18.0, *) {
-                [
-                    .init(
-                        title: NSLocalizedString("DICTIONARIES"),
-                        value: .page(.init(
-                            items: dictionarySettings,
-                            icon: .system(name: "character.book.closed.fill", color: "indigo"),
-                            info: NSLocalizedString("DICTIONARY_SETTINGS_TEXT")
-                        ))
-                    )
-                ]
-            } else {
-                []
-            }
+            [
+                .init(
+                    title: NSLocalizedString("DICTIONARIES"),
+                    value: .page(.init(
+                        items: dictionarySettings,
+                        icon: .system(name: "character.book.closed.fill", color: "indigo"),
+                        info: NSLocalizedString("DICTIONARY_SETTINGS_TEXT")
+                    ))
+                )
+            ]
         }() + [
             .init(
                 key: "Tracking",
@@ -348,7 +340,7 @@ extension Settings {
             ))
         )
 
-        if #available(iOS 26.0, *), !ProcessInfo.processInfo.isMacCatalystApp {
+        if !ProcessInfo.processInfo.isMacCatalystApp {
             return [
                 baseGroup,
                 .init(
@@ -934,7 +926,7 @@ extension Settings {
                 value: .toggle(.init())
             )
         ]
-        if #available(iOS 26.0, *), !ProcessInfo.processInfo.isMacCatalystApp {
+        if !ProcessInfo.processInfo.isMacCatalystApp {
             baseItems.append(
                 .init(
                     key: AppSettings.downloads.background.key,

@@ -7,7 +7,6 @@
 
 import UIKit
 
-@available(iOS 18.0, *)
 extension TextRecognizer {
     func rebuildClusterCache() {
         guard !observations.isEmpty else {

@@ -209,7 +209,7 @@ extension OldMangaCollectionViewController {
 
     func openInfoView(info: MangaInfo, zoom: Bool = true) {
         let viewController = MangaViewController(manga: info, parent: self)
-        if zoom, #available(iOS 18.0, *) {
+        if zoom {
             viewController.preferredTransition = .zoom { context in
                 guard
                     let detailViewController = context.zoomedViewController as? MangaViewController,

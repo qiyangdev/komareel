@@ -135,7 +135,6 @@ struct PopupLayout {
     }
 }
 
-@available(iOS 18.0, *)
 struct PopupView: View {
 //    @Environment(UserConfig.self) private var userConfig
     private var userConfig: UserConfig
@@ -389,7 +388,7 @@ struct PopupView: View {
 
     var body: some View {
         ZStack(alignment: .topLeading) {
-            if #available(iOS 26.0, *), !userConfig.popupDisableTransparency {
+            if !userConfig.popupDisableTransparency {
                 GlassEffectContainer {
                     if let selectionData, let layout, !content.isEmpty {
                         popupContent(selectionData: selectionData, layout: layout)

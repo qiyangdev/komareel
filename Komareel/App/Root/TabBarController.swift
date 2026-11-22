@@ -83,7 +83,7 @@ class TabBarController: UITabBarController {
 
         let settingsPath = NavigationCoordinator(rootViewController: nil)
         let settingsViewController: UIViewController
-        if #available(iOS 26.0, *), UIDevice.current.userInterfaceIdiom != .pad {
+        if UIDevice.current.userInterfaceIdiom != .pad {
             settingsViewController = UIHostingController(
                 rootView: NavigationStack {
                     SettingsView()
@@ -107,78 +107,45 @@ class TabBarController: UITabBarController {
         historyViewController.navigationBar.prefersLargeTitles = true
         searchViewController.navigationBar.prefersLargeTitles = true
 
-        if #available(iOS 26.0, *) {
-            let searchTab = UISearchTab { _ in
-                searchViewController
-            }
-            searchTab.automaticallyActivatesSearch = true
-            let fixedTabs = [
-                UITab(
-                    title: NSLocalizedString("LIBRARY"),
-                    image: UIImage(systemName: "books.vertical.fill"),
-                    identifier: "0"
-                ) { _ in
-                    libraryViewController
-                },
-                UITab(
-                    title: NSLocalizedString("BROWSE"),
-                    image: UIImage(systemName: "globe"),
-                    identifier: "1"
-                ) { _ in
-                    browseViewController
-                },
-                UITab(
-                    title: NSLocalizedString("HISTORY"),
-                    image: UIImage(systemName: "clock.fill"),
-                    identifier: "2"
-                ) { _ in
-                    historyViewController
-                },
-                UITab(
-                    title: NSLocalizedString("SETTINGS"),
-                    image: UIImage(systemName: "gear"),
-                    identifier: "3"
-                ) { _ in
-                    settingsViewController
-                }
-            ]
-            fixedTabs.forEach {
-                $0.allowsHiding = false
-                $0.preferredPlacement = .fixed
-            }
-            tabs = fixedTabs + [searchTab]
-        } else {
-            libraryViewController.tabBarItem = UITabBarItem(
+        let searchTab = UISearchTab { _ in
+            searchViewController
+        }
+        searchTab.automaticallyActivatesSearch = true
+        let fixedTabs = [
+            UITab(
                 title: NSLocalizedString("LIBRARY"),
                 image: UIImage(systemName: "books.vertical.fill"),
-                tag: 0
-            )
-            browseViewController.tabBarItem = UITabBarItem(
+                identifier: "0"
+            ) { _ in
+                libraryViewController
+            },
+            UITab(
                 title: NSLocalizedString("BROWSE"),
                 image: UIImage(systemName: "globe"),
-                tag: 1
-            )
-            historyViewController.tabBarItem = UITabBarItem(
-                tabBarSystemItem: .history,
-                tag: 2
-            )
-            searchViewController.tabBarItem = UITabBarItem(
-                tabBarSystemItem: .search,
-                tag: 3
-            )
-            settingsViewController.tabBarItem = UITabBarItem(
+                identifier: "1"
+            ) { _ in
+                browseViewController
+            },
+            UITab(
+                title: NSLocalizedString("HISTORY"),
+                image: UIImage(systemName: "clock.fill"),
+                identifier: "2"
+            ) { _ in
+                historyViewController
+            },
+            UITab(
                 title: NSLocalizedString("SETTINGS"),
                 image: UIImage(systemName: "gear"),
-                tag: 4
-            )
-            viewControllers = [
-                libraryViewController,
-                browseViewController,
-                historyViewController,
-                searchViewController,
+                identifier: "3"
+            ) { _ in
                 settingsViewController
-            ]
+            }
+        ]
+        fixedTabs.forEach {
+            $0.allowsHiding = false
+            $0.preferredPlacement = .fixed
         }
+        tabs = fixedTabs + [searchTab]
 
         let updateCount = AppSettings.browse.updateCount.get()
         browseViewController.tabBarItem.badgeValue = updateCount > 0 ? String(updateCount) : nil
@@ -230,11 +197,7 @@ class TabBarController: UITabBarController {
 
 extension TabBarController {
     func search(for query: String) {
-        if #available(iOS 26.0, *) {
-            selectedTab = tabs.last
-        } else {
-            selectedViewController = searchNavigationController
-        }
+        selectedTab = tabs.last
 
         searchNavigationController?.popToRootViewController(animated: false)
         searchController.search(for: query)
@@ -304,18 +267,10 @@ extension TabBarController {
 }
 
 extension TabBarController: UITabBarControllerDelegate {
-    @available(iOS 18.0, *)
     func tabBarController(_ tabBarController: UITabBarController, didSelectTab selectedTab: UITab, previousTab: UITab?) {
         checkForSettingsPop()
     }
 
-    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        if #unavailable(iOS 18.0) {
-            checkForSettingsPop()
-        }
-    }
-
-    @available(iOS 18.0, *)
     func tabBarController(_ tabBarController: UITabBarController, shouldSelectTab tab: UITab) -> Bool {
         if tab === tabBarController.selectedTab {
             checkForHistoryReselection()
@@ -347,12 +302,7 @@ extension TabBarController: UITabBarControllerDelegate {
     }
 
     private func checkForSettingsPop() {
-        let settingsIndex: Int
-        if #available(iOS 26.0, *) {
-            settingsIndex = 3
-        } else {
-            settingsIndex = 4
-        }
+        let settingsIndex = 3
         if selectedIndex == previousSelectedIndex && previousSelectedIndex == settingsIndex {
             settingsPath?.navigationController?.popToRootViewController(animated: true)
         }

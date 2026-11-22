@@ -87,11 +87,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         interfaceOrientation previousInterfaceOrientation: UIInterfaceOrientation,
         traitCollection previousTraitCollection: UITraitCollection
     ) {
-        let newOrientation = if #available(iOS 16.0, *) {
-            windowScene.effectiveGeometry.interfaceOrientation
-        } else {
-            windowScene.interfaceOrientation
-        }
+        let newOrientation = windowScene.effectiveGeometry.interfaceOrientation
         guard newOrientation != previousInterfaceOrientation else { return }
         NotificationCenter.default.post(name: .orientationDidChange, object: newOrientation)
     }

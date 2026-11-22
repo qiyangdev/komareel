@@ -148,34 +148,23 @@ struct HomeScrollerView: View {
                                             break
                                     }
                                 }
-                                if #unavailable(iOS 18.0), pressAction != nil {
-                                    // there's a bug on <= ios 17 where the scroll view won't scroll if there's a long press gesture on a button
+                                let button = Button {
+                                    tapAction()
+                                } label: {
                                     label
-                                        .onTapGesture {
-                                            tapAction()
-                                        }
-                                        .onLongPressGesture {
-                                            longPressAction()
-                                        }
-                                } else {
-                                    let button = Button {
-                                        tapAction()
-                                    } label: {
-                                        label
-                                    }
-                                    .foregroundStyle(.primary)
-                                    .buttonStyle(.borderless)
+                                }
+                                .foregroundStyle(.primary)
+                                .buttonStyle(.borderless)
 
-                                    if pressAction != nil {
-                                        button.simultaneousGesture(
-                                            LongPressGesture()
-                                                .onEnded { _ in
-                                                    longPressAction()
-                                                }
-                                        )
-                                    } else {
-                                        button
-                                    }
+                                if pressAction != nil {
+                                    button.simultaneousGesture(
+                                        LongPressGesture()
+                                            .onEnded { _ in
+                                                longPressAction()
+                                            }
+                                    )
+                                } else {
+                                    button
                                 }
                             } else {
                                 label
@@ -271,11 +260,7 @@ struct PlaceholderMangaScroller: View {
                             .multilineTextAlignment(.leading)
                             .fixedSize(horizontal: false, vertical: true)
 
-                        if #available(iOS 16.0, *) {
-                            text.lineLimit(2, reservesSpace: true)
-                        } else {
-                            text.lineLimit(2)
-                        }
+                        text.lineLimit(2, reservesSpace: true)
                     }
                     .frame(width: 180 * 2/3)
                 }

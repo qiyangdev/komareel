@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-@available(iOS 18.0, *)
 struct DictionaryVocabListView: View {
     @EnvironmentObject private var path: NavigationCoordinator
 
@@ -110,7 +109,7 @@ struct DictionaryVocabListView: View {
             $0.searchable(text: $searchText)
         }
         .modifier {
-            if #available(iOS 26.0, *), !entries.isEmpty {
+            if !entries.isEmpty {
                 $0.navigationSubtitle({
                     if entries.count == 1 {
                         NSLocalizedString("1_WORD")

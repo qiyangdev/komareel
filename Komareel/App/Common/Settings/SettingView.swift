@@ -417,13 +417,6 @@ extension SettingView {
         }
         .foregroundStyle(.primary)
         .disabled(disabled)
-        .opacity({
-            if #available(iOS 26.0, *) {
-                1 // ios 26 has the correct disabled style
-            } else {
-                disabled ? disabledOpacity : 1
-            }
-        }())
     }
 
     private struct SelectDestination: View {
@@ -500,13 +493,6 @@ extension SettingView {
         }
         .foregroundStyle(.primary)
         .disabled(disabled)
-        .opacity({
-            if #available(iOS 26.0, *) {
-                1
-            } else {
-                disabled ? disabledOpacity : 1
-            }
-        }())
     }
 
     private struct MultiSelectDestination: View {
@@ -572,15 +558,6 @@ extension SettingView {
                 }
             }
             .opacity(disabled ? disabledOpacity : 1)
-            .padding(.vertical, {
-                if #available(iOS 26.0, *) {
-                    0
-                } else if value.subtitle != nil {
-                    2
-                } else {
-                    0
-                }
-            }())
 
             Spacer()
 
@@ -746,10 +723,9 @@ extension SettingView {
         }
         .lineLimit(1)
         .disabled(disabled)
-        .confirmationDialogOrAlert(
+        .alert(
             value.confirmTitle ?? "",
-            isPresented: $showButtonConfirm,
-            titleVisibility: value.confirmTitle != nil ? .visible : .hidden
+            isPresented: $showButtonConfirm
         ) {
             Button(NSLocalizedString("OK"), role: value.destructive ?? false ? .destructive : nil) {
                 handleValueChange()
@@ -798,11 +774,7 @@ extension SettingView {
             }
             switch value.method {
                 case .basic:
-                    if #available(iOS 16.0, *) {
-                        showLoginAlert = true
-                    } else {
-                        showLoginAlertView(value: value)
-                    }
+                    showLoginAlert = true
                 case .oauth:
                     handleOAuthLogin(value: value)
                 case .web:
@@ -836,12 +808,10 @@ extension SettingView {
                 username = SettingsStore.shared.get(key: key + Self.usernameKeySuffix)
                 password = SettingsStore.shared.get(key: key + Self.passwordKeySuffix)
             }
-            let is16 = UIDevice.current.systemVersion.hasPrefix("16.")
             Button(NSLocalizedString("LOGIN")) {
                 handleBasicLogin(username: username, password: password)
             }
-            // the disabled modifier just hides the button on iOS 15/16, so don't use it if we're on those versions
-            .disabled(!is16 && (username.isEmpty || password.isEmpty))
+            .disabled(username.isEmpty || password.isEmpty)
         } message: {
             Text(NSLocalizedString("LOGIN_BASIC_TEXT"))
         }
@@ -893,48 +863,6 @@ extension SettingView {
             username = SettingsStore.shared.get(key: key + Self.usernameKeySuffix)
             password = SettingsStore.shared.get(key: key + Self.passwordKeySuffix)
         }
-    }
-
-    // use uikit alert for ios 15, since it doesn't support text fields in alerts
-    private func showLoginAlertView(value: LoginSetting) {
-        guard let delegate = UIApplication.shared.appDelegate else {
-            return
-        }
-        var usernameTextField: UITextField?
-        var passwordTextField: UITextField?
-        delegate.presentAlert(
-            title: setting.title,
-            message: NSLocalizedString("LOGIN_BASIC_TEXT"),
-            actions: [
-                UIAlertAction(title: NSLocalizedString("CANCEL"), style: .cancel),
-                UIAlertAction(title: NSLocalizedString("LOGIN"), style: .default) { _ in
-                    guard
-                        let username = usernameTextField?.text,
-                        let password = passwordTextField?.text
-                    else { return }
-                    handleBasicLogin(username: username, password: password)
-                }
-            ],
-            textFieldHandlers: [
-                { textField in
-                    let useEmail = value.useEmail ?? false
-                    textField.placeholder = useEmail ? NSLocalizedString("EMAIL") : NSLocalizedString("USERNAME")
-                    textField.textContentType = useEmail ? .emailAddress : .username
-                    textField.keyboardType = useEmail ? .emailAddress : .default
-                    textField.autocorrectionType = .no
-                    textField.autocapitalizationType = .none
-                    textField.returnKeyType = .next
-                    usernameTextField = textField
-                },
-                { textField in
-                    textField.isSecureTextEntry = true
-                    textField.placeholder = NSLocalizedString("PASSWORD")
-                    textField.textContentType = .password
-                    textField.returnKeyType = .done
-                    passwordTextField = textField
-                }
-            ]
-        )
     }
 
     private func handleBasicLogin(username: String, password: String) {
@@ -1254,13 +1182,6 @@ extension SettingView {
         }
         .foregroundStyle(.primary)
         .disabled(disabled)
-        .opacity({
-            if #available(iOS 26.0, *) {
-                1
-            } else {
-                disabled ? disabledOpacity : 1
-            }
-        }())
     }
 }
 
@@ -1463,13 +1384,6 @@ extension SettingView {
             SettingsStore.shared.set(key: key(setting.key), value: newValue)
         }
         .disabled(disabled)
-        .opacity({
-            if #available(iOS 26.0, *) {
-                1 // ios 26 has the correct disabled style
-            } else {
-                disabled ? disabledOpacity : 1
-            }
-        }())
     }
 }
 

@@ -111,14 +111,14 @@ struct HistoryView: View {
                 }
             }
         }
-        .confirmationDialogOrAlert(NSLocalizedString("CLEAR_READ_HISTORY"), isPresented: $showClearHistoryConfirm, titleVisibility: .visible) {
+        .alert(NSLocalizedString("CLEAR_READ_HISTORY"), isPresented: $showClearHistoryConfirm) {
             Button(NSLocalizedString("CLEAR"), role: .destructive) {
                 viewModel.clearHistory()
             }
         } message: {
             Text(NSLocalizedString("CLEAR_READ_HISTORY_TEXT"))
         }
-        .confirmationDialogOrAlert(NSLocalizedString("CLEAR_READ_HISTORY"), isPresented: $showDeleteConfirm, titleVisibility: .visible) {
+        .alert(NSLocalizedString("CLEAR_READ_HISTORY"), isPresented: $showDeleteConfirm) {
             Button(NSLocalizedString("REMOVE"), role: .destructive) {
                 if let entryToDelete {
                     Task {
@@ -200,7 +200,7 @@ struct HistoryView: View {
         .contentShape(Rectangle())
         .listRowSeparator(.hidden, edges: .top)
         .listRowSeparator(.visible, edges: .bottom)
-        .introspect(.listCell, on: .iOS(.v16, .v17, .v18, .v26, .v27)) { entity in
+        .introspect(.listCell, on: .iOS(.v26, .v27)) { entity in
             // match cell background color to list background color when not selected (plain cell style)
             guard let cell = entity as? UICollectionViewListCell, cell.tag != 1 else { return }
             cell.backgroundConfiguration = UIBackgroundConfiguration.listPlainCell()
@@ -401,11 +401,7 @@ private struct HistoryEntryCell: View, @MainActor Equatable {
                             .foregroundStyle(.secondary)
                             .font(.footnote)
                             .lineLimit(1)
-                        if #available(iOS 16.0, *) {
-                            text.contentTransition(.numericText())
-                        } else {
-                            text
-                        }
+                        text.contentTransition(.numericText())
                     }
                 }
                 Spacer()

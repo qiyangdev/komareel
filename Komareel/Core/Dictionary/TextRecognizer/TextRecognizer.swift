@@ -8,7 +8,6 @@
 import UIKit
 import Vision
 
-@available(iOS 18.0, *)
 class TextRecognizer {
     enum ReadingOrientation {
         case vertical

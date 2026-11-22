@@ -46,7 +46,6 @@ actor DownloadQueue {
 #if !targetEnvironment(simulator)
         if
             bgTask == nil,
-            #available(iOS 26.0, *),
             AppSettings.downloads.background.get(),
             !ProcessInfo.processInfo.isMacCatalystApp
         {
@@ -83,7 +82,7 @@ actor DownloadQueue {
     func resume() async {
         paused = false
 
-        if #available(iOS 26.0, *), AppSettings.downloads.background.get() {
+        if AppSettings.downloads.background.get() {
             if bgTask == nil {
                 await start()
             }
@@ -99,13 +98,11 @@ actor DownloadQueue {
     func pause() async {
         paused = true
 
-        if #available(iOS 26.0, *) {
-            if let task = bgTask as? BGContinuedProcessingTask {
-                task.updateTitle(
-                    NSLocalizedString("DOWNLOADING"),
-                    subtitle: NSLocalizedString("PAUSED")
-                )
-            }
+        if let task = bgTask as? BGContinuedProcessingTask {
+            task.updateTitle(
+                NSLocalizedString("DOWNLOADING"),
+                subtitle: NSLocalizedString("PAUSED")
+            )
         }
 
         await withTaskGroup(of: Void.self) { group in
@@ -255,7 +252,6 @@ extension DownloadQueue {
     }
 
 #if !targetEnvironment(simulator)
-    @available(iOS 26.0, *)
     private func register() async {
         guard !registeredTask else { return }
         registeredTask = true
@@ -336,13 +332,11 @@ extension DownloadQueue: DownloadTaskDelegate {
         completedDownloads += 1
         bgTask?.progress.completedUnitCount = Int64(completedDownloads)
 
-        if #available(iOS 26.0, *) {
-            if !paused, let task = bgTask as? BGContinuedProcessingTask {
-                task.updateTitle(
-                    NSLocalizedString("DOWNLOADING"),
-                    subtitle: String(format: NSLocalizedString("%i_OF_%i"), completedDownloads, totalDownloads)
-                )
-            }
+        if !paused, let task = bgTask as? BGContinuedProcessingTask {
+            task.updateTitle(
+                NSLocalizedString("DOWNLOADING"),
+                subtitle: String(format: NSLocalizedString("%i_OF_%i"), completedDownloads, totalDownloads)
+            )
         }
     }
 

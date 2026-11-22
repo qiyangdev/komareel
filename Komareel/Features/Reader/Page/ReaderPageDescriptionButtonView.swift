@@ -26,12 +26,8 @@ struct ReaderPageDescriptionButtonView: View {
             }
         }
         .sheet(isPresented: $showingDescription) {
-            if #available(iOS 16.0, *) {
-                PageDescriptionView(source: source, pages: pages)
-                    .presentationDetents([.medium, .large])
-            } else {
-                PageDescriptionView(source: source, pages: pages)
-            }
+            PageDescriptionView(source: source, pages: pages)
+                .presentationDetents([.medium, .large])
         }
     }
 }

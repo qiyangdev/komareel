@@ -309,13 +309,9 @@ extension SettingsView {
         } else if key == "Reader.upscalingModels" {
             UpscaleModelListView()
         } else if key == "Dictionary.dictionaries" {
-            if #available(iOS 18.0, *) {
-                DictionaryListView()
-            }
+            DictionaryListView()
         } else if key == "Dictionary.vocabulary" {
-            if #available(iOS 18.0, *) {
-                DictionaryVocabListView().environmentObject(path)
-            }
+            DictionaryVocabListView().environmentObject(path)
         } else if key == "Tracking" {
             SettingsTrackingView()
         } else if key == "About" {

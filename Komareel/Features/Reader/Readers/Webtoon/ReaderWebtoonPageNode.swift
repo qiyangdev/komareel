@@ -47,12 +47,7 @@ class ReaderWebtoonPageNode: BaseObservingCellNode {
     }
     private let dictionaryOverlayController = DictionaryOverlayController()
 
-    private var _textRecognizer: Any?
-    @available(iOS 18.0, *)
-    var textRecognizer: TextRecognizer? {
-        get { _textRecognizer as? TextRecognizer }
-        set { _textRecognizer = newValue }
-    }
+    var textRecognizer: TextRecognizer?
 
     private var currentImageRequest: ImageRequest?
 
@@ -536,7 +531,6 @@ extension ReaderWebtoonPageNode {
                 }
 
                 if
-                    #available(iOS 16.0, *),
                     UserDefaults.standard.bool(forKey: "Reader.liveText"),
                     ImageAnalyzer.isSupported,
                     imageNode.imageAnalaysisInteraction == nil
@@ -582,7 +576,6 @@ extension ReaderWebtoonPageNode {
     @MainActor
     private func analyzeLiveText() async {
         guard
-            #available(iOS 16.0, *),
             let image,
             (image.cgImage?.height ?? Int(image.size.height * image.scale)) <= 8192
         else {
@@ -616,10 +609,8 @@ extension ReaderWebtoonPageNode {
         liveTextAnalysisTask?.cancel()
         liveTextAnalysisTask = nil
 
-        if #available(iOS 16.0, *) {
-            Task { @MainActor [weak imageNode] in
-                imageNode?.removeImageAnalysisInteraction()
-            }
+        Task { @MainActor [weak imageNode] in
+            imageNode?.removeImageAnalysisInteraction()
         }
     }
 
@@ -628,35 +619,29 @@ extension ReaderWebtoonPageNode {
         needsDictionaryOverlayRender = false
         clearDictionaryOverlays()
 
-        if #available(iOS 18.0, *) {
-            DictionaryTextAnalysisScheduler.schedule(
-                task: &dictionaryAnalysisTask,
-                recognizer: &textRecognizer,
-                image: image,
-                language: page.language
-            ) { [weak self] in
-                self?.renderDictionaryOverlaysIfNeeded()
-            }
+        DictionaryTextAnalysisScheduler.schedule(
+            task: &dictionaryAnalysisTask,
+            recognizer: &textRecognizer,
+            image: image,
+            language: page.language
+        ) { [weak self] in
+            self?.renderDictionaryOverlaysIfNeeded()
         }
     }
 
     private func cancelDictionaryTextAnalysis() {
-        if #available(iOS 18.0, *) {
-            DictionaryTextAnalysisScheduler.cancel(
-                task: &dictionaryAnalysisTask,
-                recognizer: textRecognizer
-            )
-        }
+        DictionaryTextAnalysisScheduler.cancel(
+            task: &dictionaryAnalysisTask,
+            recognizer: textRecognizer
+        )
     }
 
     @MainActor
     func setLiveTextHidden(_ hidden: Bool) {
-        if #available(iOS 16.0, *) {
-            shouldShowLiveTextButton = !hidden
-            // don't hide if the text highlighting is active
-            guard imageNode.imageAnalaysisInteraction?.selectableItemsHighlighted == false else { return }
-            imageNode.imageAnalaysisInteraction?.isSupplementaryInterfaceHidden = hidden
-        }
+        shouldShowLiveTextButton = !hidden
+        // don't hide if the text highlighting is active
+        guard imageNode.imageAnalaysisInteraction?.selectableItemsHighlighted == false else { return }
+        imageNode.imageAnalaysisInteraction?.isSupplementaryInterfaceHidden = hidden
     }
 
     private func handleMemoryWarning() {
@@ -694,7 +679,6 @@ extension ReaderWebtoonPageNode {
         clearDictionaryOverlays()
 
         guard
-            #available(iOS 18.0, *),
             AppSettings.dictionary.enable.get(),
             AppSettings.dictionary.textOverlayMode.get(),
             let textRecognizer,

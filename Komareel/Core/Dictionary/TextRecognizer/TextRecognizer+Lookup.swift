@@ -7,7 +7,6 @@
 
 import UIKit
 
-@available(iOS 18.0, *)
 extension TextRecognizer {
     func findText(at viewPoint: CGPoint, in imageView: UIView, imageSize: CGSize) -> Result? {
         let sourceObservations: [(offset: Int, element: OCRObservation)] = Array(observations.enumerated())

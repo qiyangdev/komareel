@@ -102,31 +102,17 @@ struct BackupsView: View {
             loadBackupInfo()
         }
 
-        if #available(iOS 26.0, *) {
-            list
-                .toolbar {
-                    toolbarContentiOS26
-                }
-        } else {
-            list
-                .toolbar {
-                    ToolbarItemGroup(placement: .topBarTrailing) {
-                        autoBackupButton
-                        createBackupButton
-                    }
-                }
-        }
+        list
+            .toolbar {
+                toolbarContentiOS26
+            }
     }
 
     var autoBackupButton: some View {
         Button {
             showAutoBackupsSheet = true
         } label: {
-            let imageName = if #available(iOS 18.0, *) {
-                "clock.arrow.trianglehead.counterclockwise.rotate.90"
-            } else {
-                "clock.arrow.circlepath"
-            }
+            let imageName = "clock.arrow.trianglehead.counterclockwise.rotate.90"
             Image(systemName: imageName)
         }
         .matchedTransitionSourcePlease(id: SheetID.autoBackup, in: transitionNamespace)
@@ -149,7 +135,6 @@ struct BackupsView: View {
         }
     }
 
-    @available(iOS 26.0, *)
     @ContentBuilder
     var toolbarContentiOS26: some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {

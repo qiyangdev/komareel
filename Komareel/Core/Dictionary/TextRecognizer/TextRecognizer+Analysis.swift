@@ -8,7 +8,6 @@
 import UIKit
 import Vision
 
-@available(iOS 18.0, *)
 extension TextRecognizer {
     func analyze(_ image: UIImage, language: String?) async {
         guard let cgImage = image.cgImage else { return }
@@ -43,16 +42,12 @@ extension TextRecognizer {
                     text: text,
                     boundingRect: observation.boundingBox.cgRect,
                     direction: {
-                        if #available(iOS 26.0, *) {
-                            switch observation.textDirection {
-                                case .topToBottom: return .topToBottom
-                                case .leftToRight: return .leftToRight
-                                case .rightToLeft: return .rightToLeft
-                                case .none: return .unknown
-                                @unknown default: return .unknown
-                            }
-                        } else {
-                            return .unknown
+                        switch observation.textDirection {
+                            case .topToBottom: return .topToBottom
+                            case .leftToRight: return .leftToRight
+                            case .rightToLeft: return .rightToLeft
+                            case .none: return .unknown
+                            @unknown default: return .unknown
                         }
                     }(),
                     confidence: candidate.confidence,

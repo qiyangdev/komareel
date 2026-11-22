@@ -77,7 +77,7 @@ extension BaseViewController {
 
         alertView.addAction(UIAlertAction(title: NSLocalizedString("CANCEL"), style: .cancel))
 
-        if #available(iOS 16.0, *), let sourceItem = sourceItem as? UIPopoverPresentationControllerSourceItem {
+        if let sourceItem = sourceItem as? UIPopoverPresentationControllerSourceItem {
             alertView.popoverPresentationController?.sourceItem = sourceItem
         }
 

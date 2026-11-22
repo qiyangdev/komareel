@@ -186,9 +186,7 @@ public class InterfaceOrientationCoordinator: ObservableObject {
 
     private func resolveOrientations() {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
-        if #available(iOS 16.0, *) {
-            windowScene.keyWindow?.rootViewController?.setNeedsUpdateOfSupportedInterfaceOrientations()
-        }
+        windowScene.keyWindow?.rootViewController?.setNeedsUpdateOfSupportedInterfaceOrientations()
         currentOrientation = windowScene.interfaceOrientation
     }
 }

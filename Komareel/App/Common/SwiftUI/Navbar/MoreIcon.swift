@@ -10,11 +10,7 @@ import SwiftUI
 struct MoreIcon: View {
     var body: some View {
         Image(systemName: {
-            if #available(iOS 26.0, *) {
-                "ellipsis"
-            } else {
-                "ellipsis.circle"
-            }
+            "ellipsis"
         }())
     }
 }

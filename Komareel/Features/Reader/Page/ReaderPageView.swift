@@ -22,26 +22,19 @@ class ReaderPageView: UIView {
     let imageView = GIFImageView()
     let progressView = CircularProgressView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
 
-    @available(iOS 16.0, *)
     var imageAnalaysisInteraction: ImageAnalysisInteraction? {
         imageView.interactions.first as? ImageAnalysisInteraction
     }
 
     private var textView: UIHostingController<MarkdownView>?
 
-    private var _textRecognizer: Any?
-    @available(iOS 18.0, *)
-    var textRecognizer: TextRecognizer? {
-        get { _textRecognizer as? TextRecognizer }
-        set { _textRecognizer = newValue }
-    }
+    var textRecognizer: TextRecognizer?
 
     private var imageWidthConstraint: NSLayoutConstraint?
     private var imageHeightConstraint: NSLayoutConstraint?
     private var imageTask: ImageTask?
     private var sourceId: String?
     private var shouldShowLiveTextButton = false
-    @available(iOS 16.0, *)
     private static let sharedImageAnalyzer = ImageAnalyzer()
     private var liveTextTask: Task<Void, Never>?
     private var liveTextGeneration = 0
@@ -87,7 +80,7 @@ class ReaderPageView: UIView {
         progressView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(progressView)
 
-        if #available(iOS 16.0, *), UserDefaults.standard.bool(forKey: "Reader.liveText"), ImageAnalyzer.isSupported {
+        if UserDefaults.standard.bool(forKey: "Reader.liveText"), ImageAnalyzer.isSupported {
             let interaction = ImageAnalysisInteraction()
             interaction.preferredInteractionTypes = .automatic
             imageView.addInteraction(interaction)
@@ -444,13 +437,9 @@ extension ReaderPageView {
         } else {
             textView = UIHostingController(rootView: view)
             guard let textView else { return }
-            if #available(iOS 16.0, *) {
-                textView.sizingOptions = .intrinsicContentSize
-            }
-            if #available(iOS 16.4, *) {
-                // fixes text being shifted when navbar is hidden/shown
-                textView.safeAreaRegions = []
-            }
+            textView.sizingOptions = .intrinsicContentSize
+            // fixes text being shifted when navbar is hidden/shown
+            textView.safeAreaRegions = []
             textView.view.translatesAutoresizingMaskIntoConstraints = false
             if let parent {
                 parent.addChild(textView)
@@ -482,54 +471,45 @@ extension ReaderPageView {
 
 extension ReaderPageView {
     func clearLiveTextSelection() {
-        if #available(iOS 16.0, *) {
-            guard let interaction = imageAnalaysisInteraction else { return }
-            interaction.resetTextSelection()
-            guard let analysis = interaction.analysis else { return }
-            interaction.analysis = nil
-            interaction.analysis = analysis
-            interaction.isSupplementaryInterfaceHidden = !shouldShowLiveTextButton
-        }
+        guard let interaction = imageAnalaysisInteraction else { return }
+        interaction.resetTextSelection()
+        guard let analysis = interaction.analysis else { return }
+        interaction.analysis = nil
+        interaction.analysis = analysis
+        interaction.isSupplementaryInterfaceHidden = !shouldShowLiveTextButton
     }
 
     private func scheduleDictionaryTextAnalysis() {
         needsDictionaryOverlayRender = false
         clearDictionaryOverlays()
 
-        if #available(iOS 18.0, *) {
-            DictionaryTextAnalysisScheduler.schedule(
-                task: &dictionaryAnalysisTask,
-                recognizer: &textRecognizer,
-                image: imageView.image,
-                language: currentPage?.language
-            ) { [weak self] in
-                self?.renderDictionaryOverlaysIfNeeded()
-            }
+        DictionaryTextAnalysisScheduler.schedule(
+            task: &dictionaryAnalysisTask,
+            recognizer: &textRecognizer,
+            image: imageView.image,
+            language: currentPage?.language
+        ) { [weak self] in
+            self?.renderDictionaryOverlaysIfNeeded()
         }
     }
 
     private func cancelDictionaryTextAnalysis() {
-        if #available(iOS 18.0, *) {
-            DictionaryTextAnalysisScheduler.cancel(
-                task: &dictionaryAnalysisTask,
-                recognizer: textRecognizer
-            )
-        }
+        DictionaryTextAnalysisScheduler.cancel(
+            task: &dictionaryAnalysisTask,
+            recognizer: textRecognizer
+        )
     }
 
     func setLiveTextHidden(_ hidden: Bool) {
-        if #available(iOS 16.0, *) {
-            shouldShowLiveTextButton = !hidden
-            // don't hide if the text highlighting is active
-            guard imageAnalaysisInteraction?.selectableItemsHighlighted == false else { return }
-            imageAnalaysisInteraction?.isSupplementaryInterfaceHidden = hidden
-        }
+        shouldShowLiveTextButton = !hidden
+        // don't hide if the text highlighting is active
+        guard imageAnalaysisInteraction?.selectableItemsHighlighted == false else { return }
+        imageAnalaysisInteraction?.isSupplementaryInterfaceHidden = hidden
     }
 
     // use Task to run LiveText analysis to prevent wide image jumps
     private func startLiveTextAnalysis() {
         guard
-            #available(iOS 16.0, *),
             imageAnalaysisInteraction != nil,
             let image = imageView.image,
             (image.cgImage?.height ?? Int(image.size.height * image.scale)) <= 8192
@@ -557,7 +537,6 @@ extension ReaderPageView {
         liveTextGeneration += 1
         liveTextTask?.cancel()
         liveTextTask = nil
-        guard #available(iOS 16.0, *) else { return }
         imageAnalaysisInteraction?.analysis = nil
     }
 }
@@ -578,7 +557,6 @@ extension ReaderPageView {
         clearDictionaryOverlays()
 
         guard
-            #available(iOS 18.0, *),
             AppSettings.dictionary.enable.get(),
             AppSettings.dictionary.textOverlayMode.get(),
             let textRecognizer,

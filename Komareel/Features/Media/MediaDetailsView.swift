@@ -133,7 +133,7 @@ struct MediaDetailsView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
-                    if #available(iOS 16.0, *), let url = presentedManga.url {
+                    if let url = presentedManga.url {
                         ShareLink(item: url)
                     }
                     if bookmarked {

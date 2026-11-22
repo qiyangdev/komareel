@@ -18,7 +18,6 @@ private struct SelectedDictionary: Identifiable {
     var id: UUID { info.id }
 }
 
-@available(iOS 18.0, *)
 struct DictionaryListView: View {
     @State private var dictionaryManager = DictionaryManager.shared
 
@@ -226,7 +225,6 @@ struct DictionaryListView: View {
     }
 }
 
-@available(iOS 18.0, *)
 private struct DictionaryInfoView: View {
     let dictionary: SelectedDictionary
 
@@ -323,7 +321,6 @@ private struct DictionaryInfoView: View {
     }
 }
 
-@available(iOS 18.0, *)
 private struct DictionaryRecommendedListView: View {
     struct ExternalDictionary: Identifiable {
         var id: String { name }

@@ -29,7 +29,6 @@ extension Month: Identifiable {
     }
 }
 
-@available(iOS 16.0, *)
 struct YearlyMonthChartView: View {
     let data: MonthData
 
@@ -98,7 +97,6 @@ struct YearlyMonthChartView: View {
     }
 }
 
-@available(iOS 16.0, *)
 #Preview {
     YearlyMonthChartView(data: .init(
         january: 0,

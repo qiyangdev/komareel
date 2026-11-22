@@ -43,11 +43,7 @@ struct HomeGridView: View {
 
     private static var isLandscape: Bool {
         let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene
-        let orientation = if #available(iOS 16.0, *) {
-            scene?.effectiveGeometry.interfaceOrientation
-        } else {
-            scene?.interfaceOrientation
-        }
+        let orientation = scene?.effectiveGeometry.interfaceOrientation
         return orientation?.isLandscape ?? false
     }
 

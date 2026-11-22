@@ -164,9 +164,7 @@ class SearchViewController: UIViewController {
         title = NSLocalizedString("SEARCH")
         view.backgroundColor = .systemBackground
 
-        if #available(iOS 16, *) {
-            navigationItem.preferredSearchBarPlacement = .stacked
-        }
+        navigationItem.preferredSearchBarPlacement = .stacked
 
         searchController.hidesNavigationBarDuringPresentation = true
         searchController.searchBar.delegate = self

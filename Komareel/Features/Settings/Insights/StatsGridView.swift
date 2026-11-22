@@ -65,11 +65,7 @@ struct StatsGridView: View {
     private var usingHorizontalLayout: Bool {
         let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene
         let orientation =
-            if #available(iOS 16.0, *) {
-                scene?.effectiveGeometry.interfaceOrientation
-            } else {
-                scene?.interfaceOrientation
-            }
+            scene?.effectiveGeometry.interfaceOrientation
         return orientation == .landscapeLeft || orientation == .landscapeRight
     }
 
@@ -90,74 +86,72 @@ struct StatsGridView: View {
     @ContentBuilder
     var mainContent: some View {
         // monthly chart
-        if #available(iOS 16.0, *) {
-            let defaultChartHeight = Self.chartHeight + (chartIsExpanded ? Self.chartExpansionHeight : 0)
-            GeometryReader { geo in
-                let totalSpacing = 2 * Self.spacing
-                let normalSquare = (geo.size.width - totalSpacing) / 3
+        let defaultChartHeight = Self.chartHeight + (chartIsExpanded ? Self.chartExpansionHeight : 0)
+        GeometryReader { geo in
+            let totalSpacing = 2 * Self.spacing
+            let normalSquare = (geo.size.width - totalSpacing) / 3
 
-                let totalHeight = usingHorizontalLayout ? normalSquare : defaultChartHeight
+            let totalHeight = usingHorizontalLayout ? normalSquare : defaultChartHeight
 
-                InsightPlatterView {
-                    VStack(spacing: 4) {
-                        HStack {
-                            VStack(alignment: .leading, spacing: -8) {
-                                let total = selectedChartTotal
-                                Text(total, format: .number.notation(.compactName))
-                                    .contentTransition(.numericText())
-                                    .font(.system(size: 64).weight(.bold))
-                                    .minimumScaleFactor(0.5)
-                                Text(total == 1 ? chartSingularLabel ?? chartLabel : chartLabel)
-                                    .font(.system(size: 17).weight(.semibold))
-                                    .padding(.bottom, 5)
-                            }
-                            .frame(width: 120, alignment: .leading)
-
-                            YearlyMonthChartView(data: selectedChartData)
-                                .padding(.vertical, 2)
+            InsightPlatterView {
+                VStack(spacing: 4) {
+                    HStack {
+                        VStack(alignment: .leading, spacing: -8) {
+                            let total = selectedChartTotal
+                            Text(total, format: .number.notation(.compactName))
+                                .contentTransition(.numericText())
+                                .font(.system(size: 64).weight(.bold))
+                                .minimumScaleFactor(0.5)
+                            Text(total == 1 ? chartSingularLabel ?? chartLabel : chartLabel)
+                                .font(.system(size: 17).weight(.semibold))
+                                .padding(.bottom, 5)
                         }
-                        .padding(12)
-                        .frame(
-                            height: usingHorizontalLayout
-                                ? normalSquare - (chartIsExpanded ? Self.chartExpansionHeight : 0)
-                                : Self.chartHeight
-                        )
+                        .frame(width: 120, alignment: .leading)
 
-                        if chartIsExpanded {
-                            ScrollView(.horizontal) {
-                                HStack(spacing: 2) {
-                                    YearSelectorView(selectedYear: $selectedChartYear)
-                                    ForEach(chartData, id: \.year) { yearlyData in
-                                        YearSelectorView(year: yearlyData.year, selectedYear: $selectedChartYear)
-                                    }
+                        YearlyMonthChartView(data: selectedChartData)
+                            .padding(.vertical, 2)
+                    }
+                    .padding(12)
+                    .frame(
+                        height: usingHorizontalLayout
+                            ? normalSquare - (chartIsExpanded ? Self.chartExpansionHeight : 0)
+                            : Self.chartHeight
+                    )
+
+                    if chartIsExpanded {
+                        ScrollView(.horizontal) {
+                            HStack(spacing: 2) {
+                                YearSelectorView(selectedYear: $selectedChartYear)
+                                ForEach(chartData, id: \.year) { yearlyData in
+                                    YearSelectorView(year: yearlyData.year, selectedYear: $selectedChartYear)
                                 }
                             }
-                            .padding(.horizontal)
-                            .scrollClipDisabledPlease()
                         }
+                        .padding(.horizontal)
+                        .scrollClipDisabledPlease()
                     }
-                    .frame(
-                        height: totalHeight,
-                        alignment: .top
-                    )
-                    .frame(maxWidth: .infinity)
                 }
-                .onTapGesture {
-                    if expandedIndex == items.count {
-                        expandedIndex = nil
-                        if chartCanExpand {
-                            height -= Self.chartExpansionHeight
-                        }
-                    } else {
-                        expandedIndex = items.count
-                        if chartCanExpand {
-                            height += Self.chartExpansionHeight
-                        }
+                .frame(
+                    height: totalHeight,
+                    alignment: .top
+                )
+                .frame(maxWidth: .infinity)
+            }
+            .onTapGesture {
+                if expandedIndex == items.count {
+                    expandedIndex = nil
+                    if chartCanExpand {
+                        height -= Self.chartExpansionHeight
+                    }
+                } else {
+                    expandedIndex = items.count
+                    if chartCanExpand {
+                        height += Self.chartExpansionHeight
                     }
                 }
             }
-            .frame(height: usingHorizontalLayout ? nil : defaultChartHeight)
         }
+        .frame(height: usingHorizontalLayout ? nil : defaultChartHeight)
 
         // small stats blocks
         GeometryReader { geo in

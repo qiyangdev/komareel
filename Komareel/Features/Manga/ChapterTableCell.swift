@@ -83,12 +83,8 @@ struct ChapterTableCell: View {
         .padding(.vertical, 22 / 3)
         .frame(alignment: .leading)
         .contentShape(Rectangle())
-        if #available(iOS 16.0, *) {
-            view.alignmentGuide(.listRowSeparatorTrailing) { d in
-                d[.trailing] // ensure separator goes all the way to the trailing edge
-            }
-        } else {
-            view
+        view.alignmentGuide(.listRowSeparatorTrailing) { d in
+            d[.trailing] // ensure separator goes all the way to the trailing edge
         }
     }
 }

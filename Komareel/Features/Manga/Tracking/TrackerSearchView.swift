@@ -98,11 +98,7 @@ struct TrackerSearchView: View {
             }
             .sheet(isPresented: $showSearchOptions) {
                 let view = TrackerSearchOptionsView(showNsfw: $includeNsfw)
-                if #available(iOS 16.0, *) {
-                    view.presentationDetents([.medium])
-                } else {
-                    view
-                }
+                view.presentationDetents([.medium])
             }
             .sheet(isPresented: $showSafari) {
                 SafariView(url: $safariUrl)

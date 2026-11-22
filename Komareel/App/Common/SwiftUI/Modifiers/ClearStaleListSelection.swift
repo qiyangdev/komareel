@@ -18,7 +18,7 @@ private struct ClearStaleListSelectionModifier<Value: Hashable>: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .introspect(.list, on: .iOS(.v16, .v17, .v18, .v26, .v27)) { collectionView in
+            .introspect(.list, on: .iOS(.v26, .v27)) { collectionView in
                 box.collectionView = collectionView
             }
             .onChangeWrapper(of: selection) { _, selection in

@@ -79,11 +79,7 @@ struct AddSourceFilterMenu: View {
                 Label(NSLocalizedString("LANGUAGES"), systemImage: "globe")
             }
         } label: {
-            if #available(iOS 26.0, *) {
-                Image(systemName: "line.3.horizontal.decrease")
-            } else {
-                Image(systemName: "line.3.horizontal.decrease.circle")
-            }
+            Image(systemName: "line.3.horizontal.decrease")
         }
         .onChange(of: contentRatings) { _ in
             AppSettings.browse.contentRatings.set(contentRatings)
