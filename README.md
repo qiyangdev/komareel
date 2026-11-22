@@ -39,7 +39,7 @@ Scripts export `search`, `details`, and `pages` through `globalThis.source`. Dec
 
 ## Upstream Aidoku
 
-Official Aidoku installation options, including TestFlight and AltStore, are documented on the [Aidoku website](https://aidoku.app). Official IPA downloads are available from [upstream releases](https://github.com/Aidoku/Aidoku/releases).
+The [Aidoku website](https://aidoku.app) documents installation options for upstream Aidoku. Official IPA downloads are available from [upstream releases](https://github.com/Aidoku/Aidoku/releases).
 
 See the [upstream repository](https://github.com/Aidoku/Aidoku) for its contribution guidelines and [Weblate](https://hosted.weblate.org/engage/aidoku/) for translations.
 
