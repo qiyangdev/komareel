@@ -5,7 +5,7 @@
 //  Created by Skitty on 7/24/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Gifu
 import Nuke
 import UIKit
@@ -245,7 +245,7 @@ extension MangaGridCell {
 
         self.imageView.stopAnimatingGIF()
 
-        let source: AidokuRunner.Source? = if let sourceKey = identifier?.sourceKey {
+        let source: KomareelSourceKit.Source? = if let sourceKey = identifier?.sourceKey {
             await SourceManager.shared.source(for: sourceKey)
         } else {
             nil

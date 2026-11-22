@@ -1,16 +1,16 @@
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct MediaDetailsView: View {
-    let source: AidokuRunner.Source
-    let manga: AidokuRunner.Manga
+    let source: KomareelSourceKit.Source
+    let manga: KomareelSourceKit.Manga
     let path: NavigationCoordinator
     let initialEpisodeKey: String?
     let autoplay: Bool
 
-    @State private var details: AidokuRunner.Manga?
+    @State private var details: KomareelSourceKit.Manga?
     @State private var progress: [String: MediaPlaybackProgress] = [:]
-    @State private var selectedAudioEpisode: AidokuRunner.Chapter?
+    @State private var selectedAudioEpisode: KomareelSourceKit.Chapter?
     @State private var videoPlayback: FullScreenVideoPlayback?
     private let audio = AudioPlaybackController.shared
     @State private var failed = false
@@ -23,19 +23,19 @@ struct MediaDetailsView: View {
     @Namespace private var transitionNamespace
 
     private var isAudio: Bool { source.mediaType == .audio }
-    private var episodes: [AidokuRunner.Chapter] { details?.chapters ?? [] }
-    private var nextEpisode: AidokuRunner.Chapter? {
+    private var episodes: [KomareelSourceKit.Chapter] { details?.chapters ?? [] }
+    private var nextEpisode: KomareelSourceKit.Chapter? {
         resumeEpisode ?? episodes.first { progress[$0.key]?.completed != true } ?? episodes.first
     }
 
-    private var resumeEpisode: AidokuRunner.Chapter? {
-        episodes.compactMap { episode -> (AidokuRunner.Chapter, Date)? in
+    private var resumeEpisode: KomareelSourceKit.Chapter? {
+        episodes.compactMap { episode -> (KomareelSourceKit.Chapter, Date)? in
             guard let entry = progress[episode.key], !entry.completed else { return nil }
             return (episode, entry.updatedAt)
         }.max { $0.1 < $1.1 }?.0
     }
 
-    private var presentedManga: AidokuRunner.Manga {
+    private var presentedManga: KomareelSourceKit.Manga {
         var result = details ?? manga
         result.cover = customCover ?? result.cover ?? manga.cover
         if result.description == result.title { result.description = nil }
@@ -197,7 +197,7 @@ struct MediaDetailsView: View {
         }
     }
 
-    private func play(_ episode: AidokuRunner.Chapter) {
+    private func play(_ episode: KomareelSourceKit.Chapter) {
         if isAudio {
             audio.open(manga: presentedManga, episode: episode, source: source)
             selectedAudioEpisode = episode
@@ -269,8 +269,8 @@ struct MediaDetailsView: View {
 }
 
 private struct MediaEpisodeRow: View {
-    let source: AidokuRunner.Source
-    let episode: AidokuRunner.Chapter
+    let source: KomareelSourceKit.Source
+    let episode: KomareelSourceKit.Chapter
     let progress: MediaPlaybackProgress?
     let play: () -> Void
 

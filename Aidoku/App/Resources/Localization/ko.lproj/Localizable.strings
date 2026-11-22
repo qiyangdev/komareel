@@ -493,7 +493,7 @@
 "ZONE_EDGE" = "모서리";
 "DISABLED" = "비활성화";
 "ANIMATE_PAGE_TRANSITIONS" = "페이지 전환 애니메이션 켜기";
-"SOURCE_IMPORT_FAIL_TEXT" = "소스를 가져오는 데에 실패했습니다. 선택한 aix 파일을 확인해 주세요.";
+"SOURCE_IMPORT_FAIL_TEXT" = "소스를 가져오는 데에 실패했습니다. 선택한 krx 파일을 확인해 주세요.";
 "FILE_IMPORT_FAIL_TEXT" = "파일을 가져오는 데에 실패했습니다. 선택한 파일이 올바른 CBZ 또는 ZIP 파일인지 확인해 주세요.";
 "CLEAR_EXCLUDING_LIBRARY" = "서재를 제외한 읽기 기록 지우기";
 "CLEAR_EXCLUDING_LIBRARY_TEXT" = "이 동작은 되돌릴 수 없습니다. 서재를 제외한 모든 읽기 기록이 삭제됩니다.";

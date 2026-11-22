@@ -5,7 +5,7 @@
 //  Created by Skitty on 6/26/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SafariServices
 import SwiftUI
 import UIKit
@@ -14,7 +14,7 @@ struct TrackerView: View {
     let tracker: Tracker
     let item: TrackItem
     let info: TrackerInfo
-    let manga: AidokuRunner.Manga
+    let manga: KomareelSourceKit.Manga
 
     @Binding var refresh: Bool
 

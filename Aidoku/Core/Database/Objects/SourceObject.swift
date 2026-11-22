@@ -5,14 +5,14 @@
 //  Created by Skitty on 2/14/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import CoreData
 
 extension SourceObject {
-    func load(from source: AidokuRunner.Source) {
+    func load(from source: KomareelSourceKit.Source) {
         id = source.key
-        apiVersion = if let legacySource = source.legacySource {
-            legacySource.apiVersion
+        apiVersion = if source.runner is ScriptSourceRunner {
+            "krx/1"
         } else {
             source.apiVersion
         }
@@ -44,25 +44,13 @@ struct SourceObjectData: Sendable {
 }
 
 extension SourceObjectData {
-    func toSource() -> Source? {
-        if apiVersion == "0.6", let path {
-            return try? Source(from: FileManager.default.applicationSupportDirectory.appendingPathComponent(path))
-        }
-        return nil
-    }
-
-    func toNewSource() async -> AidokuRunner.Source? {
-        if apiVersion == "0.6" {
-            let source = toSource()
-            return source.flatMap({ .legacy(source: $0) })
-        } else if
-            let data = customSource,
-            let config = try? CustomSourceConfig(from: data)
-        {
+    func toNewSource() async -> KomareelSourceKit.Source? {
+        if let data = customSource, let config = try? CustomSourceConfig(from: data) {
             return config.toSource()
-        } else if let path {
+        }
+        if let path {
             let url = FileManager.default.applicationSupportDirectory.appendingPathComponent(path)
-            return try? await AidokuRunner.Source(key: id, url: url)
+            return try? ScriptSourceRunner.makeSource(at: url)
         }
         return nil
     }
@@ -74,44 +62,23 @@ extension SourceObjectData {
         guard let path else { return nil }
 
         let url = FileManager.default.applicationSupportDirectory.appendingPathComponent(path)
-        let iconUrl = url.appendingPathComponent(apiVersion == "0.6" ? "Icon.png" : "icon.png")
-
-        if apiVersion == "0.6" {
-            if
-                let data = try? Data(contentsOf: url.appendingPathComponent("source.json")),
-                let manifest = try? JSONDecoder().decode(Source.SourceManifest.self, from: data)
-            {
-                return .init(
-                    sourceId: id,
-                    iconUrl: iconUrl,
-                    name: manifest.info.name,
-                    altNames: [],
-                    urls: manifest.info.urls ?? manifest.info.url.flatMap { [$0] } ?? [],
-                    languages: manifest.languages?.map(\.code) ?? [manifest.info.lang],
-                    version: manifest.info.version,
-                    contentRating: .init(rawValue: manifest.info.nsfw ?? 0) ?? .safe,
-                    external: false,
-                    externalInfo: nil
-                )
-            }
-        } else {
-            if
-                let data = try? Data(contentsOf: url.appendingPathComponent("source.json")),
-                let sourceInfo = try? JSONDecoder().decode(AidokuRunner.SourceInfo.self, from: data)
-            {
-                return .init(
-                    sourceId: id,
-                    iconUrl: iconUrl,
-                    name: sourceInfo.info.name,
-                    altNames: sourceInfo.info.altNames ?? [],
-                    urls: sourceInfo.info.urls ?? sourceInfo.info.url.flatMap { [$0] } ?? [],
-                    languages: sourceInfo.info.languages,
-                    version: sourceInfo.info.version,
-                    contentRating: sourceInfo.info.contentRating ?? .safe,
-                    external: false,
-                    externalInfo: nil
-                )
-            }
+        let iconUrl = url.appendingPathComponent("icon.png")
+        if
+            let data = try? Data(contentsOf: url.appendingPathComponent("source.json")),
+            let sourceInfo = try? JSONDecoder().decode(KomareelSourceKit.SourceInfo.self, from: data)
+        {
+            return .init(
+                sourceId: id,
+                iconUrl: iconUrl,
+                name: sourceInfo.info.name,
+                altNames: sourceInfo.info.altNames ?? [],
+                urls: sourceInfo.info.urls ?? sourceInfo.info.url.flatMap { [$0] } ?? [],
+                languages: sourceInfo.info.languages,
+                version: sourceInfo.info.version,
+                contentRating: sourceInfo.info.contentRating ?? .safe,
+                external: false,
+                externalInfo: nil
+            )
         }
         return nil
     }

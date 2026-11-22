@@ -1,4 +1,4 @@
-import AidokuRunner
+import KomareelSourceKit
 import AVFoundation
 
 @MainActor
@@ -6,8 +6,8 @@ final class MediaPlaybackSession {
     let player: AVPlayer
     let item: AVPlayerItem
 
-    private let manga: AidokuRunner.Manga
-    private let episode: AidokuRunner.Chapter
+    private let manga: KomareelSourceKit.Manga
+    private let episode: KomareelSourceKit.Chapter
     private var timeObserver: Any?
     private var started = false
     private var ready = false
@@ -16,7 +16,7 @@ final class MediaPlaybackSession {
     private var lastSavedPosition: Double?
     private var lastSavedAt: Date?
 
-    init(url: URL, manga: AidokuRunner.Manga, episode: AidokuRunner.Chapter) {
+    init(url: URL, manga: KomareelSourceKit.Manga, episode: KomareelSourceKit.Chapter) {
         let item = AVPlayerItem(url: url)
         self.item = item
         self.player = AVPlayer(playerItem: item)

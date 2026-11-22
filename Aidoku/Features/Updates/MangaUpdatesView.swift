@@ -5,7 +5,7 @@
 //  Created by axiel7 on 09/02/2024.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct MangaUpdatesView: View {
@@ -21,7 +21,7 @@ struct MangaUpdatesView: View {
         let id: String
         let chapterIdentifier: ChapterIdentifier
         let date: Date
-        let manga: AidokuRunner.Manga
+        let manga: KomareelSourceKit.Manga
         let chapter: Chapter?
         var viewed: Bool
     }
@@ -210,7 +210,7 @@ extension MangaUpdatesView {
         }
     }
 
-    private func setOpened(manga: AidokuRunner.Manga) {
+    private func setOpened(manga: KomareelSourceKit.Manga) {
         if !AppSettings.general.incognitoMode.get() {
             Task {
                 await CoreDataManager.shared.setOpened(mangaId: manga.identifier)

@@ -5,15 +5,15 @@
 //  Created by Skitty on 10/13/23.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct HomeBigScrollerView: View {
-    let source: AidokuRunner.Source
+    let source: KomareelSourceKit.Source
     let component: HomeComponent
     let partial: Bool
 
-    private let entries: [AidokuRunner.Manga]
+    private let entries: [KomareelSourceKit.Manga]
     private let autoScrollInterval: TimeInterval?
     private let hasTags: Bool
 
@@ -26,7 +26,7 @@ struct HomeBigScrollerView: View {
     @EnvironmentObject private var path: NavigationCoordinator
 
     init(
-        source: AidokuRunner.Source,
+        source: KomareelSourceKit.Source,
         component: HomeComponent,
         partial: Bool = false
     ) {

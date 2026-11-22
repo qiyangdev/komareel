@@ -5,12 +5,12 @@
 //  Created by Skitty on 9/27/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 
 @MainActor
 class ReaderWebtoonViewModel: ReaderPagedViewModel {
-    func setPages(chapter: AidokuRunner.Chapter, pages: [Page]) {
+    func setPages(chapter: KomareelSourceKit.Chapter, pages: [Page]) {
         self.chapter = chapter
         self.pages = pages
         if preloadedChapter == chapter {

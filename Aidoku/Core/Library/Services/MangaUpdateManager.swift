@@ -5,7 +5,7 @@
 //  Created by axiel7 on 17/03/2024.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import CoreData
 
 struct MangaUpdateManager {
@@ -13,7 +13,7 @@ struct MangaUpdateManager {
 }
 
 extension MangaUpdateManager {
-    func viewAllUpdates(of manga: AidokuRunner.Manga) async {
+    func viewAllUpdates(of manga: KomareelSourceKit.Manga) async {
         await CoreDataManager.shared.container.performBackgroundTask { context in
             let updates = CoreDataManager.shared.setMangaUpdatesViewed(
                 mangaId: manga.identifier,

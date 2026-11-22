@@ -468,7 +468,7 @@
 "LOGIN_WEBVIEW_WARNING_TEXT" = "在显示的网页中设置的所有Cookie都将提供给来源。请勿登录您不信任的任何来源。";
 "UNAVAILABLE_SOURCE_LISTS" = "不可用来源列表";
 "COPY_URL" = "复制网址";
-"SOURCE_IMPORT_FAIL_TEXT" = "导入图源失败。请确保您的aix文件有效。";
+"SOURCE_IMPORT_FAIL_TEXT" = "导入图源失败。请确保您的krx文件有效。";
 "ADD" = "添加";
 "ALL_CHAPTERS_LOCKED" = "所有章节锁定";
 "DEMO_KOMGA_SERVER_INFO" = "你可以使用邮箱 `demo@komga.org` 和密码 `komga-demo` 登录演示 Komga 服务器。";

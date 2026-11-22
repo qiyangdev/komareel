@@ -5,7 +5,7 @@
 //  Created by Skitty on 8/15/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Gifu
 import MarkdownUI
 import Nuke
@@ -175,7 +175,7 @@ extension ReaderPageView {
 
     /// Creates the image request used to fetch a page image.
     static func imageRequest(url: URL, context: PageContext? = nil, sourceKey: String? = nil) async -> ImageRequest {
-        let source: AidokuRunner.Source? = if let sourceKey {
+        let source: KomareelSourceKit.Source? = if let sourceKey {
             await SourceManager.shared.source(for: sourceKey)
         } else {
             nil
@@ -183,7 +183,7 @@ extension ReaderPageView {
         return await imageRequest(url: url, context: context, source: source)
     }
 
-    static func imageRequest(url: URL, context: PageContext? = nil, source: AidokuRunner.Source?) async -> ImageRequest {
+    static func imageRequest(url: URL, context: PageContext? = nil, source: KomareelSourceKit.Source?) async -> ImageRequest {
         let urlRequest = if !url.isFileURL, let source {
             await source.getModifiedImageRequest(url: url, context: context)
         } else {

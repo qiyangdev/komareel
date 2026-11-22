@@ -5,7 +5,7 @@
 //  Created by Skitty on 5/25/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 
 enum CustomSourceConfig {
@@ -24,7 +24,7 @@ enum CustomSourceConfig {
 }
 
 extension CustomSourceConfig {
-    func toSource() -> AidokuRunner.Source {
+    func toSource() -> KomareelSourceKit.Source {
         switch self {
             case .demo:
                 .demo()
@@ -56,13 +56,13 @@ extension CustomSourceConfig {
 
         func decodeString() throws -> String {
             let length: UInt64 = try decodeVarInt(data, currentIndex: &currentIndex)
-            let endIndex = currentIndex.advanced(by: Int(truncatingIfNeeded: length))
-            guard endIndex <= data.endIndex && endIndex >= currentIndex else {
+            guard let count = Int(exactly: length), count <= data.endIndex - currentIndex else {
                 throw DecodingError.dataCorrupted(DecodingError.Context(
                     codingPath: [],
                     debugDescription: "Invalid string length")
                 )
             }
+            let endIndex = currentIndex + count
             let stringData = data[currentIndex..<endIndex]
             currentIndex = endIndex
             return String(data: stringData, encoding: .utf8) ?? ""
@@ -133,4 +133,26 @@ extension CustomSourceConfig {
 
         return bytes
     }
+}
+
+private func varInt(_ input: UInt64, data: inout Data) {
+    var value = input
+    while value >= 128 {
+        data.append(UInt8(value & 127) | 128)
+        value >>= 7
+    }
+    data.append(UInt8(value))
+}
+
+private func decodeVarInt(_ data: Data, currentIndex: inout Int) throws -> UInt64 {
+    var value: UInt64 = 0
+    for shift in stride(from: 0, through: 63, by: 7) {
+        guard currentIndex < data.endIndex else { break }
+        let byte = data[currentIndex]
+        currentIndex += 1
+        guard shift < 63 || byte <= 1 else { break }
+        value |= UInt64(byte & 127) << shift
+        if byte < 128 { return value }
+    }
+    throw DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "Invalid length prefix"))
 }

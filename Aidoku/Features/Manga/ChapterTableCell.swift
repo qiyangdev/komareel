@@ -5,13 +5,13 @@
 //  Created by Skitty on 8/17/23.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct ChapterTableCell: View {
-    let source: AidokuRunner.Source?
+    let source: KomareelSourceKit.Source?
     let sourceKey: String
-    let chapter: AidokuRunner.Chapter
+    let chapter: KomareelSourceKit.Chapter
     let read: Bool
     let page: Int?
     let downloadStatus: DownloadStatus

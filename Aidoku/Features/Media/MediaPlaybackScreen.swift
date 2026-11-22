@@ -1,4 +1,4 @@
-import AidokuRunner
+import KomareelSourceKit
 import AVKit
 import SwiftUI
 
@@ -99,7 +99,7 @@ struct NativeAudioPlayer: UIViewControllerRepresentable {
 }
 
 struct MediaPlaybackArtwork: View {
-    let source: AidokuRunner.Source
+    let source: KomareelSourceKit.Source
     let cover: String
 
     var body: some View {

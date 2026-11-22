@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import AidokuRunner
+import KomareelSourceKit
 
 class Chapter: Codable, Identifiable {
 
@@ -84,8 +84,8 @@ extension Chapter: Equatable {
 }
 
 extension Chapter {
-    func toNew() -> AidokuRunner.Chapter {
-        AidokuRunner.Chapter(
+    func toNew() -> KomareelSourceKit.Chapter {
+        KomareelSourceKit.Chapter(
             key: id,
             title: title,
             chapterNumber: chapterNum,

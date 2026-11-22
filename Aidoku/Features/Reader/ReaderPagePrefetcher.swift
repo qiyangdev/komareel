@@ -5,7 +5,7 @@
 //  Created by Amqx on 8/26/26.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 import Nuke
 

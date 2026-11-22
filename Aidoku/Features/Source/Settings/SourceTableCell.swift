@@ -6,10 +6,10 @@
 //
 
 import SwiftUI
-import AidokuRunner
+import KomareelSourceKit
 
 struct SourceTableCell: View {
-    let source: AidokuRunner.Source
+    let source: KomareelSourceKit.Source
 
     var body: some View {
         HStack(spacing: 12) {

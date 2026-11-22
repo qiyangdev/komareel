@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import AidokuRunner
+import KomareelSourceKit
 
 // TODO: refactor
 
@@ -191,8 +191,8 @@ extension Manga: KVCObject {
 }
 
 extension Manga {
-    func toNew(chapters: [AidokuRunner.Chapter]? = nil) -> AidokuRunner.Manga {
-        AidokuRunner.Manga(
+    func toNew(chapters: [KomareelSourceKit.Chapter]? = nil) -> KomareelSourceKit.Manga {
+        KomareelSourceKit.Manga(
             sourceKey: sourceId,
             key: id,
             title: title ?? "",

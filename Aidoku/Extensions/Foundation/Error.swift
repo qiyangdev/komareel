@@ -5,9 +5,8 @@
 //  Created by skitty on 8/18/26.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
-import Wasm3
 
 extension Error {
     func aidokuDescription() -> String {
@@ -27,13 +26,6 @@ extension Error {
                     NSLocalizedString("JSON_ERROR")
                 case .deserializeError:
                     NSLocalizedString("DECODING_ERROR")
-                default:
-                    NSLocalizedString("UNKNOWN_ERROR")
-            }
-        } else if let error = self as? Wasm3Error {
-            switch error {
-                case .trap, .runtimeDisabled:
-                    NSLocalizedString("SOURCE_CRASHED")
                 default:
                     NSLocalizedString("UNKNOWN_ERROR")
             }

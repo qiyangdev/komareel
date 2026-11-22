@@ -5,11 +5,11 @@
 //  Created by skitty on 1/5/23.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct MigrateSelectDestinationView: View {
-    let selectedSeries: [AidokuRunner.Manga]
+    let selectedSeries: [KomareelSourceKit.Manga]
 
     @State private var availableSources: [SourceInfo] = []
     @State private var pinnedSources: [SourceInfo] = []
@@ -18,7 +18,7 @@ struct MigrateSelectDestinationView: View {
 
     @EnvironmentObject private var path: NavigationCoordinator
 
-    init(selectedSeries: [AidokuRunner.Manga], selectedSources: [SourceInfo] = []) {
+    init(selectedSeries: [KomareelSourceKit.Manga], selectedSources: [SourceInfo] = []) {
         self.selectedSeries = selectedSeries
         self._selectedSources = State(initialValue: selectedSources)
     }
@@ -69,7 +69,7 @@ struct MigrateSelectDestinationView: View {
                 Button(NSLocalizedString("CONTINUE")) {
                     Task {
                         let allSources = await SourceManager.shared.getLoadedSources()
-                        var sources: [AidokuRunner.Source] = []
+                        var sources: [KomareelSourceKit.Source] = []
                         for source in allSources where selectedSources.contains(where: { $0.sourceId == source.key }) {
                             sources.append(source)
                         }

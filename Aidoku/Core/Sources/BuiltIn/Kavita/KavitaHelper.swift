@@ -5,7 +5,7 @@
 //  Created by Skitty on 10/19/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 
 struct KavitaHelper: Sendable {
@@ -336,7 +336,7 @@ extension KavitaHelper {
 extension KavitaHelper {
     func getSearchFilter(
         query: String?,
-        filters: [AidokuRunner.FilterValue],
+        filters: [KomareelSourceKit.FilterValue],
         storedGenres: [KavitaSourceRunner.FilterItem],
         storedTags: [KavitaSourceRunner.FilterItem]
     ) async throws -> KavitaFilterV2 {

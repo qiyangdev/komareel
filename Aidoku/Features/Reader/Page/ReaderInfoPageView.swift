@@ -5,7 +5,7 @@
 //  Created by Skitty on 1/22/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import UIKit
 
 enum ReaderInfoPageType {
@@ -16,17 +16,17 @@ enum ReaderInfoPageType {
 class ReaderInfoPageView: UIView {
     var type: ReaderInfoPageType
 
-    var currentChapter: AidokuRunner.Chapter? {
+    var currentChapter: KomareelSourceKit.Chapter? {
         didSet {
             updateLabelText()
         }
     }
-    var previousChapter: AidokuRunner.Chapter? {
+    var previousChapter: KomareelSourceKit.Chapter? {
         didSet {
             updateLabelText()
         }
     }
-    var nextChapter: AidokuRunner.Chapter? {
+    var nextChapter: KomareelSourceKit.Chapter? {
         didSet {
             updateLabelText()
         }
@@ -42,7 +42,7 @@ class ReaderInfoPageView: UIView {
     let bottomChapterLabel = UILabel()
     let bottomChapterTitleLabel = UILabel()
 
-    init(type: ReaderInfoPageType, currentChapter: AidokuRunner.Chapter? = nil) {
+    init(type: ReaderInfoPageType, currentChapter: KomareelSourceKit.Chapter? = nil) {
         self.type = type
         self.currentChapter = currentChapter
 

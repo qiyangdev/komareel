@@ -5,7 +5,7 @@
 //  Created by Skitty on 6/14/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import CoreData
 import Foundation
 
@@ -56,7 +56,7 @@ actor TrackerManager {
     }
 
     /// Send chapter read update to logged in trackers.
-    func setCompleted(mangaId: MangaIdentifier, chapter: AidokuRunner.Chapter, skipTracker: Tracker? = nil) async {
+    func setCompleted(mangaId: MangaIdentifier, chapter: KomareelSourceKit.Chapter, skipTracker: Tracker? = nil) async {
         let chapterNum = chapter.chapterNumber
         let volumeNum = chapter.volumeNumber.flatMap { Int(floor($0)) }
         guard chapterNum != nil || volumeNum != nil else { return }
@@ -183,11 +183,11 @@ actor TrackerManager {
     }
 
     /// Set the page progress for trackers that support it.
-    func setProgress(mangaId: MangaIdentifier, chapter: AidokuRunner.Chapter, progress: ChapterReadProgress) async {
+    func setProgress(mangaId: MangaIdentifier, chapter: KomareelSourceKit.Chapter, progress: ChapterReadProgress) async {
         await setProgress(mangaId: mangaId, chapters: [chapter], progress: progress)
     }
 
-    func setProgress(mangaId: MangaIdentifier, chapters: [AidokuRunner.Chapter], progress: ChapterReadProgress) async {
+    func setProgress(mangaId: MangaIdentifier, chapters: [KomareelSourceKit.Chapter], progress: ChapterReadProgress) async {
         let trackItems: [TrackItem] = await CoreDataManager.shared.container.performBackgroundTask { context in
             CoreDataManager.shared.getTracks(
                 mangaId: mangaId,
@@ -220,7 +220,7 @@ actor TrackerManager {
     }
 
     /// Register a new track item to a manga and save to the data store.
-    func register(tracker: Tracker, manga: AidokuRunner.Manga, item: TrackSearchItem) async {
+    func register(tracker: Tracker, manga: KomareelSourceKit.Manga, item: TrackSearchItem) async {
         let mangaId = manga.identifier
         let (highestReadNumber, earliestReadDate) = await CoreDataManager.shared.container.performBackgroundTask { context in
             (
@@ -341,8 +341,8 @@ actor TrackerManager {
     func syncProgressFromTracker(
         tracker: Tracker,
         trackItem: TrackItem,
-        manga: AidokuRunner.Manga,
-        chapters: [AidokuRunner.Chapter]? = nil
+        manga: KomareelSourceKit.Manga,
+        chapters: [KomareelSourceKit.Chapter]? = nil
     ) async {
         if tracker is PageTracker {
             await syncPageTrackerHistory(
@@ -370,8 +370,8 @@ actor TrackerManager {
     /// Sync progress with all linked trackers that support page progress.
     func syncPageTrackerHistory(
         tracker: Tracker? = nil,
-        manga: AidokuRunner.Manga,
-        chapters: [AidokuRunner.Chapter]? = nil
+        manga: KomareelSourceKit.Manga,
+        chapters: [KomareelSourceKit.Chapter]? = nil
     ) async {
         let chapters = if let chapters {
             chapters
@@ -507,7 +507,7 @@ actor TrackerManager {
     }
 
     /// Add all applicable enhanced trackers to a given manga.
-    func bindEnhancedTrackers(manga: AidokuRunner.Manga) async {
+    func bindEnhancedTrackers(manga: KomareelSourceKit.Manga) async {
         for tracker in Self.trackers where tracker is EnhancedTracker {
             if tracker.canRegister(mangaId: manga.identifier) {
                 let isTracking = await CoreDataManager.shared.container.performBackgroundTask { context in
@@ -545,7 +545,7 @@ extension TrackerManager {
 }
 
 extension TrackerManager {
-    private func getChapters(manga: AidokuRunner.Manga) async -> [AidokuRunner.Chapter] {
+    private func getChapters(manga: KomareelSourceKit.Manga) async -> [KomareelSourceKit.Chapter] {
         let inLibrary = await CoreDataManager.shared.container.performBackgroundTask { context in
             CoreDataManager.shared.hasLibraryManga(mangaId: manga.identifier, context: context)
         }
@@ -571,10 +571,10 @@ extension TrackerManager {
     func getChaptersToSyncProgressFromTracker(
         tracker: Tracker,
         trackItem: TrackItem,
-        manga: AidokuRunner.Manga,
-        chapters: [AidokuRunner.Chapter]? = nil,
+        manga: KomareelSourceKit.Manga,
+        chapters: [KomareelSourceKit.Chapter]? = nil,
         currentHighestRead: Float? = nil
-    ) async -> [AidokuRunner.Chapter] {
+    ) async -> [KomareelSourceKit.Chapter] {
         guard
             let state = try? await tracker.getState(trackId: trackItem.id),
             case let trackerLastReadChapter = state.lastReadChapter,
@@ -606,7 +606,7 @@ extension TrackerManager {
         let key = "Manga.chapterDisplayMode.\(manga.identifier)"
         let displayMode = ChapterTitleDisplayMode(rawValue: UserDefaults.standard.integer(forKey: key)) ?? .default
 
-        var chaptersToMark: [AidokuRunner.Chapter] = []
+        var chaptersToMark: [KomareelSourceKit.Chapter] = []
 
         // Determine what to sync based on tracker progress and forced mode
         if displayMode == .chapter {

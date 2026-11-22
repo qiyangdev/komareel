@@ -5,15 +5,15 @@
 //  Created by Skitty on 4/1/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct SourceHomeSkeletonView: View {
-    let source: AidokuRunner.Source
+    let source: KomareelSourceKit.Source
 
     @State private var components: [[Int]]
 
-    init(source: AidokuRunner.Source) {
+    init(source: KomareelSourceKit.Source) {
         self.source = source
         let components = UserDefaults.standard.array(forKey: "\(source.key).homeComponents") as? [Int]
         if let components {

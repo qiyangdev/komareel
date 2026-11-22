@@ -5,7 +5,7 @@
 //  Created by Skitty on 9/19/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import AuthenticationServices
 import SwiftUI
 
@@ -13,9 +13,9 @@ struct SettingsTrackingView: View {
     @State private var trackers: [Tracker]
     @State private var trackersNeedingRelogin: Set<String> = []
 
-    @State private var komgaSources: [AidokuRunner.Source] = []
-    @State private var kavitaSources: [AidokuRunner.Source] = []
-    @State private var suwayomiSources: [AidokuRunner.Source] = []
+    @State private var komgaSources: [KomareelSourceKit.Source] = []
+    @State private var kavitaSources: [KomareelSourceKit.Source] = []
+    @State private var suwayomiSources: [KomareelSourceKit.Source] = []
     @State private var enhancedTrackingStates: [String: Bool] = [:]
 
     @State private var loadedData = false
@@ -114,7 +114,7 @@ struct SettingsTrackingView: View {
 
             if !komgaSources.isEmpty || !kavitaSources.isEmpty || !suwayomiSources.isEmpty {
                 Section {
-                    let items: [(tracker: Tracker, sources: [AidokuRunner.Source])] = [
+                    let items: [(tracker: Tracker, sources: [KomareelSourceKit.Source])] = [
                         (TrackerManager.komga, komgaSources),
                         (TrackerManager.kavita, kavitaSources),
                         (TrackerManager.suwayomi, suwayomiSources)
@@ -201,7 +201,7 @@ struct SettingsTrackingView: View {
         }
     }
 
-    func enhancedTrackerPage(name: String, sources: [AidokuRunner.Source]) -> some View {
+    func enhancedTrackerPage(name: String, sources: [KomareelSourceKit.Source]) -> some View {
         List {
             Section {
                 ForEach(sources) { source in
@@ -229,9 +229,9 @@ struct SettingsTrackingView: View {
 
 extension SettingsTrackingView {
     func loadEnhancedTrackerSources() async {
-        var komgaSources: [AidokuRunner.Source] = []
-        var kavitaSources: [AidokuRunner.Source] = []
-        var suwayomiSources: [AidokuRunner.Source] = []
+        var komgaSources: [KomareelSourceKit.Source] = []
+        var kavitaSources: [KomareelSourceKit.Source] = []
+        var suwayomiSources: [KomareelSourceKit.Source] = []
         let allSources = await SourceManager.shared.getLoadedSources()
         for source in allSources {
             if source.key.hasPrefix(KomgaSourceRunner.sourceKeyPrefix) {

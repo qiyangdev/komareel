@@ -5,7 +5,7 @@
 //  Created by Skitty on 6/6/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import CoreData
 import Foundation
 import ZIPFoundation
@@ -121,7 +121,7 @@ extension LocalFileManager {
 
 extension LocalFileManager {
     // fetch pages for a chapter from file system
-    func fetchPages(mangaId: String, chapterId: String) async -> [AidokuRunner.Page] {
+    func fetchPages(mangaId: String, chapterId: String) async -> [KomareelSourceKit.Page] {
         guard let cbzPath = await LocalFileDataManager.shared.fetchChapterArchivePath(mangaId: mangaId, chapterId: chapterId)
         else { return [] }
 
@@ -131,7 +131,7 @@ extension LocalFileManager {
     }
 
     // read pages from an archive file
-    nonisolated func readPages(from archiveURL: URL) -> [AidokuRunner.Page] {
+    nonisolated func readPages(from archiveURL: URL) -> [KomareelSourceKit.Page] {
         let archive: Archive
         do {
             archive = try Archive(url: archiveURL, accessMode: .read)
@@ -165,7 +165,7 @@ extension LocalFileManager {
                 $0.path.localizedStandardCompare($1.path) == .orderedAscending
             }
             .map { entry in
-                AidokuRunner.Page(content: .zipFile(url: archiveURL, filePath: entry.path))
+                KomareelSourceKit.Page(content: .zipFile(url: archiveURL, filePath: entry.path))
             }
 
         for entry in descriptionFiles {

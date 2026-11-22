@@ -5,14 +5,14 @@
 //  Created by Skitty on 11/19/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 @MainActor
 class SourceSearchViewModel: ObservableObject {
-    private let source: AidokuRunner.Source
+    private let source: KomareelSourceKit.Source
 
-    @Published var entries: [AidokuRunner.Manga] = []
+    @Published var entries: [KomareelSourceKit.Manga] = []
     @Published var error: Error?
     @Published var loadingInitial = true
     @Published var shouldScrollToTop = false
@@ -26,7 +26,7 @@ class SourceSearchViewModel: ObservableObject {
     private var searchTask: Task<(), Never>?
     private var loadMoreTask: Task<(), Never>?
 
-    init(source: AidokuRunner.Source) {
+    init(source: KomareelSourceKit.Source) {
         self.source = source
     }
 
@@ -108,7 +108,7 @@ class SourceSearchViewModel: ObservableObject {
         }
     }
 
-    func loadBookmarks(entries: [AidokuRunner.Manga]) async {
+    func loadBookmarks(entries: [KomareelSourceKit.Manga]) async {
         let bookmarkedKeys: [String] = await CoreDataManager.shared.container.performBackgroundTask { context in
             var keys: [String] = []
             for manga in entries where CoreDataManager.shared.hasLibraryManga(

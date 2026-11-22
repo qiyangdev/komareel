@@ -6,7 +6,7 @@
 //  Supports single page and two-page spread layouts.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 import UIKit
 import ZIPFoundation
@@ -16,7 +16,7 @@ class ReaderPagedTextViewController: BaseObservingViewController {
     let viewModel: ReaderTextViewModel
     weak var delegate: ReaderHoldingDelegate?
 
-    var chapter: AidokuRunner.Chapter?
+    var chapter: KomareelSourceKit.Chapter?
     var readingMode: ReadingMode = .ltr {
         didSet {
             // For text content, always use LTR regardless of manga setting
@@ -69,12 +69,12 @@ class ReaderPagedTextViewController: BaseObservingViewController {
     }()
 
     // Chapter navigation
-    private var previousChapter: AidokuRunner.Chapter?
-    private var nextChapter: AidokuRunner.Chapter?
+    private var previousChapter: KomareelSourceKit.Chapter?
+    private var nextChapter: KomareelSourceKit.Chapter?
 
     // MARK: - Initialization
 
-    init(source: AidokuRunner.Source?, manga: AidokuRunner.Manga) {
+    init(source: KomareelSourceKit.Source?, manga: KomareelSourceKit.Manga) {
         self.viewModel = ReaderTextViewModel(source: source, manga: manga)
         super.init()
     }
@@ -496,7 +496,7 @@ class ReaderPagedTextViewController: BaseObservingViewController {
 
     // MARK: - Chapter Loading
 
-    func loadChapter(_ chapter: AidokuRunner.Chapter, startPage: Int = 0) async {
+    func loadChapter(_ chapter: KomareelSourceKit.Chapter, startPage: Int = 0) async {
         isLoadingChapter = true
         hasPaginated = false
         self.chapter = chapter
@@ -557,7 +557,7 @@ extension ReaderPagedTextViewController: ReaderReaderDelegate {
         move(toPage: targetPage, animated: false)
     }
 
-    func setChapter(_ chapter: AidokuRunner.Chapter, startPage: Int) {
+    func setChapter(_ chapter: KomareelSourceKit.Chapter, startPage: Int) {
 
         // Prevent reloading if we're already loading
         if isLoadingChapter {

@@ -5,7 +5,7 @@
 //  Created by Skitty on 9/27/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import AsyncDisplayKit
 import Nuke
 import UIKit
@@ -14,7 +14,7 @@ class ReaderWebtoonViewController: ZoomableCollectionViewController {
     let viewModel: ReaderWebtoonViewModel
     weak var delegate: ReaderHoldingDelegate?
 
-    var chapter: AidokuRunner.Chapter?
+    var chapter: KomareelSourceKit.Chapter?
     var readingMode: ReadingMode = .webtoon {
         didSet {
             let layout = collectionNode.collectionViewLayout as? VerticalContentOffsetPreservingLayout
@@ -35,7 +35,7 @@ class ReaderWebtoonViewController: ZoomableCollectionViewController {
     private var loadingNext = false
 
     // The chapters currently shown in the reader view
-    private var chapters: [AidokuRunner.Chapter] = []
+    private var chapters: [KomareelSourceKit.Chapter] = []
     // The pages corresponding to the `chapters` variable
     private var pages: [[Page]] = []
     private var dictionaryOverlayTapHandler: ((String, String, CGRect, [CGRect]) -> Void)?
@@ -75,8 +75,8 @@ class ReaderWebtoonViewController: ZoomableCollectionViewController {
     var onContentScrollingChange: ((Bool) -> Void)?
 
     init(
-        source: AidokuRunner.Source?,
-        manga: AidokuRunner.Manga,
+        source: KomareelSourceKit.Source?,
+        manga: KomareelSourceKit.Manga,
         temporaryPageStore: ReaderTemporaryPageStore
     ) {
         self.viewModel = ReaderWebtoonViewModel(
@@ -936,7 +936,7 @@ extension ReaderWebtoonViewController: ReaderReaderDelegate {
         scrollViewDidScroll(collectionNode.view)
     }
 
-    func setChapter(_ chapter: AidokuRunner.Chapter, startPage: Int) {
+    func setChapter(_ chapter: KomareelSourceKit.Chapter, startPage: Int) {
         self.chapter = chapter
         updateDoubleTapZoomSetting()
         chapters = [chapter]

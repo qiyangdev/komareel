@@ -7,7 +7,7 @@
 
 import Foundation
 import CoreData
-import AidokuRunner
+import KomareelSourceKit
 
 @objc(ChapterObject)
 public class ChapterObject: NSManagedObject {
@@ -16,7 +16,7 @@ public class ChapterObject: NSManagedObject {
     }
 
     func load(
-        from chapter: AidokuRunner.Chapter,
+        from chapter: KomareelSourceKit.Chapter,
         mangaId: MangaIdentifier,
         sourceOrder: Int? = nil
     ) {
@@ -55,7 +55,7 @@ public class ChapterObject: NSManagedObject {
         )
     }
 
-    func toNewChapter() -> AidokuRunner.Chapter {
+    func toNewChapter() -> KomareelSourceKit.Chapter {
         .init(
             key: id,
             title: title,

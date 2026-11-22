@@ -518,7 +518,7 @@
 "ZONE_LEFT_RIGHT" = "Gauche et droite";
 "DISABLED" = "Désactivé";
 "ANIMATE_PAGE_TRANSITIONS" = "Animer les transitions de page";
-"SOURCE_IMPORT_FAIL_TEXT" = "Échec de l’importation de la source. Assurez-vous que votre fichier .aix est valide.";
+"SOURCE_IMPORT_FAIL_TEXT" = "Échec de l’importation de la source. Assurez-vous que votre fichier .krx est valide.";
 "FILE_IMPORT_FAIL_TEXT" = "Échec de l’importation du fichier. Assurez-vous qu’il s’agit d’une archive CBZ ou ZIP valide contenant des images.";
 "NAME" = "Nom";
 "DATE" = "Date";

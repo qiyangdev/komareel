@@ -5,7 +5,7 @@
 //  Created by Skitty on 5/14/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 import Nuke
 import UniformTypeIdentifiers
@@ -220,7 +220,7 @@ extension DownloadTask {
     }
 
     // perform download
-    private func download(from source: AidokuRunner.Source) async {
+    private func download(from source: KomareelSourceKit.Source) async {
         guard running && !downloads.isEmpty else { return }
 
         let download = downloads[0]
@@ -350,7 +350,7 @@ extension DownloadTask {
     // fetch a single page's data
     private func downloadPage(
         _ page: NetworkPage,
-        source: AidokuRunner.Source,
+        source: KomareelSourceKit.Source,
         tmpDirectory: URL
     ) async -> PageDownloadResult {
         let urlRequest = await source.getModifiedImageRequest(

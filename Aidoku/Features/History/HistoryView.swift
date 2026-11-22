@@ -5,7 +5,7 @@
 //  Created by Skitty on 7/30/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import LocalAuthentication
 import SwiftUI
 import SwiftUIIntrospect
@@ -293,7 +293,7 @@ struct HistoryView: View {
                 let source = SourceManager.shared.store.source(for: mangaId.sourceKey),
                 source.isPlayableMedia
             else { return }
-            let target = manga ?? AidokuRunner.Manga(sourceKey: mangaId.sourceKey, key: mangaId.mangaKey, title: "")
+            let target = manga ?? KomareelSourceKit.Manga(sourceKey: mangaId.sourceKey, key: mangaId.mangaKey, title: "")
             path.push(MangaViewController(source: source, manga: target, parent: root, chapterKey: recent.id.chapterKey))
             return
         }
@@ -304,7 +304,7 @@ struct HistoryView: View {
             fetchIfNeeded: true
         )
 
-        var targetManga = manga ?? AidokuRunner.Manga(sourceKey: mangaId.sourceKey, key: mangaId.mangaKey, title: "")
+        var targetManga = manga ?? KomareelSourceKit.Manga(sourceKey: mangaId.sourceKey, key: mangaId.mangaKey, title: "")
         if !chapters.isEmpty {
             targetManga.chapters = chapters
         }
@@ -367,9 +367,9 @@ struct HistoryView: View {
 private struct HistoryEntryCell: View, @MainActor Equatable {
     let entry: HistoryEntry
 
-    let source: AidokuRunner.Source?
-    let manga: AidokuRunner.Manga?
-    let chapter: AidokuRunner.Chapter?
+    let source: KomareelSourceKit.Source?
+    let manga: KomareelSourceKit.Manga?
+    let chapter: KomareelSourceKit.Chapter?
 
     var onPressed: (() -> Void)?
 

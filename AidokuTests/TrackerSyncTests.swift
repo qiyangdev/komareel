@@ -5,7 +5,7 @@
 //  Created by Skitty on 11/17/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Testing
 import UIKit
 
@@ -54,7 +54,7 @@ actor TestableTracker: Tracker {
         nil
     }
 
-    func search(for manga: AidokuRunner.Manga, includeNsfw: Bool) async throws -> [Aidoku.TrackSearchItem] {
+    func search(for manga: KomareelSourceKit.Manga, includeNsfw: Bool) async throws -> [Aidoku.TrackSearchItem] {
         []
     }
 
@@ -67,7 +67,7 @@ actor TestableTracker: Tracker {
 
 @Suite struct TrackerSyncTests {
     static let testId = "test"
-    static let testManga: AidokuRunner.Manga = .init(sourceKey: "test", key: "test", title: "Test")
+    static let testManga: KomareelSourceKit.Manga = .init(sourceKey: "test", key: "test", title: "Test")
     static let testTrackItem = TrackItem(
         id: Self.testId,
         trackerId: "test",
@@ -104,7 +104,7 @@ actor TestableTracker: Tracker {
         await tracker.setLastReadChapter(2)
         await tracker.setLastReadVolume(1)
 
-        let chapters: [AidokuRunner.Chapter] = (1...10).map {
+        let chapters: [KomareelSourceKit.Chapter] = (1...10).map {
             .init(
                 key: "\($0)",
                 title: "\($0)",
@@ -142,7 +142,7 @@ actor TestableTracker: Tracker {
         let tracker = TestableTracker()
         await tracker.setLastReadChapter(5)
 
-        let chapters: [AidokuRunner.Chapter] = (1...10).map {
+        let chapters: [KomareelSourceKit.Chapter] = (1...10).map {
             .init(
                 key: "\($0)",
                 title: "\($0)",

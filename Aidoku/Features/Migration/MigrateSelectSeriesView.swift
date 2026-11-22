@@ -5,20 +5,20 @@
 //  Created by skitty on 5/9/26.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct MigrateSelectSeriesView: View {
     let sourceName: String
-    let series: [AidokuRunner.Manga]
-    let source: AidokuRunner.Source?
+    let series: [KomareelSourceKit.Manga]
+    let source: KomareelSourceKit.Source?
 
     @State private var selectedKeys: Set<String>
     @State private var editMode = EditMode.active
 
     @EnvironmentObject private var path: NavigationCoordinator
 
-    init(sourceName: String, series: [AidokuRunner.Manga], source: AidokuRunner.Source?) {
+    init(sourceName: String, series: [KomareelSourceKit.Manga], source: KomareelSourceKit.Source?) {
         self.sourceName = sourceName
         self.series = series
         self.source = source
@@ -115,8 +115,8 @@ struct MigrateSelectSeriesView: View {
 
 extension MigrateSelectSeriesView {
     struct SeriesCell: View {
-        let source: AidokuRunner.Source?
-        let item: AidokuRunner.Manga
+        let source: KomareelSourceKit.Source?
+        let item: KomareelSourceKit.Manga
 
         private let coverWidth: CGFloat = 42
         private let coverHeight: CGFloat = 42

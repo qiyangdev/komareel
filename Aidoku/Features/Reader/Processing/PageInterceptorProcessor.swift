@@ -5,7 +5,7 @@
 //  Created by Skitty on 5/8/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 import Nuke
 
@@ -14,7 +14,7 @@ extension ImageRequest.UserInfoKey {
 }
 
 struct PageInterceptorProcessor: ImageProcessing {
-    let source: AidokuRunner.Source
+    let source: KomareelSourceKit.Source
     let pageContext: PageContext?
 
     let identifier: String = "pageProcessor"
@@ -26,18 +26,18 @@ struct PageInterceptorProcessor: ImageProcessing {
     func process(_ container: ImageContainer, context: ImageProcessingContext) throws -> ImageContainer {
         // image processing should be async so we don't have to block, but Nuke doesn't support this...
         // this isn't run on the main thread anyways, so appears to be fine for now
-        let output: AidokuRunner.PlatformImage? = try BlockingThrowingTask {
+        let output: KomareelSourceKit.PlatformImage? = try BlockingThrowingTask {
             try await processAsync(container, context: context)
         }.get()
 
         var container = container
-        container.image = output?.image
+        container.image = output
             ?? container.data.flatMap { PlatformImage(data: $0) }
             ?? container.image
         return container
     }
 
-    func processAsync(_ container: ImageContainer, context: ImageProcessingContext) async throws -> AidokuRunner.PlatformImage? {
+    func processAsync(_ container: ImageContainer, context: ImageProcessingContext) async throws -> KomareelSourceKit.PlatformImage? {
         guard let request = context.request.urlRequest else {
             return nil
         }
@@ -72,11 +72,14 @@ struct PageInterceptorProcessor: ImageProcessing {
             image: imageDescriptor
         )
 
-        let result = try await source.processPageImage(response: response, context: pageContext)
-
-        try await source.remove(value: imageDescriptor)
-
-        return result
+        do {
+            let result = try await source.processPageImage(response: response, context: pageContext)
+            try await source.remove(value: imageDescriptor)
+            return result
+        } catch {
+            try? await source.remove(value: imageDescriptor)
+            throw error
+        }
     }
 
     func processWithoutImage(request: ImageRequest) throws -> ImageContainer {

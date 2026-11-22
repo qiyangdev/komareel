@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import AidokuRunner
+import KomareelSourceKit
 
 @MainActor
 // swiftlint:disable:next class_delegate_protocol
@@ -20,7 +20,7 @@ protocol ReaderReaderDelegate: UIViewController {
 
     func sliderMoved(value: CGFloat)
     func sliderStopped(value: CGFloat)
-    func setChapter(_ chapter: AidokuRunner.Chapter, startPage: Int)
+    func setChapter(_ chapter: KomareelSourceKit.Chapter, startPage: Int)
 }
 
 extension ReaderReaderDelegate {

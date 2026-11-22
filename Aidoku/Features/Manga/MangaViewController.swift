@@ -5,15 +5,15 @@
 //  Created by Skitty on 7/29/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 class MangaViewController: UIHostingController<MangaView> {
-    let manga: AidokuRunner.Manga
+    let manga: KomareelSourceKit.Manga
     let mangaInfo: MangaInfo?
 
     convenience init(
-        source: AidokuRunner.Source? = nil,
+        source: KomareelSourceKit.Source? = nil,
         manga: MangaInfo,
         parent: UIViewController?,
         chapterKey: String? = nil,
@@ -30,8 +30,8 @@ class MangaViewController: UIHostingController<MangaView> {
     }
 
     init(
-        source: AidokuRunner.Source? = nil,
-        manga: AidokuRunner.Manga,
+        source: KomareelSourceKit.Source? = nil,
+        manga: KomareelSourceKit.Manga,
         parent: UIViewController?,
         chapterKey: String? = nil,
         openAction: MangaView.OpenAction? = nil,

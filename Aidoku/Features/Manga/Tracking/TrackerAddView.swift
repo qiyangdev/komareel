@@ -5,12 +5,12 @@
 //  Created by Skitty on 7/20/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct TrackerAddView: View {
     let tracker: Tracker
-    let manga: AidokuRunner.Manga
+    let manga: KomareelSourceKit.Manga
     @Binding var refresh: Bool
 
     @State private var isLoading = false

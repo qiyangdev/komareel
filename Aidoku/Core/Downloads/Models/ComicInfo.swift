@@ -5,7 +5,7 @@
 //  Created by Skitty on 11/11/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 import ZIPFoundation
 
@@ -89,7 +89,7 @@ extension ComicInfo {
 }
 
 extension ComicInfo {
-    static func load(manga: AidokuRunner.Manga, chapter: AidokuRunner.Chapter) -> ComicInfo {
+    static func load(manga: KomareelSourceKit.Manga, chapter: KomareelSourceKit.Chapter) -> ComicInfo {
         let dateComponents = chapter.dateUploaded.flatMap { Calendar.current.dateComponents([.year, .month, .day], from: $0) }
         return .init(
             title: chapter.title,
@@ -133,7 +133,7 @@ extension ComicInfo {
         )
     }
 
-    func toManga() -> AidokuRunner.Manga? {
+    func toManga() -> KomareelSourceKit.Manga? {
         guard
             let extraData = extraData(),
             let sourceKey = extraData.sourceKey,
@@ -141,22 +141,22 @@ extension ComicInfo {
         else {
             return nil
         }
-        let basicManga = AidokuRunner.Manga(sourceKey: sourceKey, key: key, title: series ?? "")
+        let basicManga = KomareelSourceKit.Manga(sourceKey: sourceKey, key: key, title: series ?? "")
         return copy(into: basicManga)
     }
 
-    func toChapter() -> AidokuRunner.Chapter? {
+    func toChapter() -> KomareelSourceKit.Chapter? {
         guard
             let extraData = extraData(),
             let key = extraData.chapterKey
         else {
             return nil
         }
-        let basicChapter = AidokuRunner.Chapter(key: key)
+        let basicChapter = KomareelSourceKit.Chapter(key: key)
         return copy(into: basicChapter)
     }
 
-    func copy(into manga: AidokuRunner.Manga) -> AidokuRunner.Manga {
+    func copy(into manga: KomareelSourceKit.Manga) -> KomareelSourceKit.Manga {
         let artists = penciller.flatMap { $0.commaSeparated() }
         let authors = writer.flatMap { $0.commaSeparated() }
         let url = web?.split(separator: " ", maxSplits: 1).first.flatMap { URL(string: String($0)) }
@@ -171,7 +171,7 @@ extension ComicInfo {
             case .yesAndRightToLeft: .rightToLeft
             default: manga.viewer
         }
-        return AidokuRunner.Manga(
+        return KomareelSourceKit.Manga(
             sourceKey: manga.sourceKey,
             key: manga.key,
             title: series ?? manga.title,
@@ -190,7 +190,7 @@ extension ComicInfo {
         )
     }
 
-    func copy(into chapter: AidokuRunner.Chapter) -> AidokuRunner.Chapter {
+    func copy(into chapter: KomareelSourceKit.Chapter) -> KomareelSourceKit.Chapter {
         let dateUploaded: Date? = {
             guard let day, let month, let year else { return nil }
             var components = DateComponents()
@@ -201,7 +201,7 @@ extension ComicInfo {
         }()
         let scanlators = translator.flatMap { $0.commaSeparated() }
         let url = web?.split(separator: " ", maxSplits: 1).first.flatMap { URL(string: String($0)) }
-        return AidokuRunner.Chapter(
+        return KomareelSourceKit.Chapter(
             key: chapter.key,
             title: title ?? chapter.title,
             chapterNumber: number.flatMap { Float($0) } ?? chapter.chapterNumber,

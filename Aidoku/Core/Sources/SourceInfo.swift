@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import AidokuRunner
+import KomareelSourceKit
 
 struct SourceInfo: Hashable {
     let sourceId: String

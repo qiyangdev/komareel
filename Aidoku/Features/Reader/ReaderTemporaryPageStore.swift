@@ -5,7 +5,7 @@
 //  Created by skitty on 8/23/26.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 import ZIPFoundation
 

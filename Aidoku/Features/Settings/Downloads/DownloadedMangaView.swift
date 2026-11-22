@@ -5,7 +5,7 @@
 //  Created by doomsboygaming on 6/25/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct DownloadedMangaView: View {
@@ -200,7 +200,7 @@ struct DownloadedMangaView: View {
         return components.joined(separator: " • ")
     }
 
-    private func openMangaView(source: AidokuRunner.Source) {
+    private func openMangaView(source: KomareelSourceKit.Source) {
         let viewController = MangaViewController(
             source: source,
             manga: viewModel.manga.toManga(),

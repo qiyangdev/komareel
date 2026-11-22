@@ -5,7 +5,7 @@
 //  Created by Koding Dev on 19/7/2022.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 
 /// AniList tracker for Aidoku.
@@ -146,7 +146,7 @@ final class AniListTracker: OAuthTracker {
         URL(string: "https://anilist.co/manga/\(trackId)")
     }
 
-    func search(for manga: AidokuRunner.Manga, includeNsfw: Bool) async throws -> [TrackSearchItem] {
+    func search(for manga: KomareelSourceKit.Manga, includeNsfw: Bool) async throws -> [TrackSearchItem] {
         try await search(title: manga.title, nsfw: includeNsfw)
     }
 

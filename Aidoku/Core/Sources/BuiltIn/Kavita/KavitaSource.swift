@@ -5,16 +5,16 @@
 //  Created by Skitty on 10/19/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 import UIKit
 
-extension AidokuRunner.Source {
+extension KomareelSourceKit.Source {
     static func kavita(
         key: String = "kavita",
         name: String,
         server: String
-    ) -> AidokuRunner.Source {
+    ) -> KomareelSourceKit.Source {
         .init(
             url: nil,
             key: key,
@@ -136,7 +136,7 @@ actor KavitaSourceRunner: Runner {
     private var storedTags: [FilterItem] = []
     private var lastWorkingMirror: URL?
 
-    func getSearchMangaList(query: String?, page: Int, filters: [AidokuRunner.FilterValue]) async throws -> AidokuRunner.MangaPageResult {
+    func getSearchMangaList(query: String?, page: Int, filters: [KomareelSourceKit.FilterValue]) async throws -> KomareelSourceKit.MangaPageResult {
         var baseUrl = try helper.getConfiguredServer()
         let apiKey = helper.getApiKey()
         let filter = try await helper.getSearchFilter(
@@ -160,7 +160,7 @@ actor KavitaSourceRunner: Runner {
         )
     }
 
-    func getMangaUpdate(manga: AidokuRunner.Manga, needsDetails: Bool, needsChapters: Bool) async throws -> AidokuRunner.Manga {
+    func getMangaUpdate(manga: KomareelSourceKit.Manga, needsDetails: Bool, needsChapters: Bool) async throws -> KomareelSourceKit.Manga {
         var baseUrl = try helper.getConfiguredServer()
         let apiKey = helper.getApiKey()
 
@@ -209,7 +209,7 @@ actor KavitaSourceRunner: Runner {
         return manga
     }
 
-    func getPageList(manga: AidokuRunner.Manga, chapter: AidokuRunner.Chapter) async throws -> [AidokuRunner.Page] {
+    func getPageList(manga: KomareelSourceKit.Manga, chapter: KomareelSourceKit.Chapter) async throws -> [KomareelSourceKit.Page] {
         var baseUrl = try helper.getConfiguredServer()
         let apiKey = helper.getApiKey()
 
@@ -230,7 +230,7 @@ actor KavitaSourceRunner: Runner {
         }
     }
 
-    func getMangaList(listing: AidokuRunner.Listing, page: Int) async throws -> AidokuRunner.MangaPageResult {
+    func getMangaList(listing: KomareelSourceKit.Listing, page: Int) async throws -> KomareelSourceKit.MangaPageResult {
         var baseUrl = try helper.getConfiguredServer()
         let apiKey = helper.getApiKey()
         var lastWorkingMirrorCopy = lastWorkingMirror
@@ -313,7 +313,7 @@ actor KavitaSourceRunner: Runner {
         }
     }
 
-    func getSearchFilters() async throws -> [AidokuRunner.Filter] {
+    func getSearchFilters() async throws -> [KomareelSourceKit.Filter] {
         enum ResultType: String, CaseIterable {
             case libraries
             case genres = "genres?context=1"
@@ -360,7 +360,7 @@ actor KavitaSourceRunner: Runner {
             }
             return result
         }
-        var filters: [AidokuRunner.Filter] = []
+        var filters: [KomareelSourceKit.Filter] = []
 
         if let libraryObjects = result[.libraries], libraryObjects.count > 1 {
             filters.append(
@@ -454,7 +454,7 @@ actor KavitaSourceRunner: Runner {
         return filters
     }
 
-    func getListings() async throws -> [AidokuRunner.Listing] {
+    func getListings() async throws -> [KomareelSourceKit.Listing] {
         var lastWorkingMirrorCopy = lastWorkingMirror
         let libraries: [KavitaLibrary] = try await helper.request(path: "api/library/libraries", lastWorkingMirror: &lastWorkingMirrorCopy)
         lastWorkingMirror = lastWorkingMirrorCopy

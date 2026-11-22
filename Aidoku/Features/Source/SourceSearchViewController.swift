@@ -5,7 +5,7 @@
 //  Created by Skitty on 11/19/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Combine
 import SwiftUI
 
@@ -25,7 +25,7 @@ class SourceSearchViewController: MangaCollectionViewController {
         }
     }
 
-    override var entries: [AidokuRunner.Manga] {
+    override var entries: [KomareelSourceKit.Manga] {
         get { viewModel.entries }
         set { viewModel.entries = newValue }
     }
@@ -34,7 +34,7 @@ class SourceSearchViewController: MangaCollectionViewController {
         set { viewModel.bookmarkedItems = newValue }
     }
 
-    init(source: AidokuRunner.Source) {
+    init(source: KomareelSourceKit.Source) {
         self.viewModel = .init(source: source)
         super.init()
     }

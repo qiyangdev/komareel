@@ -5,7 +5,7 @@
 //  Created by Skitty on 5/2/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 import ZIPFoundation
 
@@ -60,7 +60,7 @@ actor DownloadManager {
         }
     }
 
-    func getDownloadedPages(for chapter: ChapterIdentifier) async -> [AidokuRunner.Page] {
+    func getDownloadedPages(for chapter: ChapterIdentifier) async -> [KomareelSourceKit.Page] {
         let directory = cache.directory(for: chapter)
 
         let archiveURL = directory.appendingPathExtension("cbz")
@@ -73,7 +73,7 @@ actor DownloadManager {
                 .sorted {
                     $0.lastPathComponent.localizedStandardCompare($1.lastPathComponent) == .orderedAscending
                 }
-                .compactMap { url -> AidokuRunner.Page? in
+                .compactMap { url -> KomareelSourceKit.Page? in
                     guard !url.lastPathComponent.hasPrefix(".") else {
                         return nil
                     }
@@ -86,10 +86,10 @@ actor DownloadManager {
                         // otherwise, load file as text
                         let text: String? = try? String(contentsOf: url)
                         guard let text else { return nil }
-                        return AidokuRunner.Page(content: .text(text))
+                        return KomareelSourceKit.Page(content: .text(text))
                     } else if LocalFileManager.allowedImageExtensions.contains(url.pathExtension) {
                         // load file as image
-                        return AidokuRunner.Page(content: .url(url: url, context: nil))
+                        return KomareelSourceKit.Page(content: .url(url: url, context: nil))
                     } else {
                         return nil
                     }
@@ -175,7 +175,7 @@ actor DownloadManager {
 // MARK: File Management
 
 extension DownloadManager {
-    private func chapters(for manga: AidokuRunner.Manga) async -> [AidokuRunner.Chapter] {
+    private func chapters(for manga: KomareelSourceKit.Manga) async -> [KomareelSourceKit.Chapter] {
         if let chapters = manga.chapters {
             return chapters
         }
@@ -183,10 +183,10 @@ extension DownloadManager {
     }
 
     /// Download all chapters for a manga.
-    func downloadAll(manga: AidokuRunner.Manga) async {
+    func downloadAll(manga: KomareelSourceKit.Manga) async {
         let allChapters = await chapters(for: manga)
 
-        var chaptersToDownload: [AidokuRunner.Chapter] = []
+        var chaptersToDownload: [KomareelSourceKit.Chapter] = []
 
         for chapter in allChapters {
             guard !chapter.locked else { continue }
@@ -201,7 +201,7 @@ extension DownloadManager {
     }
 
     /// Download unread chapters for a manga.
-    func downloadUnread(manga: AidokuRunner.Manga, limit: Int? = nil) async {
+    func downloadUnread(manga: KomareelSourceKit.Manga, limit: Int? = nil) async {
         if let limit, limit <= 0 { return }
 
         let readingHistory = await CoreDataManager.shared.getReadingHistory(mangaId: manga.identifier)
@@ -209,7 +209,7 @@ extension DownloadManager {
         let queuedDownloads = await queue.queue[manga.sourceKey] ?? []
         let queuedChapters = Set(queuedDownloads.map(\.chapterIdentifier))
 
-        var chaptersToDownload: [AidokuRunner.Chapter] = []
+        var chaptersToDownload: [KomareelSourceKit.Chapter] = []
 
         for chapter in allChapters.reversed() {
             guard !chapter.locked else { continue }
@@ -228,7 +228,7 @@ extension DownloadManager {
     }
 
     /// Download given chapters from a manga.
-    func download(manga: AidokuRunner.Manga, chapters: [AidokuRunner.Chapter]) async {
+    func download(manga: KomareelSourceKit.Manga, chapters: [KomareelSourceKit.Chapter]) async {
         if let source = await SourceManager.shared.source(for: manga.sourceKey), await source.isPlayableMedia { return }
         let downloads = await queue.add(chapters: chapters, manga: manga, autoStart: true)
         NotificationCenter.default.post(
@@ -535,7 +535,7 @@ extension DownloadManager {
     }
 
     /// Save chapter metadata to ComicInfo.xml.
-    func saveChapterMetadata(manga: AidokuRunner.Manga, chapter: AidokuRunner.Chapter, to directory: URL) {
+    func saveChapterMetadata(manga: KomareelSourceKit.Manga, chapter: KomareelSourceKit.Chapter, to directory: URL) {
         let xml = ComicInfo.load(manga: manga, chapter: chapter).export()
         guard let data = xml.data(using: .utf8) else { return }
         do {
@@ -725,7 +725,7 @@ extension DownloadManager {
         let title: String?
         let chapterNumber: Float?
         let volumeNumber: Float?
-        var chapter: AidokuRunner.Chapter?
+        var chapter: KomareelSourceKit.Chapter?
     }
 
     private struct MangaMetadata: Codable {

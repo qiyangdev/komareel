@@ -5,12 +5,12 @@
 //  Created by Skitty on 12/29/23.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct FilterListSheetView: View {
     let sourceKey: String?
-    let filters: [AidokuRunner.Filter]
+    let filters: [KomareelSourceKit.Filter]
 
     @Binding var search: String
     @Binding var enabledFilters: [FilterValue]
@@ -27,7 +27,7 @@ struct FilterListSheetView: View {
 
     init(
         sourceKey: String? = nil,
-        filters: [AidokuRunner.Filter],
+        filters: [KomareelSourceKit.Filter],
         search: Binding<String>,
         enabledFilters: Binding<[FilterValue]>
     ) {
@@ -214,7 +214,7 @@ struct FilterListSheetView: View {
 }
 
 private struct FilterListView: View {
-    let filters: [AidokuRunner.Filter]
+    let filters: [KomareelSourceKit.Filter]
     let showTitles: Bool
 
     @Binding var newSearch: String?
@@ -238,7 +238,7 @@ private struct FilterListView: View {
     @Environment(\.dismiss) var dismiss
 
     init(
-        filters: [AidokuRunner.Filter],
+        filters: [KomareelSourceKit.Filter],
         showTitles: Bool = true,
         newSearch: Binding<String?>,
         enabledFilters: Binding<[FilterValue]>,
@@ -502,7 +502,7 @@ private struct FilterListView: View {
         )
     }
 
-    private func rangeFilterView(filter: AidokuRunner.Filter, min: Float?, max: Float?, decimal: Bool) -> some View {
+    private func rangeFilterView(filter: KomareelSourceKit.Filter, min: Float?, max: Float?, decimal: Bool) -> some View {
         HStack {
             TextFieldWrapper(hasError: hasError[filter.id + ".from", default: false]) {
                 let value = fromBinding(for: filter.id)

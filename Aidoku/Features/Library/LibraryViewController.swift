@@ -8,7 +8,7 @@
 import UIKit
 import LocalAuthentication
 import SwiftUI
-import AidokuRunner
+import KomareelSourceKit
 
 class LibraryViewController: OldMangaCollectionViewController {
     let viewModel = LibraryViewModel()
@@ -1335,7 +1335,7 @@ extension LibraryViewController {
                     guard let source = await SourceManager.shared.source(for: info.id.sourceKey) else {
                         return
                     }
-                    let manga = AidokuRunner.Manga(
+                    let manga = KomareelSourceKit.Manga(
                         sourceKey: info.id.sourceKey,
                         key: info.id.mangaKey,
                         title: info.title ?? "",

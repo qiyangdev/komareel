@@ -29,9 +29,7 @@ struct CodableSourceList: Codable {
             url: url,
             name: name,
             feedbackURL: feedbackURL.flatMap { URL(string: $0) },
-            sources: sources.map {
-                $0.with(sourceUrl: url)
-            }
+            sources: sources.map { $0.with(sourceUrl: url) }.filter { $0.fileURL.map(KomareelSourcePackage.matches) ?? false }
         )
     }
 }

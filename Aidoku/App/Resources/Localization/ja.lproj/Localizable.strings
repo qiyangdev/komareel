@@ -724,7 +724,7 @@
 "MONTHLY" = "毎月";
 "GET_RECOMMENDED_DICTIONARIES" = "おすすめの辞書を取得";
 "RECOMMENDED_DICTIONARIES" = "おすすめの辞書";
-"SOURCE_IMPORT_FAIL_TEXT" = "ソースのインポートに失敗しました。aixファイルが有効であることを確認してください。";
+"SOURCE_IMPORT_FAIL_TEXT" = "ソースのインポートに失敗しました。krxファイルが有効であることを確認してください。";
 "FILE_IMPORT_FAIL_TEXT" = "ファイルのインポートに失敗しました。画像が含まれる有効なCBZまたはZIPアーカイブであることを確認してください。";
 "BACKUP_%@" = "%@ をバックアップ";
 "CREATE_BACKUP" = "バックアップを作成";

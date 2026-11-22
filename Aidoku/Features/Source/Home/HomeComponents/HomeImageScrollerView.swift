@@ -5,13 +5,13 @@
 //  Created by Skitty on 5/12/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Combine
 import SwiftUI
 import SafariServices
 
 struct HomeImageScrollerView: View {
-    let source: AidokuRunner.Source
+    let source: KomareelSourceKit.Source
     let component: HomeComponent
     let partial: Bool
 
@@ -28,7 +28,7 @@ struct HomeImageScrollerView: View {
     @EnvironmentObject private var path: NavigationCoordinator
 
     init(
-        source: AidokuRunner.Source,
+        source: KomareelSourceKit.Source,
         component: HomeComponent,
         partial: Bool = false
     ) {

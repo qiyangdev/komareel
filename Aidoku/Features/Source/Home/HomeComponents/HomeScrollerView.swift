@@ -5,18 +5,18 @@
 //  Created by Skitty on 10/13/23.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SafariServices
 import SwiftUI
 
 struct HomeScrollerView: View {
-    let source: AidokuRunner.Source
+    let source: KomareelSourceKit.Source
     let component: HomeComponent
     let partial: Bool
-    let pressAction: ((AidokuRunner.Manga) -> Void)?
+    let pressAction: ((KomareelSourceKit.Manga) -> Void)?
 
     private let entries: [HomeComponent.Value.Link]
-    private let listing: AidokuRunner.Listing?
+    private let listing: KomareelSourceKit.Listing?
     private let hasSubtitles: Bool
 
     static let coverHeight: CGFloat = 180
@@ -27,10 +27,10 @@ struct HomeScrollerView: View {
     @EnvironmentObject private var path: NavigationCoordinator
 
     init(
-        source: AidokuRunner.Source,
+        source: KomareelSourceKit.Source,
         component: HomeComponent,
         partial: Bool = false,
-        pressAction: ((AidokuRunner.Manga) -> Void)? = nil
+        pressAction: ((KomareelSourceKit.Manga) -> Void)? = nil
     ) {
         self.source = source
         self.component = component

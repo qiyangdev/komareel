@@ -5,18 +5,18 @@
 //  Created by skitty on 5/16/26.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct MigrateSingleSearchView: View {
-    let targetSources: [AidokuRunner.Source]
-    let selectedSeries: AidokuRunner.Manga
+    let targetSources: [KomareelSourceKit.Source]
+    let selectedSeries: KomareelSourceKit.Manga
 
-    var resultSeries: Binding<AidokuRunner.Manga?>?
+    var resultSeries: Binding<KomareelSourceKit.Manga?>?
 
     struct SearchResult: Identifiable, Equatable {
-        let source: AidokuRunner.Source
-        let result: AidokuRunner.MangaPageResult
+        let source: KomareelSourceKit.Source
+        let result: KomareelSourceKit.MangaPageResult
 
         var id: String { source.id }
 
@@ -28,7 +28,7 @@ struct MigrateSingleSearchView: View {
     @State private var query: String
     @State private var results: [SearchResult] = []
     @State private var searchTask: Task<Void, Never>?
-    @State private var targetSeries: AidokuRunner.Manga?
+    @State private var targetSeries: KomareelSourceKit.Manga?
     @State private var isMigrating = false
     @State private var isLoading = false
     @State private var didFirstLoad = false
@@ -39,9 +39,9 @@ struct MigrateSingleSearchView: View {
     @Environment(\.dismiss) private var dismiss
 
     init(
-        targetSources: [AidokuRunner.Source],
-        selectedSeries: AidokuRunner.Manga,
-        resultSeries: Binding<AidokuRunner.Manga?>? = nil
+        targetSources: [KomareelSourceKit.Source],
+        selectedSeries: KomareelSourceKit.Manga,
+        resultSeries: Binding<KomareelSourceKit.Manga?>? = nil
     ) {
         self.targetSources = targetSources
         self.selectedSeries = selectedSeries
@@ -201,7 +201,7 @@ extension MigrateSingleSearchView {
             // sources freeze if we run too many tasks concurrently, so we limit it
             let maxConcurrentTasks = 3
 
-            await withTaskGroup(of: (AidokuRunner.Source, AidokuRunner.MangaPageResult?).self) { group in
+            await withTaskGroup(of: (KomareelSourceKit.Source, KomareelSourceKit.MangaPageResult?).self) { group in
                 // add the initial tasks to the group
                 for i in 0..<min(targetSources.count, maxConcurrentTasks) {
                     let source = targetSources[i]

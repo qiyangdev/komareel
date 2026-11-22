@@ -6,15 +6,15 @@
 //
 
 import UIKit
-import AidokuRunner
+import KomareelSourceKit
 
 class CategorySelectViewController: UITableViewController {
-    let manga: AidokuRunner.Manga
+    let manga: KomareelSourceKit.Manga
 
     var categories: [String] = []
     var selectedCategories: [String] = []
 
-    init(manga: AidokuRunner.Manga) {
+    init(manga: KomareelSourceKit.Manga) {
         self.manga = manga
         super.init(style: .plain)
     }

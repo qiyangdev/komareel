@@ -5,7 +5,7 @@
 //  Created by Skitty on 12/20/21.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 
 enum PublishingStatus: Int, Codable {
@@ -27,7 +27,7 @@ enum PublishingStatus: Int, Codable {
         }
     }
 
-    func toNew() -> AidokuRunner.PublishingStatus {
+    func toNew() -> KomareelSourceKit.PublishingStatus {
         switch self {
             case .unknown: .unknown
             case .ongoing: .ongoing
@@ -79,7 +79,7 @@ enum MangaContentRating: Int, Codable, CaseIterable {
         }
     }
 
-    func toNew() -> AidokuRunner.ContentRating {
+    func toNew() -> KomareelSourceKit.ContentRating {
         switch self {
             case .safe: .safe
             case .suggestive: .suggestive
@@ -107,7 +107,7 @@ enum MangaViewer: Int, Codable {
     case vertical = 3
     case scroll = 4
 
-    func toNew() -> AidokuRunner.Viewer {
+    func toNew() -> KomareelSourceKit.Viewer {
         switch self {
             case .defaultViewer: .unknown
             case .ltr: .leftToRight
@@ -122,7 +122,7 @@ struct MangaPageResult {
     let manga: [Manga]
     let hasNextPage: Bool
 
-    func toNew() -> AidokuRunner.MangaPageResult {
-        AidokuRunner.MangaPageResult(entries: manga.map { $0.toNew() }, hasNextPage: hasNextPage)
+    func toNew() -> KomareelSourceKit.MangaPageResult {
+        KomareelSourceKit.MangaPageResult(entries: manga.map { $0.toNew() }, hasNextPage: hasNextPage)
     }
 }

@@ -5,7 +5,7 @@
 //  Created by Skitty on 3/1/23.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import AsyncDisplayKit
 import Gifu
 import Nuke
@@ -15,7 +15,7 @@ import VisionKit
 import ZIPFoundation
 
 class ReaderWebtoonPageNode: BaseObservingCellNode {
-    let source: AidokuRunner.Source?
+    let source: KomareelSourceKit.Source?
     let page: Page
     let temporaryPageStore: ReaderTemporaryPageStore
     let pillarboxLayoutState: ReaderPillarboxLayoutState
@@ -86,7 +86,7 @@ class ReaderWebtoonPageNode: BaseObservingCellNode {
     })
 
     init(
-        source: AidokuRunner.Source?,
+        source: KomareelSourceKit.Source?,
         page: Page,
         temporaryPageStore: ReaderTemporaryPageStore,
         pillarboxLayoutState: ReaderPillarboxLayoutState

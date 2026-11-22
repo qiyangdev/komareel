@@ -5,14 +5,12 @@
 //  Created by Skitty on 10/13/23.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
-import Wasm3
 
 // source error warning triangle with associated text and retry button if applicable
 struct ErrorView: View {
     let error: Error
-    var restart: (() async throws -> Void)?
     var retry: (() async -> Void)?
 
     @State private var loading = false
@@ -36,20 +34,6 @@ struct ErrorView: View {
                         // don't show retry button
                     } else {
                         retryButton(action: retry)
-                    }
-                } else if let restart, let error = error as? Wasm3Error {
-                    switch error {
-                        case .trap, .runtimeDisabled:
-                            retryButton(title: NSLocalizedString("RESTART")) {
-                                do {
-                                    try await restart()
-                                    await retry()
-                                } catch {
-                                    LogManager.logger.error("Failed to restart source: \(error)")
-                                }
-                            }
-                        default:
-                            EmptyView()
                     }
                 }
             }

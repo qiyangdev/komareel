@@ -501,7 +501,7 @@
 "SHOW_NSFW_RESULTS" = "Prikaži rezultate sa sadržajem za odrasle";
 "RELOAD_FAILED" = "Ponovno učitavanje nije uspjelo";
 "RELOAD_FAILED_TEXT" = "Ponovno učitavanje slike nije uspjelo. Pokušaj ponovo.";
-"SOURCE_IMPORT_FAIL_TEXT" = "Uvoz izvora nije uspio. Osiguraj da je aix datoteka valjana.";
+"SOURCE_IMPORT_FAIL_TEXT" = "Uvoz izvora nije uspio. Osiguraj da je krx datoteka valjana.";
 "FILE_IMPORT_FAIL_TEXT" = "Uvoz datoteke nije uspio. Osiguraj da se radi o valjanoj CBZ ili ZIP arhivi koja sadrži slike.";
 "ADD" = "Dodaj";
 "MARK_DUPLICATE_CHAPTERS" = "Označi dupla poglavlja kao pročitana";

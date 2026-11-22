@@ -1,13 +1,13 @@
-import AidokuRunner
+import KomareelSourceKit
 import AVKit
 import Combine
 import UIKit
 
 @MainActor
 final class FullScreenVideoPlayback: NSObject, @preconcurrency AVPlayerViewControllerDelegate, UIAdaptivePresentationControllerDelegate {
-    private let manga: AidokuRunner.Manga
-    private let episode: AidokuRunner.Chapter
-    private let source: AidokuRunner.Source
+    private let manga: KomareelSourceKit.Manga
+    private let episode: KomareelSourceKit.Chapter
+    private let source: KomareelSourceKit.Source
     private let controller = AVPlayerViewController()
     private let loadingIndicator = UIActivityIndicatorView(style: .large)
     private weak var presenter: UIViewController?
@@ -19,9 +19,9 @@ final class FullScreenVideoPlayback: NSObject, @preconcurrency AVPlayerViewContr
     private var pictureInPicture = false
 
     init(
-        manga: AidokuRunner.Manga,
-        episode: AidokuRunner.Chapter,
-        source: AidokuRunner.Source,
+        manga: KomareelSourceKit.Manga,
+        episode: KomareelSourceKit.Chapter,
+        source: KomareelSourceKit.Source,
         onDismiss: @escaping () -> Void
     ) {
         self.manga = manga

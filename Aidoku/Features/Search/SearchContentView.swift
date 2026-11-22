@@ -5,7 +5,7 @@
 //  Created by Skitty on 11/14/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct SearchContentView: View {

@@ -5,7 +5,7 @@
 //  Created by Skitty on 3/22/23.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import AsyncDisplayKit
 
 struct Transition {
@@ -14,8 +14,8 @@ struct Transition {
     }
 
     var type: TransitionType
-    var from: AidokuRunner.Chapter
-    var to: AidokuRunner.Chapter?
+    var from: KomareelSourceKit.Chapter
+    var to: KomareelSourceKit.Chapter?
 }
 
 class ReaderTransitionNode: ASDisplayNode {

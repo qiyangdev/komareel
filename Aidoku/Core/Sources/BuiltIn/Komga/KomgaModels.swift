@@ -5,7 +5,7 @@
 //  Created by Skitty on 5/23/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 
 struct KomgaError: Codable, Sendable {
@@ -239,7 +239,7 @@ struct KomgaBookReadProgress: Codable {
 }
 
 extension KomgaBook {
-    func intoManga(sourceKey: String, baseUrl: URL) -> AidokuRunner.Manga {
+    func intoManga(sourceKey: String, baseUrl: URL) -> KomareelSourceKit.Manga {
         .init(
             sourceKey: sourceKey,
             key: seriesId,
@@ -251,7 +251,7 @@ extension KomgaBook {
         )
     }
 
-    func intoChapter(baseUrl: URL, useChapters: Bool) -> AidokuRunner.Chapter {
+    func intoChapter(baseUrl: URL, useChapters: Bool) -> KomareelSourceKit.Chapter {
         .init(
             key: id,
             title: metadata.title,
@@ -317,14 +317,14 @@ struct KomgaSeries: Codable, Sendable {
 }
 
 extension KomgaSeries {
-    func intoManga(sourceKey: String, baseUrl: URL) -> AidokuRunner.Manga {
-        let status: AidokuRunner.PublishingStatus = switch metadata.status {
+    func intoManga(sourceKey: String, baseUrl: URL) -> KomareelSourceKit.Manga {
+        let status: KomareelSourceKit.PublishingStatus = switch metadata.status {
             case .ended: .completed
             case .ongoing: .ongoing
             case .abandoned: .cancelled
             case .hiatus: .hiatus
         }
-        let contentRating: AidokuRunner.ContentRating = metadata.ageRating.flatMap {
+        let contentRating: KomareelSourceKit.ContentRating = metadata.ageRating.flatMap {
             if $0 >= 18 {
                 .nsfw
             } else if $0 >= 16 {
@@ -333,7 +333,7 @@ extension KomgaSeries {
                 .safe
             }
         } ?? .safe
-        let viewer: AidokuRunner.Viewer = switch metadata.readingDirection {
+        let viewer: KomareelSourceKit.Viewer = switch metadata.readingDirection {
             case .leftToRight: .leftToRight
             case .rightToLeft: .rightToLeft
             case .vertical: .vertical

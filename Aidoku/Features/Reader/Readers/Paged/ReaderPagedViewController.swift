@@ -5,7 +5,7 @@
 //  Created by Skitty on 8/15/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import UIKit
 import VisionKit
 
@@ -14,7 +14,7 @@ class ReaderPagedViewController: BaseObservingViewController {
 
     weak var delegate: ReaderHoldingDelegate?
 
-    var chapter: AidokuRunner.Chapter?
+    var chapter: KomareelSourceKit.Chapter?
     var readingMode: ReadingMode = .rtl {
         didSet(oldValue) {
             guard readingMode != oldValue else { return }
@@ -57,8 +57,8 @@ class ReaderPagedViewController: BaseObservingViewController {
     private var dictionaryOverlayTapHandler: ((String, String, CGRect, [CGRect]) -> Void)?
     private var dictionaryOverlayInteractionMode: DictionaryOverlayInteractionMode = .none
 
-    private var previousChapter: AidokuRunner.Chapter?
-    private var nextChapter: AidokuRunner.Chapter?
+    private var previousChapter: KomareelSourceKit.Chapter?
+    private var nextChapter: KomareelSourceKit.Chapter?
 
     private lazy var pageViewController = makePageViewController()
 
@@ -71,8 +71,8 @@ class ReaderPagedViewController: BaseObservingViewController {
     }
 
     init(
-        source: AidokuRunner.Source?,
-        manga: AidokuRunner.Manga,
+        source: KomareelSourceKit.Source?,
+        manga: KomareelSourceKit.Manga,
         temporaryPageStore: ReaderTemporaryPageStore
     ) {
         self.viewModel = ReaderPagedViewModel(
@@ -208,7 +208,7 @@ class ReaderPagedViewController: BaseObservingViewController {
 }
 
 extension ReaderPagedViewController {
-    func loadPageControllers(chapter: AidokuRunner.Chapter) {
+    func loadPageControllers(chapter: KomareelSourceKit.Chapter) {
         guard !viewModel.pages.isEmpty else { return } // TODO: handle zero pages
 
         // if transitioning from an adjacent chapter, keep the existing pages
@@ -905,7 +905,7 @@ extension ReaderPagedViewController: ReaderReaderDelegate {
         move(toPage: displayPage, animated: false)
     }
 
-    func setChapter(_ chapter: AidokuRunner.Chapter, startPage: Int) {
+    func setChapter(_ chapter: KomareelSourceKit.Chapter, startPage: Int) {
         let isChapterChange = self.chapter?.id != chapter.id
         if isChapterChange {
             nextChapterPreloadTask?.cancel()

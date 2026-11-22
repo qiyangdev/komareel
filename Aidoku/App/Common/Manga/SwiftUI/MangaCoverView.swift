@@ -5,13 +5,13 @@
 //  Created by Skitty on 9/8/23.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 import Nuke
 import NukeUI
 
 struct MangaCoverView: View {
-    var source: AidokuRunner.Source?
+    var source: KomareelSourceKit.Source?
 
     let coverImage: String
     var width: CGFloat?

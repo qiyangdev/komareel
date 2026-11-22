@@ -1,4 +1,4 @@
-import AidokuRunner
+import KomareelSourceKit
 import AVFoundation
 import Combine
 import MediaPlayer
@@ -9,9 +9,9 @@ final class AudioPlaybackController: ObservableObject {
     static let shared = AudioPlaybackController()
 
     struct Episode {
-        let manga: AidokuRunner.Manga
-        let chapter: AidokuRunner.Chapter
-        let source: AidokuRunner.Source
+        let manga: KomareelSourceKit.Manga
+        let chapter: KomareelSourceKit.Chapter
+        let source: KomareelSourceKit.Source
 
         var title: String { chapter.title ?? manga.title }
     }
@@ -45,7 +45,7 @@ final class AudioPlaybackController: ObservableObject {
 
     private init() {}
 
-    func open(manga: AidokuRunner.Manga, episode: AidokuRunner.Chapter, source: AidokuRunner.Source) {
+    func open(manga: KomareelSourceKit.Manga, episode: KomareelSourceKit.Chapter, source: KomareelSourceKit.Source) {
         guard self.episode?.manga.identifier != manga.identifier || self.episode?.chapter.key != episode.key else { return }
         load(.init(manga: manga, chapter: episode, source: source))
     }

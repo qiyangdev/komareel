@@ -5,7 +5,7 @@
 //  Created by skitty on 7/7/26.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 
 struct SuwayomiHelper: Sendable {

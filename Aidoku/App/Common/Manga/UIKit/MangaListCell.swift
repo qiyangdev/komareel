@@ -5,7 +5,7 @@
 //  Created by Skitty on 11/19/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Gifu
 import Nuke
 import UIKit
@@ -234,7 +234,7 @@ extension MangaListCell {
 }
 
 extension MangaListCell {
-    func configure(with manga: AidokuRunner.Manga, isBookmarked: Bool = false) {
+    func configure(with manga: KomareelSourceKit.Manga, isBookmarked: Bool = false) {
         identifier = MangaIdentifier(sourceKey: manga.sourceKey, mangaKey: manga.key)
         titleLabel.text = manga.title
         subtitleLabel.text = manga.authors?.joined(separator: ", ")
@@ -275,7 +275,7 @@ extension MangaListCell {
 
         self.coverImageView.stopAnimatingGIF()
 
-        let source: AidokuRunner.Source? = if let sourceKey = identifier?.sourceKey {
+        let source: KomareelSourceKit.Source? = if let sourceKey = identifier?.sourceKey {
             await SourceManager.shared.source(for: sourceKey)
         } else {
             nil

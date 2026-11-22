@@ -5,7 +5,7 @@
 //  Created by Skitty on 5/23/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -154,10 +154,7 @@ struct AddSourceView: View {
             .animation(.default, value: searching)
             .sheet(isPresented: $importing) {
                 DocumentPickerView(
-                    allowedContentTypes: [
-                        UTType(exportedAs: "app.aidoku.Aidoku.aix", conformingTo: .zip),
-                        .init(filenameExtension: "aix")!
-                    ],
+                    allowedContentTypes: [KomareelSourcePackage.contentType],
                     onDocumentsPicked: { urls in
                         guard let url = urls.first else {
                             return

@@ -5,7 +5,7 @@
 //  Created by Skitty on 12/15/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct AddSourceFilterMenu: View {
@@ -15,7 +15,7 @@ struct AddSourceFilterMenu: View {
     }
 
     @State private var languages: [LanguageItem] = []
-    @State private var contentRatings: Set<AidokuRunner.SourceContentRating>
+    @State private var contentRatings: Set<KomareelSourceKit.SourceContentRating>
     @State private var selectedLanguages: Set<String>
 
     @Environment(\.dismiss) private var dismiss

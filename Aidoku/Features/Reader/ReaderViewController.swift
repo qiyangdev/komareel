@@ -5,7 +5,7 @@
 //  Created by Skitty on 8/14/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SafariServices
 import SwiftUI
 import UIKit
@@ -17,18 +17,18 @@ class ReaderViewController: BaseObservingViewController {
         case text
     }
 
-    let source: AidokuRunner.Source?
-    let manga: AidokuRunner.Manga
-    var chapter: AidokuRunner.Chapter
+    let source: KomareelSourceKit.Source?
+    let manga: KomareelSourceKit.Manga
+    var chapter: KomareelSourceKit.Chapter
     var pages: [Page] = []
     var readingMode: ReadingMode = .rtl
     var defaultReadingMode: ReadingMode?
     private var tapZone: TapZone?
     private let temporaryPageStore = ReaderTemporaryPageStore()
 
-    private var chapterList: [AidokuRunner.Chapter]
-    private var chaptersToMark: [AidokuRunner.Chapter] = []
-    private var chaptersToRemoveDownload: [AidokuRunner.Chapter] = [] {
+    private var chapterList: [KomareelSourceKit.Chapter]
+    private var chaptersToMark: [KomareelSourceKit.Chapter] = []
+    private var chaptersToRemoveDownload: [KomareelSourceKit.Chapter] = [] {
         didSet {
             // ensure chapters queued for deletion are persistent, in case of app termination
             if chaptersToRemoveDownload.isEmpty {
@@ -153,9 +153,9 @@ class ReaderViewController: BaseObservingViewController {
     }
 
     init(
-        source: AidokuRunner.Source?,
-        manga: AidokuRunner.Manga,
-        chapter: AidokuRunner.Chapter,
+        source: KomareelSourceKit.Source?,
+        manga: KomareelSourceKit.Manga,
+        chapter: KomareelSourceKit.Chapter,
         startPage: Int? = nil
     ) {
         self.source = source
@@ -487,7 +487,7 @@ extension ReaderViewController {
     func updateReadPosition(
         currentPage: Int? = nil,
         totalPages: Int? = nil,
-        chapter: AidokuRunner.Chapter? = nil
+        chapter: KomareelSourceKit.Chapter? = nil
     ) async {
         let effectiveTotalPages = totalPages ?? toolbarView.totalPages ?? 0
         let effectiveCurrentPage = currentPage ?? self.currentPage
@@ -527,7 +527,7 @@ extension ReaderViewController {
         await saveReadingSession(chapter: chapter)
     }
 
-    private func saveReadingSession(chapter: AidokuRunner.Chapter? = nil) async {
+    private func saveReadingSession(chapter: KomareelSourceKit.Chapter? = nil) async {
         guard let sessionStartDate else { return }
         let pagesRead = sessionReadPages.count
         if pagesRead > 0 && sessionLastInteraction != nil {
@@ -946,18 +946,18 @@ extension ReaderViewController {
 extension ReaderViewController: @MainActor ReaderHoldingDelegate {
     var barsHidden: Bool { statusBarHidden }
 
-    private func areDuplicates(_ a: AidokuRunner.Chapter, _ b: AidokuRunner.Chapter) -> Bool {
+    private func areDuplicates(_ a: KomareelSourceKit.Chapter, _ b: KomareelSourceKit.Chapter) -> Bool {
         a.chapterNumber == b.chapterNumber
             && a.volumeNumber == b.volumeNumber
             && (!(a.chapterNumber == nil && a.volumeNumber == nil) || a.title == b.title)
     }
 
-    private func isValidScanlatorMatch(for next: AidokuRunner.Chapter, current: Set<String>) -> Bool {
+    private func isValidScanlatorMatch(for next: KomareelSourceKit.Chapter, current: Set<String>) -> Bool {
         let nextScanlators = Set(next.scanlators ?? [])
         return current.isEmpty ? nextScanlators.isEmpty : !current.isDisjoint(with: nextScanlators)
     }
 
-    private func findBestChapterMatch(from index: Int, step: Int) -> AidokuRunner.Chapter {
+    private func findBestChapterMatch(from index: Int, step: Int) -> KomareelSourceKit.Chapter {
         let firstCandidate = chapterList[index]
         let currentScanlators = Set(chapter.scanlators ?? [])
 
@@ -978,7 +978,7 @@ extension ReaderViewController: @MainActor ReaderHoldingDelegate {
         return firstCandidate
     }
 
-    func getNextChapter() -> AidokuRunner.Chapter? {
+    func getNextChapter() -> KomareelSourceKit.Chapter? {
         guard
             var index = chapterList.firstIndex(of: chapter)
         else {
@@ -989,7 +989,7 @@ extension ReaderViewController: @MainActor ReaderHoldingDelegate {
         let markDuplicates = UserDefaults.standard.bool(forKey: "Reader.markDuplicateChapters")
 
         index -= 1
-        var nextChapterInList: AidokuRunner.Chapter?
+        var nextChapterInList: KomareelSourceKit.Chapter?
 
         while index >= 0 {
             let new = chapterList[index]
@@ -1018,7 +1018,7 @@ extension ReaderViewController: @MainActor ReaderHoldingDelegate {
         return nil
     }
 
-    func getPreviousChapter() -> AidokuRunner.Chapter? {
+    func getPreviousChapter() -> KomareelSourceKit.Chapter? {
         guard
             var index = chapterList.firstIndex(of: chapter)
         else {
@@ -1049,7 +1049,7 @@ extension ReaderViewController: @MainActor ReaderHoldingDelegate {
         return nil
     }
 
-    func setChapter(_ chapter: AidokuRunner.Chapter) {
+    func setChapter(_ chapter: KomareelSourceKit.Chapter) {
         guard chapter != self.chapter else { return }
 
         // store current history data since it will change when new chapter loads

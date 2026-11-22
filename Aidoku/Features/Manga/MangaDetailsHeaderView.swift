@@ -6,16 +6,16 @@
 //
 
 import SwiftUI
-import AidokuRunner
+import KomareelSourceKit
 import MarkdownUI
 import NukeUI
 
 struct MangaDetailsHeaderView: View {
-    @Binding var source: AidokuRunner.Source?
+    @Binding var source: KomareelSourceKit.Source?
 
-    @Binding var manga: AidokuRunner.Manga
-    @Binding var chapters: [AidokuRunner.Chapter]
-    @Binding var nextChapter: AidokuRunner.Chapter?
+    @Binding var manga: KomareelSourceKit.Manga
+    @Binding var chapters: [KomareelSourceKit.Chapter]
+    @Binding var nextChapter: KomareelSourceKit.Chapter?
     @Binding var readingInProgress: Bool
     @Binding var allChaptersLocked: Bool
     @Binding var allChaptersRead: Bool
@@ -52,10 +52,10 @@ struct MangaDetailsHeaderView: View {
     @State private var showLibraryRemoveConfirm = false
 
     init(
-        source: Binding<AidokuRunner.Source?>,
-        manga: Binding<AidokuRunner.Manga>,
-        chapters: Binding<[AidokuRunner.Chapter]>,
-        nextChapter: Binding<AidokuRunner.Chapter?>,
+        source: Binding<KomareelSourceKit.Source?>,
+        manga: Binding<KomareelSourceKit.Manga>,
+        chapters: Binding<[KomareelSourceKit.Chapter]>,
+        nextChapter: Binding<KomareelSourceKit.Chapter?>,
         readingInProgress: Binding<Bool>,
         allChaptersLocked: Binding<Bool>,
         allChaptersRead: Binding<Bool>,
@@ -401,8 +401,8 @@ struct MangaActionButtonStyle: ButtonStyle {
     @Previewable @Namespace var transitionNamespace
 
     MangaDetailsHeaderView(
-        source: Binding.constant(AidokuRunner.Source.demo()),
-        manga: Binding.constant(AidokuRunner.Manga(
+        source: Binding.constant(KomareelSourceKit.Source.demo()),
+        manga: Binding.constant(KomareelSourceKit.Manga(
             sourceKey: "",
             key: "",
             title: "Manga",

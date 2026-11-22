@@ -5,17 +5,17 @@
 //  Created by Skitty on 10/16/23.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct SortFilterView: View {
-    let filter: AidokuRunner.Filter
+    let filter: KomareelSourceKit.Filter
 
     @Binding var enabledFilters: [FilterValue]
 
     private let canAscend: Bool
     private let options: [String]
-    private let defaultValue: AidokuRunner.Filter.SortDefault?
+    private let defaultValue: KomareelSourceKit.Filter.SortDefault?
 
     @State private var selectedOption: Int
     @State private var ascending: Bool
@@ -24,7 +24,7 @@ struct SortFilterView: View {
         (selectedOption != defaultValue?.index ?? 0) || (ascending != defaultValue?.ascending ?? false)
     }
 
-    init(filter: AidokuRunner.Filter, enabledFilters: Binding<[FilterValue]>) {
+    init(filter: KomareelSourceKit.Filter, enabledFilters: Binding<[FilterValue]>) {
         self.filter = filter
         self._enabledFilters = enabledFilters
 
@@ -127,17 +127,17 @@ struct SortFilterView: View {
 }
 
 struct SortFilterGroupView: View {
-    let filter: AidokuRunner.Filter
+    let filter: KomareelSourceKit.Filter
 
     let canAscend: Bool
     let options: [String]
-    let defaultValue: AidokuRunner.Filter.SortDefault?
+    let defaultValue: KomareelSourceKit.Filter.SortDefault?
 
     @Binding var selectedOption: Int
     @Binding var ascending: Bool
 
     init(
-        filter: AidokuRunner.Filter,
+        filter: KomareelSourceKit.Filter,
         selectedOption: Binding<Int>,
         ascending: Binding<Bool>
     ) {

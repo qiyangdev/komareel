@@ -5,7 +5,7 @@
 //  Created by Skitty on 1/16/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 
 struct ExternalSourceInfo: Codable, Hashable {
@@ -15,7 +15,7 @@ struct ExternalSourceInfo: Codable, Hashable {
     let iconURL: String?
     let downloadURL: String?
     let languages: [String]?
-    let contentRating: AidokuRunner.SourceContentRating?
+    let contentRating: KomareelSourceKit.SourceContentRating?
     let altNames: [String]?
     let baseURL: String?
     let minAppVersion: String?
@@ -41,10 +41,10 @@ struct ExternalSourceInfo: Codable, Hashable {
         }
     }
 
-    var resolvedContentRating: AidokuRunner.SourceContentRating {
+    var resolvedContentRating: KomareelSourceKit.SourceContentRating {
         if let contentRating {
             contentRating
-        } else if let nsfw, let rating = AidokuRunner.SourceContentRating(rawValue: nsfw) {
+        } else if let nsfw, let rating = KomareelSourceKit.SourceContentRating(rawValue: nsfw) {
             rating
         } else {
             .safe

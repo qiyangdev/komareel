@@ -5,13 +5,13 @@
 //  Created by Skitty on 11/19/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import UIKit
 
 class MangaListViewController: MangaCollectionViewController {
-    let source: AidokuRunner.Source
+    let source: KomareelSourceKit.Source
 
-    var getEntries: ((Int) async throws -> AidokuRunner.MangaPageResult)?
+    var getEntries: ((Int) async throws -> KomareelSourceKit.MangaPageResult)?
 
     private var hashValues: Set<Int> = []
     private var loaded = false
@@ -19,7 +19,7 @@ class MangaListViewController: MangaCollectionViewController {
     private var hasMore = true
 
     init(
-        source: AidokuRunner.Source,
+        source: KomareelSourceKit.Source,
         title: String = "",
         listingKind: ListingKind = .default
     ) {

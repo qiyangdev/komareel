@@ -5,13 +5,13 @@
 //  Created by Skitty on 4/26/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Nuke
 import NukeUI
 import SwiftUI
 
 struct SourceImageView: View {
-    var source: AidokuRunner.Source?
+    var source: KomareelSourceKit.Source?
 
     let imageUrl: String
     var width: CGFloat?

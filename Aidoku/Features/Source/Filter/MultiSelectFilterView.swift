@@ -5,11 +5,11 @@
 //  Created by Skitty on 10/16/23.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct MultiSelectFilterView: View {
-    let filter: AidokuRunner.Filter
+    let filter: KomareelSourceKit.Filter
 
     @Binding var enabledFilters: [FilterValue]
 
@@ -19,7 +19,7 @@ struct MultiSelectFilterView: View {
     @State private var includedOptions: [String]
     @State private var excludedOptions: [String]
 
-    init(filter: AidokuRunner.Filter, enabledFilters: Binding<[FilterValue]>) {
+    init(filter: KomareelSourceKit.Filter, enabledFilters: Binding<[FilterValue]>) {
         self.filter = filter
         self._enabledFilters = enabledFilters
 
@@ -141,7 +141,7 @@ struct MultiSelectFilterView: View {
 }
 
 struct MultiSelectFilterGroupView: View {
-    let filter: AidokuRunner.Filter
+    let filter: KomareelSourceKit.Filter
     var searchText: String?
 
     @Binding var includedOptions: [String]
@@ -165,7 +165,7 @@ struct MultiSelectFilterGroupView: View {
     }
 
     init(
-        filter: AidokuRunner.Filter,
+        filter: KomareelSourceKit.Filter,
         searchText: String? = nil,
         includedOptions: Binding<[String]>,
         excludedOptions: Binding<[String]>

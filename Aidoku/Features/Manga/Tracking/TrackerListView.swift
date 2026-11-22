@@ -5,11 +5,11 @@
 //  Created by Skitty on 7/19/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct TrackerListView: View {
-    let manga: AidokuRunner.Manga
+    let manga: KomareelSourceKit.Manga
 
     @State private var refresh = false
     @State private var availableTrackers: [Tracker] = []

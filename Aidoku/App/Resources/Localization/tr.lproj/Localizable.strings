@@ -551,7 +551,7 @@
 "LEGACY_SOURCE_LIST" = "Eski Kaynak Listesi";
 "LEGACY_SOURCE_LIST_WARNING" = "Uyarı: Eski Kaynak Listesi";
 "LEGACY_SOURCE_LIST_WARNING_INFO" = "Şu anda yapılandırılmış eski bir kaynak listeniz var. Bu biçim güncelliğini yitirmiştir ve Aidoku'nun gelecekteki bir sürümünde çalışmayı durduracaktır. Şimdilik çalışmaya devam edecek olsa da, bir alternatif bulmanız ve bunu Ayarlar > Kaynak Listeleri altından yapılandırmanız önerilir.";
-"SOURCE_IMPORT_FAIL_TEXT" = "Kaynak içeri aktarılamadı. Lütfen .aix dosyasının geçerli olduğundan emin olun.";
+"SOURCE_IMPORT_FAIL_TEXT" = "Kaynak içeri aktarılamadı. Lütfen .krx dosyasının geçerli olduğundan emin olun.";
 "CLEAR_SOURCE_CACHE" = "Kaynak Önbelleğini Temizle";
 "CLEAR_SOURCE_CACHE_TEXT" = "Kaynak URL'leri için önbelleğe alınmış ağ verileri temizlenecek. Bu durum, yükleme sürelerinin geçici olarak uzamasına neden olabilir.";
 "TRACK_CHAPTER_OFFSET_TEXT" = "Kaynak bölüm numaraları izleyici bölüm numaralarından farklı olduğunda, bu başlık için otomatik izleyici bölüm güncellemelerini ayarlayın.";

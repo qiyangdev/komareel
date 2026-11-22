@@ -6,12 +6,12 @@
 //
 
 import SwiftUI
-import AidokuRunner
+import KomareelSourceKit
 
 struct ReaderChapterListView: View {
-    var chapterList: [AidokuRunner.Chapter]
-    @State var chapter: AidokuRunner.Chapter
-    var chapterSet: ((AidokuRunner.Chapter) -> Void)?
+    var chapterList: [KomareelSourceKit.Chapter]
+    @State var chapter: KomareelSourceKit.Chapter
+    var chapterSet: ((KomareelSourceKit.Chapter) -> Void)?
 
     @Environment(\.dismiss) private var dismiss
 
@@ -60,7 +60,7 @@ struct ReaderChapterListView: View {
         }
     }
 
-    private func displayString(for chapter: AidokuRunner.Chapter) -> String {
+    private func displayString(for chapter: KomareelSourceKit.Chapter) -> String {
         if let chapterNum = chapter.chapterNumber {
             if let volumeNum = chapter.volumeNumber {
                 String(

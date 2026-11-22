@@ -5,18 +5,18 @@
 //  Created by Skitty on 4/29/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Combine
 import SwiftUI
 
 extension MangaView {
     @MainActor
     class ViewModel: ObservableObject {
-        @Published var source: AidokuRunner.Source?
+        @Published var source: KomareelSourceKit.Source?
 
-        @Published var manga: AidokuRunner.Manga
-        @Published var chapters: [AidokuRunner.Chapter] = []
-        @Published var otherDownloadedChapters: [AidokuRunner.Chapter] = []
+        @Published var manga: KomareelSourceKit.Manga
+        @Published var chapters: [KomareelSourceKit.Chapter] = []
+        @Published var otherDownloadedChapters: [KomareelSourceKit.Chapter] = []
 
         @Published var readingHistory: [String: (page: Int, date: Int)] = [:]
         @Published var downloadProgress: [String: Float] = [:] // chapterId: progress
@@ -25,7 +25,7 @@ extension MangaView {
         @Published var bookmarked = false
         @Published var hasCategories = false
 
-        @Published var nextChapter: AidokuRunner.Chapter?
+        @Published var nextChapter: KomareelSourceKit.Chapter?
         @Published var readingInProgress = false
         @Published var allChaptersLocked = false
         @Published var allChaptersRead = false
@@ -56,7 +56,7 @@ extension MangaView {
         private var markedOpened = false
         private var cancellables = Set<AnyCancellable>()
 
-        init(source: AidokuRunner.Source?, manga: AidokuRunner.Manga) {
+        init(source: KomareelSourceKit.Source?, manga: KomareelSourceKit.Manga) {
             self.source = source
             self.manga = manga
 
@@ -95,7 +95,7 @@ extension MangaView.ViewModel {
                 Task { @MainActor in
                     guard
                         let self,
-                        let manga = output.object as? AidokuRunner.Manga,
+                        let manga = output.object as? KomareelSourceKit.Manga,
                         manga.identifier == self.manga.identifier
                             else {
                         return
@@ -130,7 +130,7 @@ extension MangaView.ViewModel {
                 Task { @MainActor in
                     guard
                         let self,
-                        let migration = output.object as? (from: AidokuRunner.Manga, to: AidokuRunner.Manga),
+                        let migration = output.object as? (from: KomareelSourceKit.Manga, to: KomareelSourceKit.Manga),
                         migration.from.identifier == self.manga.identifier,
                         let newSource = SourceManager.shared.store.source(for: migration.to.sourceKey)
                     else {
@@ -414,20 +414,18 @@ extension MangaView.ViewModel {
             }
         } else if let source {
             // load new data from source
-            await source.partialMangaPublisher?.sink { @Sendable newManga in
-                Task { @MainActor in
-                    withAnimation {
-                        self.manga = self.manga.copy(from: newManga)
-                        self.chapters = self.filteredChapters()
-                    }
-                }
-            }
             do {
                 let newManga = try await source.getMangaUpdate(
                     manga: manga,
                     needsDetails: true,
                     needsChapters: true
-                )
+                ) { partialManga in
+                    guard !Task.isCancelled else { return }
+                    withAnimation {
+                        self.manga = partialManga
+                        self.chapters = self.filteredChapters()
+                    }
+                }
                 withAnimation {
                     manga = newManga
                     chapters = filteredChapters()
@@ -439,7 +437,6 @@ extension MangaView.ViewModel {
                     self.error = error
                 }
             }
-            await source.partialMangaPublisher?.removeSink()
         }
         await fetchDownloadedChapters()
         await loadDownloadStatus()
@@ -453,7 +450,7 @@ extension MangaView.ViewModel {
                 !(manga.chapters ?? chapters).contains(where: { $0.key.directoryName == chapter.chapterId.directoryName })
             }
             .map { $0.toChapter() }
-            .sorted { (lhs: AidokuRunner.Chapter, rhs: AidokuRunner.Chapter) in
+            .sorted { (lhs: KomareelSourceKit.Chapter, rhs: KomareelSourceKit.Chapter) in
                 // Primary sort: by chapter number if both have it
                 if let lhsChapter = lhs.chapterNumber, let rhsChapter = rhs.chapterNumber {
                     if lhsChapter != rhsChapter {
@@ -529,7 +526,7 @@ extension MangaView.ViewModel {
 
             // update manga in db
             if inLibrary {
-                let resultManga: AidokuRunner.Manga? =
+                let resultManga: KomareelSourceKit.Manga? =
                     await CoreDataManager.shared.container.performBackgroundTask { [
                         newManga,
                         chapterLangFilter,
@@ -694,18 +691,18 @@ extension MangaView.ViewModel {
 
 extension MangaView.ViewModel {
     // every chapter row shown in the list, across both sections
-    var listedChapters: [AidokuRunner.Chapter] {
+    var listedChapters: [KomareelSourceKit.Chapter] {
         chapters + otherDownloadedChapters
     }
 
     // resolve selected chapter keys, which can come from either the chapter list
     // or the separate downloaded chapters section
-    func chapters(forKeys keys: Set<String>) -> [AidokuRunner.Chapter] {
+    func chapters(forKeys keys: Set<String>) -> [KomareelSourceKit.Chapter] {
         listedChapters.filter { keys.contains($0.key) }
     }
 
     // mark given chapters as read in coredata
-    func markRead(chapters: [AidokuRunner.Chapter]) async {
+    func markRead(chapters: [KomareelSourceKit.Chapter]) async {
         // only mark chapters that are readable as read
         let chapters = chapters.filter { !$0.locked || downloadStatus[$0.key] == .finished }
 
@@ -721,7 +718,7 @@ extension MangaView.ViewModel {
     }
 
     // remove coredata history for given chapters
-    func markUnread(chapters: [AidokuRunner.Chapter]) async {
+    func markUnread(chapters: [KomareelSourceKit.Chapter]) async {
         await HistoryManager.shared.removeHistory(
             chapterIds: chapters.map {
                 .init(sourceKey: manga.sourceKey, mangaKey: manga.key, chapterKey: $0.key)
@@ -778,7 +775,7 @@ extension MangaView.ViewModel {
         }
     }
 
-    private func sortedChapters() -> [AidokuRunner.Chapter] {
+    private func sortedChapters() -> [KomareelSourceKit.Chapter] {
         guard let chapters = manga.chapters, !chapters.isEmpty else {
             return []
         }
@@ -800,7 +797,7 @@ extension MangaView.ViewModel {
         }
     }
 
-    private func filteredChapters() -> [AidokuRunner.Chapter] {
+    private func filteredChapters() -> [KomareelSourceKit.Chapter] {
         var chapters = sortedChapters()
 
         // filter by language and scanlators
@@ -852,7 +849,7 @@ extension MangaView.ViewModel {
         case none
         case allRead
         case allLocked
-        case chapter(AidokuRunner.Chapter)
+        case chapter(KomareelSourceKit.Chapter)
     }
 
     private func getNextChapter() -> ChapterResult {

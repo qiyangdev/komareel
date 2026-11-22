@@ -5,7 +5,7 @@
 //  Created by Skitty on 9/15/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 
 /// A tracker that automatically registers and tracks supported series.
 protocol EnhancedTracker: Tracker {

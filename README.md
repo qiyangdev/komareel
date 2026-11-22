@@ -15,7 +15,7 @@ Requires iOS 26.0 or later.
 - No ads
 - Local file reading (CBZ)
 - Built-in reading service providers (Komga, Kavita, Suwayomi)
-- WASM external source system
+- JavaScript extensions distributed as `.krx` packages
 - Downloads
 - Tracker integration (AniList, MyAnimeList, etc.)
 - OCR dictionary lookup
@@ -26,17 +26,14 @@ The built-in **Video Samples** source supports searchable samples, HLS and MP4 p
 
 To try it, open `Aidoku.xcodeproj` in Xcode and run the `Aidoku` scheme on an iPhone simulator. In the app, open **Browse → Add Source → Video Samples**.
 
-### WASM video extensions
+## JavaScript extensions
 
-Install a video `.aix` through the same source list or file import as manga extensions. In the API 0.7 `Payload/source.json`, set `"mediaType": "video"` inside `config`. Other manifest fields and the WASM ABI follow the standard Aidoku source format.
+Import a `.krx` file from **Browse → Add Source → Import Source**, or install one from a source list. The archive contains `Payload/source.json` with `"scriptAPI": 1` and `Payload/main.js` with the script. Source IDs stay consistent across packages and versions.
 
-Use the existing catalog and detail functions for shows and episodes. Return each episode as a chapter from `get_manga_update`. For the selected episode, `get_page_list` must return exactly one URL page containing a direct HTTPS playback URL, such as an HLS playlist or MP4. The app resolves the URL when playback starts or is retried. Page context does not supply playback headers, so use a URL the player can request directly, such as a signed URL.
+Scripts export `search`, `details`, and `pages` through `globalThis.source`. Declare optional methods such as `listing` in the manifest's `exports` array. The runtime provides asynchronous HTTP requests, HTML and XML XPath, source settings, and a source-scoped WebView for pages that need a browser. Scripts can send incremental homepage and detail results with `await Komareel.publish(value)`. See the [Komareel sources repository](https://github.com/qiyangdev/komareel-sources) for examples.
 
-## WASM text extensions
-
-Set `"mediaType": "text"` inside `config` in `Payload/source.json` to open chapters directly in the text reader. Use the existing catalog and chapter functions, and return one `PageContent::text` containing UTF-8 Markdown from `get_page_list` for each chapter. KomaReel lays out the chapter according to the reader's paged or scrolling preference.
-
-Set `"showsListCovers": false` inside `config` to hide covers in the source home page's list rows and loading skeletons. The default is `true`.
+- For `"mediaType": "video"` or `"audio"`, return each episode as a chapter. Return one `{ url }` page for the selected episode. The app resolves the direct HTTPS URL when playback starts or is retried.
+- For `"mediaType": "text"`, return a `{ text }` page containing UTF-8 Markdown. Set `"showsListCovers": false` to hide covers in source list rows and loading skeletons.
 
 ## Upstream Aidoku
 

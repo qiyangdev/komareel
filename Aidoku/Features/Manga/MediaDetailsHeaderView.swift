@@ -1,10 +1,10 @@
-import AidokuRunner
+import KomareelSourceKit
 import SafariServices
 import SwiftUI
 
 struct MediaDetailsHeaderView<Metadata: View, Actions: View>: View {
-    let source: AidokuRunner.Source?
-    let manga: AidokuRunner.Manga
+    let source: KomareelSourceKit.Source?
+    let manga: KomareelSourceKit.Manga
     let path: NavigationCoordinator
     let bookmarked: Bool
     let transitionNamespace: Namespace.ID
@@ -88,8 +88,8 @@ struct MediaDetailsHeaderView<Metadata: View, Actions: View>: View {
 }
 
 private struct MediaDetailsLabels: View {
-    let source: AidokuRunner.Source?
-    let manga: AidokuRunner.Manga
+    let source: KomareelSourceKit.Source?
+    let manga: KomareelSourceKit.Manga
     let bookmarked: Bool
 
     var body: some View {
@@ -121,7 +121,7 @@ private struct MediaDetailsLabels: View {
 }
 
 private struct MediaDetailsTags: View {
-    let source: AidokuRunner.Source?
+    let source: KomareelSourceKit.Source?
     let path: NavigationCoordinator
     let tags: [String]
 

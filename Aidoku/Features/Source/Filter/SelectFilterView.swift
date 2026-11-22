@@ -5,20 +5,20 @@
 //  Created by Skitty on 3/14/24.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct SelectFilterView: View {
-    let filter: AidokuRunner.Filter
+    let filter: KomareelSourceKit.Filter
 
     @Binding var enabledFilters: [FilterValue]
 
-    private let selectFilter: AidokuRunner.SelectFilter
+    private let selectFilter: KomareelSourceKit.SelectFilter
 
     @State private var showingSheet = false
     @State private var selectedOption: String
 
-    init(filter: AidokuRunner.Filter, enabledFilters: Binding<[FilterValue]>) {
+    init(filter: KomareelSourceKit.Filter, enabledFilters: Binding<[FilterValue]>) {
         self.filter = filter
         self._enabledFilters = enabledFilters
 
@@ -110,7 +110,7 @@ struct SelectFilterView: View {
 }
 
 struct SelectFilterGroupView: View {
-    let filter: AidokuRunner.Filter
+    let filter: KomareelSourceKit.Filter
     var searchText: String?
 
     @Binding var selectedOption: String
@@ -121,12 +121,12 @@ struct SelectFilterGroupView: View {
         let value: String
     }
 
-    private let selectFilter: AidokuRunner.SelectFilter
+    private let selectFilter: KomareelSourceKit.SelectFilter
     private let allOptions: [Option]
 
     @State private var filteredOptions: [Option]
 
-    init(filter: AidokuRunner.Filter, searchText: String? = nil, selectedOption: Binding<String>) {
+    init(filter: KomareelSourceKit.Filter, searchText: String? = nil, selectedOption: Binding<String>) {
         self.filter = filter
         self.searchText = searchText
         self._selectedOption = selectedOption

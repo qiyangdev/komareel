@@ -5,25 +5,25 @@
 //  Created by skitty on 8/25/26.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 
 @MainActor
 final class SourceStore: ObservableObject {
     static let shared = SourceStore()
 
-    @Published private(set) var sourcesByKey: [String: AidokuRunner.Source] = [:]
+    @Published private(set) var sourcesByKey: [String: KomareelSourceKit.Source] = [:]
     @Published private(set) var disabledSourceKeys: Set<String> = []
 
     func update(
-        sourcesByKey: [String: AidokuRunner.Source],
+        sourcesByKey: [String: KomareelSourceKit.Source],
         disabledSourceKeys: Set<String>
     ) {
         self.sourcesByKey = sourcesByKey
         self.disabledSourceKeys = disabledSourceKeys
     }
 
-    func source(for key: String) -> AidokuRunner.Source? {
+    func source(for key: String) -> KomareelSourceKit.Source? {
         sourcesByKey[key]
     }
 

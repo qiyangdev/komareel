@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Combine
-import AidokuRunner
+import KomareelSourceKit
 
 extension DownloadedMangaView {
     @MainActor

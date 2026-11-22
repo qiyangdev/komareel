@@ -5,11 +5,11 @@
 //  Created by skitty on 8/21/26.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 
-extension AidokuRunner.Source {
-    static func test(runner: TestableSourceRunner) -> AidokuRunner.Source {
+extension KomareelSourceKit.Source {
+    static func test(runner: TestableSourceRunner) -> KomareelSourceKit.Source {
         .init(
             url: nil,
             key: "test",
@@ -40,20 +40,20 @@ actor TestableSourceStorage {
     }
 }
 
-final class TestableSourceRunner: AidokuRunner.Runner {
-    let features: AidokuRunner.SourceFeatures = .init(processesPages: true)
+final class TestableSourceRunner: KomareelSourceKit.Runner {
+    let features: KomareelSourceKit.SourceFeatures = .init(processesPages: true)
 
     let storage = TestableSourceStorage()
 
-    func getSearchMangaList(query: String?, page: Int, filters: [AidokuRunner.FilterValue]) async throws -> AidokuRunner.MangaPageResult {
+    func getSearchMangaList(query: String?, page: Int, filters: [KomareelSourceKit.FilterValue]) async throws -> KomareelSourceKit.MangaPageResult {
         .init(entries: [], hasNextPage: false)
     }
 
-    func getMangaUpdate(manga: AidokuRunner.Manga, needsDetails: Bool, needsChapters: Bool) async throws -> AidokuRunner.Manga {
+    func getMangaUpdate(manga: KomareelSourceKit.Manga, needsDetails: Bool, needsChapters: Bool) async throws -> KomareelSourceKit.Manga {
         manga
     }
 
-    func getPageList(manga: AidokuRunner.Manga, chapter: AidokuRunner.Chapter) async throws -> [AidokuRunner.Page] {
+    func getPageList(manga: KomareelSourceKit.Manga, chapter: KomareelSourceKit.Chapter) async throws -> [KomareelSourceKit.Page] {
         []
     }
 

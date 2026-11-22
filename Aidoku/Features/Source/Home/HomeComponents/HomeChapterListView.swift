@@ -5,11 +5,11 @@
 //  Created by Skitty on 10/13/23.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct HomeChapterListView: View {
-    let source: AidokuRunner.Source
+    let source: KomareelSourceKit.Source
     let component: HomeComponent
     let partial: Bool
 
@@ -17,13 +17,13 @@ struct HomeChapterListView: View {
 
     private let pageSize: Int?
     private let entries: [MangaWithChapter]
-    private let listing: AidokuRunner.Listing?
+    private let listing: KomareelSourceKit.Listing?
 
     @State private var bookmarkedItems: Set<String> = .init()
     @State private var loadedBookmarks = false
 
     init(
-        source: AidokuRunner.Source,
+        source: KomareelSourceKit.Source,
         component: HomeComponent,
         partial: Bool = false
     ) {

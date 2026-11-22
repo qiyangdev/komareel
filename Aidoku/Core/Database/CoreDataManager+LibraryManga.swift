@@ -6,7 +6,7 @@
 //
 
 import CoreData
-import AidokuRunner
+import KomareelSourceKit
 
 extension CoreDataManager {
     /// Remove all library manga objects.
@@ -84,8 +84,8 @@ extension CoreDataManager {
 
     /// Add a manga with the specified chapters to the library.
     func addToLibrary(
-        manga: AidokuRunner.Manga,
-        chapters: [AidokuRunner.Chapter],
+        manga: KomareelSourceKit.Manga,
+        chapters: [KomareelSourceKit.Chapter],
         context: NSManagedObjectContext
     ) {
         let mangaObject = self.getOrCreateManga(manga, context: context)

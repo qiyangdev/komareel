@@ -650,7 +650,7 @@
 "MODEL_INFO" = "Thông tin Mô hình";
 "NO_AVAILABLE_MODELS_TEXT" = "Không thể lấy danh sách mô hình. Hãy kiểm tra kết nối mạng và đảm bảo ứng dụng đang ở phiên bản mới nhất.";
 "DISABLE_QUICK_ACTIONS" = "Tắt thao tác nhanh";
-"SOURCE_IMPORT_FAIL_TEXT" = "Nhập nguồn thất bại. Vui lòng đảm bảo tệp aix của bạn hợp lệ.";
+"SOURCE_IMPORT_FAIL_TEXT" = "Nhập nguồn thất bại. Vui lòng đảm bảo tệp krx của bạn hợp lệ.";
 "LIBRARY_ENTRIES" = "Mục trong thư viện";
 "VOLUME" = "Tập";
 "EDIT" = "Chỉnh sửa";

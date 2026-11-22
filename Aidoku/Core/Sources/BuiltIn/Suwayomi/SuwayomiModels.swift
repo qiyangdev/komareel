@@ -5,7 +5,7 @@
 //  Created by skitty on 7/7/26.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 
 enum SuwayomiMangaOrderBy: String, Encodable, Sendable {
@@ -178,7 +178,7 @@ struct SuwayomiChapterNode: Decodable, Sendable {
     let sourceOrder: Int?
     let mangaId: Int
 
-    func intoChapter(baseUrl: URL) -> AidokuRunner.Chapter {
+    func intoChapter(baseUrl: URL) -> KomareelSourceKit.Chapter {
         .init(
             key: "\(id)",
             title: name?.isEmpty == false ? name : nil,
@@ -231,10 +231,10 @@ struct SuwayomiMangaNode: Decodable, Sendable {
         let displayName: String?
     }
 
-    func intoManga(sourceKey: String, baseUrl: URL) -> AidokuRunner.Manga? {
+    func intoManga(sourceKey: String, baseUrl: URL) -> KomareelSourceKit.Manga? {
         guard let id, let title else { return nil }
 
-        let status: AidokuRunner.PublishingStatus = switch status {
+        let status: KomareelSourceKit.PublishingStatus = switch status {
             case "ONGOING": .ongoing
             case "COMPLETED", "PUBLISHING_FINISHED": .completed
             case "CANCELLED": .cancelled

@@ -5,7 +5,7 @@
 //  Created by Skitty on 6/10/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import CoreData
 import ZIPFoundation
 
@@ -105,7 +105,7 @@ extension LocalFileDataManager {
     }
 
     // fetch all series from db that have associated local file information
-    func fetchLocalSeries(query: String? = nil) -> [AidokuRunner.Manga] {
+    func fetchLocalSeries(query: String? = nil) -> [KomareelSourceKit.Manga] {
         let request = MangaObject.fetchRequest()
         request.predicate = if let query, !query.isEmpty {
             NSPredicate(format: "sourceId == %@ AND title CONTAINS[cd] %@", LocalSourceRunner.sourceKey, query)
@@ -123,7 +123,7 @@ extension LocalFileDataManager {
     }
 
     // fetch a series from db with specified id
-    func fetchLocalSeries(id: String) -> AidokuRunner.Manga? {
+    func fetchLocalSeries(id: String) -> KomareelSourceKit.Manga? {
         let request = MangaObject.fetchRequest()
         request.predicate = NSPredicate(format: "id == %@ AND sourceId == %@", id, LocalSourceRunner.sourceKey)
         request.fetchLimit = 1
@@ -137,7 +137,7 @@ extension LocalFileDataManager {
     }
 
     // fetch local chapters for a series from db
-    func fetchChapters(mangaId: String) -> [AidokuRunner.Chapter] {
+    func fetchChapters(mangaId: String) -> [KomareelSourceKit.Chapter] {
         let request = ChapterObject.fetchRequest()
         request.predicate = NSPredicate(format: "mangaId == %@ AND sourceId == %@", mangaId, LocalSourceRunner.sourceKey)
         request.sortDescriptors = [NSSortDescriptor(key: "sourceOrder", ascending: true)]
@@ -313,7 +313,7 @@ extension LocalFileDataManager {
         title: String,
         cover: String? = nil,
         description: String? = nil,
-        viewer: AidokuRunner.Viewer = .unknown,
+        viewer: KomareelSourceKit.Viewer = .unknown,
         comicInfo: ComicInfo? = nil
     ) {
         let fileInfo = LocalFileInfoObject(context: context)
@@ -325,7 +325,7 @@ extension LocalFileDataManager {
         let object = MangaObject(context: context)
 
         if let comicInfo {
-            let basicManga = AidokuRunner.Manga(
+            let basicManga = KomareelSourceKit.Manga(
                 sourceKey: LocalSourceRunner.sourceKey,
                 key: id,
                 title: title,
@@ -380,7 +380,7 @@ extension LocalFileDataManager {
         let chapterObject = ChapterObject(context: self.context)
 
         if let comicInfo {
-            let basicChapter = AidokuRunner.Chapter(
+            let basicChapter = KomareelSourceKit.Chapter(
                 key: id,
                 title: title,
                 chapterNumber: chapter,

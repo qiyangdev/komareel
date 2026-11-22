@@ -5,7 +5,7 @@
 //  Created by Skitty on 12/29/21.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import CloudKit
 import Nuke
 import SwiftUI
@@ -530,7 +530,7 @@ extension AppDelegate {
                         guard
                             let navigationController,
                             let manga = try? await source.getMangaUpdate(
-                                manga: AidokuRunner.Manga(sourceKey: source.id, key: mangaKey, title: ""),
+                                manga: KomareelSourceKit.Manga(sourceKey: source.id, key: mangaKey, title: ""),
                                 needsDetails: true,
                                 needsChapters: false
                             )
@@ -552,11 +552,7 @@ extension AppDelegate {
                             animated: true
                         )
                     } else { // /sourceId
-                        let vc: UIViewController = if let legacySource = source.legacySource {
-                            SourceViewController(source: legacySource)
-                        } else {
-                            NewSourceViewController(source: source)
-                        }
+                        let vc = NewSourceViewController(source: source)
                         navigationController?.pushViewController(vc, animated: true)
                     }
                 }
@@ -575,7 +571,7 @@ extension AppDelegate {
                     }
                 }
             }
-        } else if url.pathExtension == "aix" {
+        } else if KomareelSourcePackage.matches(url) {
             Task {
                 let result = await SourceManager.shared.importSource(from: url)
                 if result == nil {
@@ -633,7 +629,7 @@ extension AppDelegate {
         let allSources = await SourceManager.shared.getLoadedSources()
 
         // find source that uses the given url
-        var targetSource: AidokuRunner.Source?
+        var targetSource: KomareelSourceKit.Source?
         var finalUrl: String?
         for source in allSources {
             for sourceUrl in source.urls {
@@ -655,7 +651,7 @@ extension AppDelegate {
                 if let mangaId = link?.mangaKey {
                     // open manga view and scroll to chapter if given
                     guard let manga = try? await targetSource.getMangaUpdate(
-                        manga: AidokuRunner.Manga(
+                        manga: KomareelSourceKit.Manga(
                             sourceKey: targetSource.id,
                             key: mangaId,
                             title: ""
@@ -695,7 +691,7 @@ extension AppDelegate {
         return await task.value
     }
 
-    func handleSourceMigration(source: AidokuRunner.Source) {
+    func handleSourceMigration(source: KomareelSourceKit.Source) {
         presentAlert(
             title: NSLocalizedString("SOURCE_BREAKING_CHANGE"),
             message: NSLocalizedString("SOURCE_BREAKING_CHANGE_TEXT"),

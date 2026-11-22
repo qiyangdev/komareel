@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AidokuRunner
+import KomareelSourceKit
 
 struct ChapterListHeaderView: View {
     private let chapterCount: Int?
@@ -26,8 +26,8 @@ struct ChapterListHeaderView: View {
     private var mangaId: MangaIdentifier
 
     init(
-        allChapters: [AidokuRunner.Chapter]? = nil,
-        filteredChapters: [AidokuRunner.Chapter]? = nil,
+        allChapters: [KomareelSourceKit.Chapter]? = nil,
+        filteredChapters: [KomareelSourceKit.Chapter]? = nil,
         sortOption: Binding<ChapterSortOption>,
         sortAscending: Binding<Bool>,
         filters: Binding<[ChapterFilterOption]>,

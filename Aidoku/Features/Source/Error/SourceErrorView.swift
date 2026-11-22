@@ -5,7 +5,7 @@
 //  Created by Skitty on 11/19/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import UIKit
 
 // uikit equivalent of ErrorView

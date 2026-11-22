@@ -5,7 +5,7 @@
 //  Created by Skitty on 9/17/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Nuke
 import SwiftUI
 import WebKit

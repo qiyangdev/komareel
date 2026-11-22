@@ -5,12 +5,12 @@
 //  Created by skitty on 5/9/26.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct MigrateResultsView: View {
-    let targetSources: [AidokuRunner.Source]
-    @State private var selectedSeries: [AidokuRunner.Manga]
+    let targetSources: [KomareelSourceKit.Source]
+    @State private var selectedSeries: [KomareelSourceKit.Manga]
     let forceMigrate: Bool
 
     enum MigrationState {
@@ -24,8 +24,8 @@ struct MigrateResultsView: View {
     @State private var didFirstLoad = false
     @State private var isLoading = true
     @State private var showingConfirmAlert = false
-    @State private var migratedManga: [MangaIdentifier: AidokuRunner.Manga?] = [:]
-    @State private var newChapters: [MangaIdentifier: [AidokuRunner.Chapter]] = [:]
+    @State private var migratedManga: [MangaIdentifier: KomareelSourceKit.Manga?] = [:]
+    @State private var newChapters: [MangaIdentifier: [KomareelSourceKit.Chapter]] = [:]
     @State private var states: [MangaIdentifier: MigrationState] = [:]
 
     @EnvironmentObject private var path: NavigationCoordinator
@@ -33,8 +33,8 @@ struct MigrateResultsView: View {
     @Environment(\.dismiss) private var dismiss
 
     init(
-        targetSources: [AidokuRunner.Source],
-        selectedSeries: [AidokuRunner.Manga],
+        targetSources: [KomareelSourceKit.Source],
+        selectedSeries: [KomareelSourceKit.Manga],
         forceMigrate: Bool = false
     ) {
         self.targetSources = targetSources
@@ -114,7 +114,7 @@ struct MigrateResultsView: View {
 }
 
 extension MigrateResultsView {
-    func remove(manga: AidokuRunner.Manga) {
+    func remove(manga: KomareelSourceKit.Manga) {
         selectedSeries.removeAll { $0.key == manga.key }
         let key = manga.identifier
         newChapters.removeValue(forKey: key)
@@ -122,7 +122,7 @@ extension MigrateResultsView {
         states.removeValue(forKey: key)
     }
 
-    func migratedMangaBinding(for key: MangaIdentifier) -> Binding<AidokuRunner.Manga?> {
+    func migratedMangaBinding(for key: MangaIdentifier) -> Binding<KomareelSourceKit.Manga?> {
         .init(
             get: { self.migratedManga[key, default: nil] },
             set: {
@@ -151,7 +151,7 @@ extension MigrateResultsView {
         // sources freeze if we run too many tasks concurrently, so we limit it
         let maxConcurrentTasks = 3
 
-        nonisolated func search(for manga: AidokuRunner.Manga) async -> (MangaIdentifier, AidokuRunner.Manga?) {
+        nonisolated func search(for manga: KomareelSourceKit.Manga) async -> (MangaIdentifier, KomareelSourceKit.Manga?) {
             // check sources until a manga is found
             for source in targetSources {
                 let search = try? await source.getSearchMangaList(query: manga.title, page: 1, filters: [])
@@ -163,7 +163,7 @@ extension MigrateResultsView {
             return (manga.identifier, nil)
         }
 
-        await withTaskGroup(of: (MangaIdentifier, AidokuRunner.Manga?).self) { group in
+        await withTaskGroup(of: (MangaIdentifier, KomareelSourceKit.Manga?).self) { group in
             // add the initial tasks to the group
             for i in 0..<min(selectedSeries.count, maxConcurrentTasks) {
                 let manga = selectedSeries[i]
@@ -241,10 +241,10 @@ extension MigrateResultsView {
     struct MangaToMangaView: View {
         let fromSource: String?
         let toSource: String?
-        let fromManga: AidokuRunner.Manga
-        @Binding var toManga: AidokuRunner.Manga?
+        let fromManga: KomareelSourceKit.Manga
+        @Binding var toManga: KomareelSourceKit.Manga?
         let state: MigrationState
-        let targetSources: [AidokuRunner.Source]
+        let targetSources: [KomareelSourceKit.Source]
         let remove: () -> Void
 
         private let maxCoverHeight: CGFloat = 240

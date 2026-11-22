@@ -1,4 +1,4 @@
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 
 enum SourceMediaType: String {
@@ -8,11 +8,11 @@ enum SourceMediaType: String {
     case audio
 }
 
-protocol VideoSourceRunner: AidokuRunner.Runner {
-    func videoURL(manga: AidokuRunner.Manga, episode: AidokuRunner.Chapter) async throws -> URL
+protocol VideoSourceRunner: KomareelSourceKit.Runner {
+    func videoURL(manga: KomareelSourceKit.Manga, episode: KomareelSourceKit.Chapter) async throws -> URL
 }
 
-extension AidokuRunner.Source {
+extension KomareelSourceKit.Source {
     private final class SourceManifest: Decodable {
         struct Configuration: Decodable {
             let mediaType: String?
@@ -27,7 +27,7 @@ extension AidokuRunner.Source {
     }
 
     // Cache by loaded source instance so reinstalling a package reads its new manifest.
-    @MainActor private static let sourceManifests = NSMapTable<AidokuRunner.Source, SourceManifest>(
+    @MainActor private static let sourceManifests = NSMapTable<KomareelSourceKit.Source, SourceManifest>(
         keyOptions: [.weakMemory, .objectPointerPersonality],
         valueOptions: .strongMemory
     )
@@ -57,7 +57,7 @@ extension AidokuRunner.Source {
     }
 
     @MainActor
-    func playbackURL(manga: AidokuRunner.Manga, episode: AidokuRunner.Chapter) async throws -> URL {
+    func playbackURL(manga: KomareelSourceKit.Manga, episode: KomareelSourceKit.Chapter) async throws -> URL {
         if let runner = runner as? any VideoSourceRunner {
             return try await runner.videoURL(manga: manga, episode: episode)
         }

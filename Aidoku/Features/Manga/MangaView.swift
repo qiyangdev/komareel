@@ -5,7 +5,7 @@
 //  Created by Skitty on 8/14/23.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import NukeUI
 import SwiftUI
 
@@ -28,7 +28,7 @@ struct MangaView: View {
 
     @State private var loadingAlert: UIAlertController?
 
-    @State private var openChapter: AidokuRunner.Chapter?
+    @State private var openChapter: KomareelSourceKit.Chapter?
 
     @StateObject private var refreshController = RefreshController()
 
@@ -43,8 +43,8 @@ struct MangaView: View {
     }
 
     init(
-        source: AidokuRunner.Source? = nil,
-        manga: AidokuRunner.Manga,
+        source: KomareelSourceKit.Source? = nil,
+        manga: KomareelSourceKit.Manga,
         path: NavigationCoordinator,
         chapterKey: String? = nil,
         openAction: OpenAction? = nil
@@ -76,7 +76,6 @@ struct MangaView: View {
                 if let error = viewModel.error {
                     ErrorView(
                         error: error,
-                        restart: { try await viewModel.source?.restart() },
                         retry: {
                             viewModel.error = nil
                             await viewModel.fetchData()
@@ -353,7 +352,7 @@ extension MangaView {
     }
 
     @ContentBuilder
-    func viewForChapter(_ chapter: AidokuRunner.Chapter, index: Int, secondSection: Bool = false) -> some View {
+    func viewForChapter(_ chapter: KomareelSourceKit.Chapter, index: Int, secondSection: Bool = false) -> some View {
         let last = if viewModel.chapterSortAscending {
             index == 0
         } else {
@@ -410,7 +409,7 @@ extension MangaView {
 
     @ContentBuilder
     func contextMenu(
-        chapter: AidokuRunner.Chapter,
+        chapter: KomareelSourceKit.Chapter,
         downloadStatus: DownloadStatus,
         index: Int,
         last: Bool,
@@ -493,7 +492,7 @@ extension MangaView {
                 let previousRange = viewModel.chapterSortAscending ? 0..<index : index + 1..<viewModel.chapters.count
                 Menu(NSLocalizedString("MARK_PREVIOUS")) {
                     Button {
-                        let chapters = [AidokuRunner.Chapter](viewModel.chapters[previousRange])
+                        let chapters = [KomareelSourceKit.Chapter](viewModel.chapters[previousRange])
                         Task {
                             await viewModel.markRead(chapters: chapters)
                         }
@@ -501,7 +500,7 @@ extension MangaView {
                         Label(NSLocalizedString("READ"), systemImage: "checkmark.circle")
                     }
                     Button {
-                        let chapters = [AidokuRunner.Chapter](viewModel.chapters[previousRange])
+                        let chapters = [KomareelSourceKit.Chapter](viewModel.chapters[previousRange])
                         Task {
                             await viewModel.markUnread(chapters: chapters)
                         }
@@ -787,7 +786,7 @@ extension MangaView {
 }
 
 extension MangaView {
-    func showShareSheet(chapter: AidokuRunner.Chapter) {
+    func showShareSheet(chapter: KomareelSourceKit.Chapter) {
         if viewModel.downloadStatus[chapter.key] == .finished {
             Task {
                 let identifier = ChapterIdentifier(
@@ -833,9 +832,9 @@ extension MangaView {
 }
 
 private struct ChapterCellView<T: View>: View, Equatable {
-    let source: AidokuRunner.Source?
+    let source: KomareelSourceKit.Source?
     let sourceKey: String
-    let chapter: AidokuRunner.Chapter
+    let chapter: KomareelSourceKit.Chapter
     let read: Bool
     let page: Int?
     let downloadStatus: DownloadStatus

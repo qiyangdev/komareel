@@ -5,12 +5,12 @@
 //  Created by Skitty on 10/6/23.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 import WebKit
 
 struct SourceSettingsView: View {
-    let source: AidokuRunner.Source
+    let source: KomareelSourceKit.Source
 
     @State private var settings: [Setting] = []
     @State private var showingClearCacheConfirm = false
@@ -19,7 +19,7 @@ struct SourceSettingsView: View {
 
     @EnvironmentObject var path: NavigationCoordinator
 
-    init(source: AidokuRunner.Source) {
+    init(source: KomareelSourceKit.Source) {
         self.source = source
         if !source.features.dynamicSettings {
             self._settings = State(initialValue: source.staticSettings)
@@ -43,7 +43,6 @@ struct SourceSettingsView: View {
                 Section {
                     ErrorView(
                         error: error,
-                        restart: { try await source.restart() },
                         retry: loadSettings
                     )
                     .frame(maxWidth: .infinity, alignment: .center)

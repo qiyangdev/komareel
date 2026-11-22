@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import AidokuRunner
+import KomareelSourceKit
 
 @MainActor
 class BrowseViewModel {

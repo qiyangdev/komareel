@@ -558,7 +558,7 @@
 "UPSCALE_MAX_IMAGE_HEIGHT_TEXT" = "Las imágenes que sean más grandes que la altura máxima de imagen no se ampliarán.";
 "RESET_SETTINGS_CONFIRM_%@" = "¿Está seguro de que desea restablecer toda la configuración para %@?";
 "NO_EXTERNAL_SOURCES_INFO" = "Configura listas de fuentes en la pestaña de configuración para instalar fuentes externas.";
-"SOURCE_IMPORT_FAIL_TEXT" = "Error al importar el código fuente. Asegúrate de que tu archivo aix sea válido.";
+"SOURCE_IMPORT_FAIL_TEXT" = "Error al importar el código fuente. Asegúrate de que tu archivo krx sea válido.";
 "LOGIN_FAILED_TEXT" = "No se pudo iniciar sesión en la fuente. Asegúrate de que tus credenciales sean correctas.";
 "ICLOUD_SYNC_TEXT_EXPERIMENTAL" = "La sincronización de iCloud es una función experimental. Activarla o desactivarla podría provocar la pérdida de datos.";
 "UPDATE_AFTER_READING_INFO" = "Después de leer un capítulo, actualizar el rastreador para que coincida con el capítulo y/o volumen leído actualmente.";

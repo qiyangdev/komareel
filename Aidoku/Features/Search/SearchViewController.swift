@@ -5,7 +5,7 @@
 //  Created by Skitty on 11/14/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Combine
 import SwiftUI
 
@@ -17,7 +17,7 @@ class SearchViewController: UIViewController {
     private var hasLoadedSources = false
     private var cancellables = Set<AnyCancellable>()
 
-    private var sources: [AidokuRunner.Source] = [] {
+    private var sources: [KomareelSourceKit.Source] = [] {
         didSet {
             viewModel.sources = sources
             loadSourceLanguages()
@@ -82,7 +82,7 @@ class SearchViewController: UIViewController {
         )
     }
     private var headerView: FilterHeaderView {
-        var filters: [AidokuRunner.Filter] = [
+        var filters: [KomareelSourceKit.Filter] = [
             .init(
                 id: "contentRating",
                 title: NSLocalizedString("CONTENT_RATING"),
@@ -334,21 +334,8 @@ class SearchViewController: UIViewController {
     }
 
     private func open(result: SearchContentView.ViewModel.SearchResult) {
-        if let legacySource = result.source.legacySource {
-            let sourceController = SourceViewController(source: legacySource)
-            sourceController.hidesListings = true
-            sourceController.navigationItem.searchController?.searchBar.text = searchText
-            Task {
-                await sourceController.viewModel.setTitleQuery(searchText)
-                await sourceController.viewModel.setCurrentPage(1)
-                await sourceController.viewModel.setManga(result.result.entries.map { $0.toOld().toInfo() })
-                await sourceController.viewModel.setHasMore(result.result.hasNextPage)
-                navigationController?.pushViewController(sourceController, animated: true)
-            }
-        } else {
-            let sourceController = NewSourceViewController(source: result.source, onlySearch: true, searchQuery: searchText)
-            navigationController?.pushViewController(sourceController, animated: true)
-        }
+        let sourceController = NewSourceViewController(source: result.source, onlySearch: true, searchQuery: searchText)
+        navigationController?.pushViewController(sourceController, animated: true)
     }
 }
 

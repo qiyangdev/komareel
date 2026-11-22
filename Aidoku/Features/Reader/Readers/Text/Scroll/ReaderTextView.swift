@@ -5,12 +5,12 @@
 //  Created by skitty on 3/16/26.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 import ZIPFoundation
 
 struct ReaderTextView: View {
-   let source: AidokuRunner.Source?
+   let source: KomareelSourceKit.Source?
    let text: String?
    let fontFamily: String
    let fontSize: Double
@@ -19,7 +19,7 @@ struct ReaderTextView: View {
    let textColor: Color
 
    init(
-       source: AidokuRunner.Source?,
+       source: KomareelSourceKit.Source?,
        page: Page?,
        fontFamily: String,
        fontSize: Double,

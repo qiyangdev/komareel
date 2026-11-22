@@ -5,14 +5,14 @@
 //  Created by Skitty on 9/19/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct SettingPath {
     let key: String
     let title: String
     let paths: [String]
-    var setting: AidokuRunner.Setting?
+    var setting: KomareelSourceKit.Setting?
 }
 
 struct SettingSearchResult {
@@ -20,7 +20,7 @@ struct SettingSearchResult {
 
     struct Section: Identifiable {
         let id = UUID()
-        var icon: AidokuRunner.PageSetting.Icon?
+        var icon: KomareelSourceKit.PageSetting.Icon?
         var header: String?
         var paths: [SettingPath]
     }

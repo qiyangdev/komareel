@@ -5,7 +5,7 @@
 //  Created by Skitty on 6/15/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftSoup
 import WebKit
 
@@ -67,6 +67,8 @@ actor CloudflareHandler: NSObject {
     }
 
     nonisolated func shouldHandle(response: HTTPURLResponse, data: Data) -> Bool {
+        if response.value(forHTTPHeaderField: "cf-mitigated") == "challenge" { return true }
+
         let server = response.value(forHTTPHeaderField: "Server")
         if !["cloudflare", "cloudflare-nginx"].contains(server) {
             return false
@@ -93,10 +95,16 @@ actor CloudflareHandler: NSObject {
         try await awaitChallenge(for: request)
 
         // retry request
+        var retryRequest = request
+        if let cookieHeader = request.value(forHTTPHeaderField: "Cookie") {
+            let cookies = cookieHeader.split(separator: ";").map { $0.trimmingCharacters(in: .whitespaces) }
+                .filter { $0.split(separator: "=", maxSplits: 1).first != "cf_clearance" }
+            retryRequest.setValue(cookies.isEmpty ? nil : cookies.joined(separator: "; "), forHTTPHeaderField: "Cookie")
+        }
         let newRequest = if let url = request.url {
-            await AidokuRunner.Source.modify(url: url, request: request)
+            await KomareelSourceKit.Source.modify(url: url, request: retryRequest)
         } else {
-            request
+            retryRequest
         }
         let (data, response) = try await URLSession.shared.data(for: newRequest)
         if
@@ -115,10 +123,13 @@ extension CloudflareHandler {
 
         guard await addWebView(for: request) else { throw HandleError.missingParentView }
 
-        _ = await webView.load(request)
+        let challengeWebView = await webView
 
         try await withCheckedThrowingContinuation { continuation in
             self.finishContinuation = continuation
+            Task { @MainActor in
+                challengeWebView.load(request)
+            }
 
             // timeout after 12s if bypass doesn't work
             timeoutTask = Task {
@@ -137,6 +148,7 @@ extension CloudflareHandler {
 
         Task { @MainActor in
             webView.removeFromSuperview()
+            popupController?.handler = nil
             popupController?.dismiss(animated: true)
             popupController = nil
         }
@@ -250,6 +262,7 @@ extension CloudflareHandler {
     @MainActor
     final class Proxy: NSObject, PopupWebViewHandler, WKNavigationDelegate {
         let request: URLRequest
+        private var acceptedPage = false
 
         weak var handler: CloudflareHandler?
 
@@ -259,9 +272,25 @@ extension CloudflareHandler {
         }
 
         func navigated(webView: WKWebView, for request: URLRequest) {
+            let acceptedPage = acceptedPage
             Task { [weak handler] in
-                await handler?.navigated(webView: webView, for: request)
+                await handler?.navigated(webView: webView, for: request, acceptedPage: acceptedPage)
             }
+        }
+
+        func received(response: WKNavigationResponse) {
+            guard response.isForMainFrame else { return }
+            let http = response.response as? HTTPURLResponse
+            acceptedPage = http.map {
+                (200..<300).contains($0.statusCode)
+                    && $0.url?.host == request.url?.host
+                    && $0.value(forHTTPHeaderField: "cf-mitigated") != "challenge"
+            } ?? false
+        }
+
+        func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse) async -> WKNavigationResponsePolicy {
+            received(response: navigationResponse)
+            return .allow
         }
 
         func canceled(request: URLRequest) {
@@ -276,7 +305,7 @@ extension CloudflareHandler {
     }
 
     // handle web view reload/redirect
-    nonisolated func navigated(webView: WKWebView, for request: URLRequest) async {
+    nonisolated func navigated(webView: WKWebView, for request: URLRequest, acceptedPage: Bool) async {
         guard let url = request.url, let host = url.host?.lowercased() else { return }
 
         await MainActor.run {
@@ -292,10 +321,8 @@ extension CloudflareHandler {
             }
         }
 
-        var webViewCookies = await WKWebsiteDataStore.default().httpCookieStore.allCookies()
-
-        // check for old (expired) clearance cookie
-        let oldCookie = HTTPCookieStorage.shared.allCookies(for: url)?.first { $0.name == "cf_clearance" }
+        guard acceptedPage else { return }
+        let webViewCookies = await webView.configuration.websiteDataStore.httpCookieStore.allCookies()
 
         // check for clearance cookie
         let hasClearance = webViewCookies.contains { cookie in
@@ -303,25 +330,15 @@ extension CloudflareHandler {
                 .lowercased()
                 .trimmingCharacters(in: CharacterSet(charactersIn: "."))
             return cookie.name == "cf_clearance"
-                && cookie.value != oldCookie?.value
                 && (host == domain || host.hasSuffix("." + domain))
         }
-        guard hasClearance else { return }
+        guard hasClearance, !(await isCaptchaPage()) else { return }
 
         // remove old cookie and save new cookies for future requests
-        if let oldCookie {
-            HTTPCookieStorage.shared.deleteCookie(oldCookie)
-            if let idx = webViewCookies.firstIndex(of: oldCookie) {
-                webViewCookies.remove(at: idx)
-            }
+        HTTPCookieStorage.shared.cookies(for: url)?.filter { $0.name == "cf_clearance" }.forEach {
+            HTTPCookieStorage.shared.deleteCookie($0)
         }
         HTTPCookieStorage.shared.setCookies(webViewCookies, for: url, mainDocumentURL: url)
-
-        let isCaptcha = await isCaptchaPage()
-        guard !isCaptcha else { return }
-
-        await webView.removeFromSuperview()
-        await self.popupController?.dismiss(animated: true)
 
         await self.finishChallenge()
     }
@@ -385,8 +402,8 @@ extension CloudflareHandler {
         let js = """
         (document.querySelector('input[name="cf-turnstile-response"]') !== null
             || document.getElementById('challenge-error-title') !== null
-            || document.getElementById('challenge-error-text') !== null) ? 1 : 0
-            || document.title === "Just a moment..."
+            || document.getElementById('challenge-error-text') !== null
+            || document.title === "Just a moment...") ? 1 : 0
         """
         let result = try? await webView.evaluateJavaScript(js)
         guard let result = result as? Int else { return false }

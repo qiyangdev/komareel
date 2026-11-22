@@ -5,7 +5,7 @@
 //  Created by Skitty on 6/16/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import AuthenticationServices
 import Foundation
 
@@ -83,7 +83,7 @@ final class MyAnimeListTracker: OAuthTracker {
         URL(string: "https://myanimelist.net/manga/\(trackId)")
     }
 
-    func search(for manga: AidokuRunner.Manga, includeNsfw: Bool) async throws -> [TrackSearchItem] {
+    func search(for manga: KomareelSourceKit.Manga, includeNsfw: Bool) async throws -> [TrackSearchItem] {
         try await search(title: manga.title, includeNsfw: includeNsfw)
     }
 

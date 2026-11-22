@@ -5,7 +5,7 @@
 //  Created by Skitty on 6/14/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 
 /// A protocol for the implementation of a Tracker.
@@ -81,7 +81,7 @@ protocol Tracker: AnyObject, Sendable {
     ///
     /// - Parameter manga: The Manga object to find matches for.
     /// - Parameter includeNsfw: Whether NSFW search results should be included.
-    func search(for manga: AidokuRunner.Manga, includeNsfw: Bool) async throws -> [TrackSearchItem]
+    func search(for manga: KomareelSourceKit.Manga, includeNsfw: Bool) async throws -> [TrackSearchItem]
 
     /// Get search results for possible tracker matches for a title string.
     ///

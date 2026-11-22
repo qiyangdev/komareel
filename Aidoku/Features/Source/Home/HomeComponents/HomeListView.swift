@@ -5,24 +5,24 @@
 //  Created by Skitty on 10/13/23.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SafariServices
 import SwiftUI
 
 struct HomeListView: View {
     static let coverlessRowSpacing: CGFloat = 12
 
-    let source: AidokuRunner.Source
+    let source: KomareelSourceKit.Source
     let component: HomeComponent
     let partial: Bool
     @Binding var bookmarkedItems: Set<String>
     var loadMore: (() async -> Void)?
-    var onSelect: ((AidokuRunner.Manga) -> Void)?
+    var onSelect: ((KomareelSourceKit.Manga) -> Void)?
 
     private let ranking: Bool
     private let pageSize: Int?
     private let entries: [HomeComponent.Value.Link]
-    private let listing: AidokuRunner.Listing?
+    private let listing: KomareelSourceKit.Listing?
 
     private let usesBookmarksState: Bool
 
@@ -33,12 +33,12 @@ struct HomeListView: View {
     @EnvironmentObject private var path: NavigationCoordinator
 
     init(
-        source: AidokuRunner.Source,
+        source: KomareelSourceKit.Source,
         component: HomeComponent,
         partial: Bool = false,
         bookmarkedItems: Binding<Set<String>>? = nil,
         loadMore: (() async -> Void)? = nil,
-        onSelect: ((AidokuRunner.Manga) -> Void)? = nil
+        onSelect: ((KomareelSourceKit.Manga) -> Void)? = nil
     ) {
         self.source = source
         self.component = component

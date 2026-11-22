@@ -5,9 +5,9 @@
 //  Created by Skitty on 5/13/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 
 @MainActor
 class ReaderTextViewModel: ReaderPagedViewModel {
-//    var page: AidokuRunner.Page?
+//    var page: KomareelSourceKit.Page?
 }

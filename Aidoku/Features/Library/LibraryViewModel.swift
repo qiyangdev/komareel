@@ -5,7 +5,7 @@
 //  Created by Skitty on 7/25/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import CoreData
 import UIKit
 
@@ -305,7 +305,7 @@ extension LibraryViewModel {
                                 context: context
                             )
                         case .completed:
-                            condition = mangaObject.status == AidokuRunner.PublishingStatus.completed.rawValue
+                            condition = mangaObject.status == KomareelSourceKit.PublishingStatus.completed.rawValue
                         case .source:
                             guard let sourceId = filter.value else { continue }
                             if filter.exclude {

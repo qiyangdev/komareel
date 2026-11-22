@@ -6,7 +6,7 @@
 //
 
 @testable import Aidoku
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 import Testing
 
@@ -59,7 +59,7 @@ struct ComicInfoTests {
     }
 
     @Test func testSerialization() throws {
-        let manga = AidokuRunner.Manga(
+        let manga = KomareelSourceKit.Manga(
             sourceKey: "sourceKey",
             key: "mangaKey",
             title: "Series",
@@ -73,7 +73,7 @@ struct ComicInfoTests {
             contentRating: .safe,
             viewer: .rightToLeft
         )
-        let chapter = AidokuRunner.Chapter(
+        let chapter = KomareelSourceKit.Chapter(
             key: "chapterKey",
             title: "Title",
             chapterNumber: 5.5,

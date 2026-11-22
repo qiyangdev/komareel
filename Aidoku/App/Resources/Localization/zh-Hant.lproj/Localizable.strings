@@ -573,7 +573,7 @@
 "INVERT_TAP_ZONES" = "反轉觸控區域";
 "ANIMATE_PAGE_TRANSITIONS" = "頁面轉場動畫";
 "TAP_ZONES" = "觸控區域";
-"SOURCE_IMPORT_FAIL_TEXT" = "來源匯入失敗。請確保你的 aix 檔案是有效的。";
+"SOURCE_IMPORT_FAIL_TEXT" = "來源匯入失敗。請確保你的 krx 檔案是有效的。";
 "FILE_IMPORT_FAIL_TEXT" = "檔案匯入失敗，請確保這是一個有效且含有圖片的 CBZ 或 ZIP 壓縮檔。";
 "COMIC" = "漫畫";
 "BOOK" = "書";

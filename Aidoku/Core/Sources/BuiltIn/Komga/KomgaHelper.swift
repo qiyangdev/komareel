@@ -5,7 +5,7 @@
 //  Created by Skitty on 10/19/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 
 struct KomgaHelper: Sendable {
@@ -159,7 +159,7 @@ extension KomgaHelper {
     }
 
     func getConditions(
-        filters: [AidokuRunner.FilterValue],
+        filters: [KomareelSourceKit.FilterValue],
         storedTags: [String],
         lastWorkingMirror: inout URL?
     ) async throws -> (Sort, [KomgaSearchCondition]) {
@@ -274,10 +274,10 @@ extension KomgaHelper {
     }
 
     func getMangaList(
-        listing: AidokuRunner.Listing,
+        listing: KomareelSourceKit.Listing,
         page: Int,
         lastWorkingMirror: inout URL?
-    ) async throws -> AidokuRunner.MangaPageResult {
+    ) async throws -> KomareelSourceKit.MangaPageResult {
         let baseUrl = try getConfiguredServer()
 
         // Extract library ID if this is a library-specific listing

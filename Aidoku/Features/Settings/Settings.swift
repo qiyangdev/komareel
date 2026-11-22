@@ -5,7 +5,7 @@
 //  Created by Skitty on 9/20/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import UIKit
 
 @MainActor

@@ -5,7 +5,7 @@
 //  Created by Skitty on 11/19/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Combine
 import SwiftUI
 
@@ -16,7 +16,7 @@ class MangaCollectionViewController: BaseCollectionViewController {
     lazy var refreshControl = UIRefreshControl()
     lazy var errorView = SourceErrorView()
 
-    var entries: [AidokuRunner.Manga] = []
+    var entries: [KomareelSourceKit.Manga] = []
     var bookmarkedItems: Set<String> = []
 
     struct SkeletonView: View {
@@ -162,8 +162,8 @@ extension MangaCollectionViewController {
 
 extension MangaCollectionViewController {
     // MARK: Cell Registration
-    typealias GridCellRegistration = UICollectionView.CellRegistration<MangaGridCell, AidokuRunner.Manga>
-    typealias ListCellRegistration = UICollectionView.CellRegistration<MangaListCell, AidokuRunner.Manga>
+    typealias GridCellRegistration = UICollectionView.CellRegistration<MangaGridCell, KomareelSourceKit.Manga>
+    typealias ListCellRegistration = UICollectionView.CellRegistration<MangaListCell, KomareelSourceKit.Manga>
 
     func makeGridCellRegistration() -> GridCellRegistration {
         GridCellRegistration { [weak self] cell, _, manga in
@@ -187,7 +187,7 @@ extension MangaCollectionViewController {
         case regular
     }
 
-    func makeDataSource() -> UICollectionViewDiffableDataSource<Section, AidokuRunner.Manga> {
+    func makeDataSource() -> UICollectionViewDiffableDataSource<Section, KomareelSourceKit.Manga> {
         if usesListLayout {
             UICollectionViewDiffableDataSource(
                 collectionView: collectionView,
@@ -202,7 +202,7 @@ extension MangaCollectionViewController {
     }
 
     func updateDataSource() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, AidokuRunner.Manga>()
+        var snapshot = NSDiffableDataSourceSnapshot<Section, KomareelSourceKit.Manga>()
         snapshot.appendSections([.regular])
         snapshot.appendItems(entries.unique(), toSection: .regular)
         dataSource.apply(snapshot)

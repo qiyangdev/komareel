@@ -5,7 +5,7 @@
 //  Created by axiel7 on 10/02/2024.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 import NukeUI
 
@@ -17,7 +17,7 @@ struct MangaUpdateItemView: View {
 
     var updates: [MangaUpdatesView.UpdateInfo]
 
-    private let manga: AidokuRunner.Manga?
+    private let manga: KomareelSourceKit.Manga?
     private let count: Int
     private let viewed: Bool
 

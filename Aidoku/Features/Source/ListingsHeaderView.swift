@@ -6,11 +6,11 @@
 //
 
 import SwiftUI
-import AidokuRunner
+import KomareelSourceKit
 
 struct ListingsHeaderView: View {
-    let source: AidokuRunner.Source
-    @Binding var listings: [AidokuRunner.Listing]
+    let source: KomareelSourceKit.Source
+    @Binding var listings: [KomareelSourceKit.Listing]
     @Binding var selectedListing: Int
 
     @State private var error: Error?
@@ -144,7 +144,7 @@ struct ListingsHeaderView: View {
 @available(iOS 17.0, macOS 14.0, *)
 #Preview {
     @Previewable @State var selectedListing = 0
-    @Previewable @State var listings: [AidokuRunner.Listing] = [
+    @Previewable @State var listings: [KomareelSourceKit.Listing] = [
         .init(id: "1", name: "Listing 1"),
         .init(id: "2", name: "Listing 2")
     ]

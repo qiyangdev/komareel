@@ -5,11 +5,11 @@
 //  Created by Skitty on 6/5/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 
-extension AidokuRunner.Source {
-    static func local() -> AidokuRunner.Source {
+extension KomareelSourceKit.Source {
+    static func local() -> KomareelSourceKit.Source {
         .init(
             url: nil,
             key: LocalSourceRunner.sourceKey,
@@ -29,10 +29,10 @@ extension AidokuRunner.Source {
     }
 }
 
-final class LocalSourceRunner: AidokuRunner.Runner {
+final class LocalSourceRunner: KomareelSourceKit.Runner {
     static let sourceKey = "local"
 
-    let features = AidokuRunner.SourceFeatures(
+    let features = KomareelSourceKit.SourceFeatures(
         providesListings: true,
         providesHome: false, // todo
         dynamicFilters: false,
@@ -49,13 +49,13 @@ final class LocalSourceRunner: AidokuRunner.Runner {
         handlesWebLogin: false
     )
 
-    func getSearchMangaList(query: String?, page: Int, filters: [AidokuRunner.FilterValue]) async throws -> AidokuRunner.MangaPageResult {
+    func getSearchMangaList(query: String?, page: Int, filters: [KomareelSourceKit.FilterValue]) async throws -> KomareelSourceKit.MangaPageResult {
         await LocalFileManager.shared.scanLocalFiles()
         let manga = await LocalFileDataManager.shared.fetchLocalSeries(query: query)
         return .init(entries: manga, hasNextPage: false)
     }
 
-    func getMangaUpdate(manga: AidokuRunner.Manga, needsDetails: Bool, needsChapters: Bool) async throws -> AidokuRunner.Manga {
+    func getMangaUpdate(manga: KomareelSourceKit.Manga, needsDetails: Bool, needsChapters: Bool) async throws -> KomareelSourceKit.Manga {
         var manga = manga
         if needsDetails {}
         if needsChapters {
@@ -64,11 +64,11 @@ final class LocalSourceRunner: AidokuRunner.Runner {
         return manga
     }
 
-    func getPageList(manga: AidokuRunner.Manga, chapter: AidokuRunner.Chapter) async throws -> [AidokuRunner.Page] {
+    func getPageList(manga: KomareelSourceKit.Manga, chapter: KomareelSourceKit.Chapter) async throws -> [KomareelSourceKit.Page] {
         await LocalFileManager.shared.fetchPages(mangaId: manga.key, chapterId: chapter.key)
     }
 
-    func getMangaList(listing: AidokuRunner.Listing, page: Int) async throws -> AidokuRunner.MangaPageResult {
+    func getMangaList(listing: KomareelSourceKit.Listing, page: Int) async throws -> KomareelSourceKit.MangaPageResult {
         let manga = await LocalFileDataManager.shared.fetchLocalSeries()
         return .init(entries: manga, hasNextPage: false)
     }

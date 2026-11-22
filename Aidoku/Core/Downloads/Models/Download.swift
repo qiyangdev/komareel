@@ -5,7 +5,7 @@
 //  Created by Skitty on 5/14/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 
 enum DownloadStatus: Int, Codable {
@@ -27,16 +27,16 @@ struct Download: Equatable, Sendable, Codable {
     var progress: Int = 0
     var total: Int = 0
 
-    var manga: AidokuRunner.Manga
-    var chapter: AidokuRunner.Chapter
+    var manga: KomareelSourceKit.Manga
+    var chapter: KomareelSourceKit.Chapter
 
     static func == (lhs: Download, rhs: Download) -> Bool {
         lhs.chapterIdentifier == rhs.chapterIdentifier
     }
 
     static func from(
-        manga: AidokuRunner.Manga,
-        chapter: AidokuRunner.Chapter,
+        manga: KomareelSourceKit.Manga,
+        chapter: KomareelSourceKit.Chapter,
         status: DownloadStatus = .queued
     ) -> Download {
         Download(

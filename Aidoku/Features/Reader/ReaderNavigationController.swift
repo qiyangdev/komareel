@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AidokuRunner
+import KomareelSourceKit
 
 class ReaderNavigationController: UINavigationController {
     let readerViewController: ReaderViewController
@@ -41,17 +41,17 @@ class ReaderNavigationController: UINavigationController {
 }
 
 struct SwiftUIReaderNavigationController: View {
-    let source: AidokuRunner.Source?
-    let manga: AidokuRunner.Manga
-    let chapter: AidokuRunner.Chapter
+    let source: KomareelSourceKit.Source?
+    let manga: KomareelSourceKit.Manga
+    let chapter: KomareelSourceKit.Chapter
     var startPage: Int?
 
     @State private var interfaceOrientations: UIInterfaceOrientationMask?
 
     init(
-        source: AidokuRunner.Source?,
-        manga: AidokuRunner.Manga,
-        chapter: AidokuRunner.Chapter,
+        source: KomareelSourceKit.Source?,
+        manga: KomareelSourceKit.Manga,
+        chapter: KomareelSourceKit.Chapter,
         startPage: Int? = nil
     ) {
         self.source = source
@@ -84,9 +84,9 @@ struct SwiftUIReaderNavigationController: View {
 }
 
 private struct _SwiftUIReaderNavigationController: UIViewControllerRepresentable {
-    let source: AidokuRunner.Source?
-    let manga: AidokuRunner.Manga
-    let chapter: AidokuRunner.Chapter
+    let source: KomareelSourceKit.Source?
+    let manga: KomareelSourceKit.Manga
+    let chapter: KomareelSourceKit.Chapter
     var startPage: Int?
 
     final class Coordinator {

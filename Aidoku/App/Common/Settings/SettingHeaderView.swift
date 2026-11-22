@@ -5,17 +5,17 @@
 //  Created by Skitty on 10/8/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct SettingHeaderView: View {
-    var source: AidokuRunner.Source?
+    var source: KomareelSourceKit.Source?
     let icon: Icon
     let title: String
     let subtitle: AttributedString
 
     init(
-        source: AidokuRunner.Source? = nil,
+        source: KomareelSourceKit.Source? = nil,
         icon: Icon,
         title: String,
         subtitle: String,
@@ -66,7 +66,7 @@ struct SettingHeaderView: View {
     }
 
     @ContentBuilder
-    static func iconView(source: AidokuRunner.Source?, icon: Icon, size: CGFloat) -> some View {
+    static func iconView(source: KomareelSourceKit.Source?, icon: Icon, size: CGFloat) -> some View {
         switch icon {
             case let .system(name, color, inset):
                 Image(systemName: name)

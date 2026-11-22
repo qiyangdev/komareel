@@ -1,4 +1,4 @@
-import AidokuRunner
+import KomareelSourceKit
 import CoreData
 import Foundation
 
@@ -25,7 +25,7 @@ enum MediaPlaybackHistory {
         }, uniquingKeysWith: { $0.updatedAt >= $1.updatedAt ? $0 : $1 })
     }
 
-    static func save(_ progress: MediaPlaybackProgress, manga: AidokuRunner.Manga, episode: AidokuRunner.Chapter) -> Bool {
+    static func save(_ progress: MediaPlaybackProgress, manga: KomareelSourceKit.Manga, episode: KomareelSourceKit.Chapter) -> Bool {
         guard !AppSettings.general.incognitoMode.get() else { return false }
         let database = CoreDataManager.shared
         let context = database.container.newBackgroundContext()

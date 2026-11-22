@@ -1,8 +1,8 @@
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 
-extension AidokuRunner.Source {
-    static func sampleVideo() -> AidokuRunner.Source {
+extension KomareelSourceKit.Source {
+    static func sampleVideo() -> KomareelSourceKit.Source {
         .init(
             url: nil,
             key: SampleVideoSourceRunner.sourceKey,
@@ -24,9 +24,9 @@ struct SampleVideoSourceRunner: VideoSourceRunner {
     static let sourceKey = "sample.video"
     static var name: String { String(localized: "Video Samples") }
 
-    let features = AidokuRunner.SourceFeatures(providesListings: true)
+    let features = KomareelSourceKit.SourceFeatures(providesListings: true)
 
-    private var catalog: AidokuRunner.Manga {
+    private var catalog: KomareelSourceKit.Manga {
         .init(
             sourceKey: Self.sourceKey,
             key: "video-samples",
@@ -58,7 +58,7 @@ struct SampleVideoSourceRunner: VideoSourceRunner {
         }
     }
 
-    func getSearchMangaList(query: String?, page: Int, filters: [AidokuRunner.FilterValue]) async throws -> AidokuRunner.MangaPageResult {
+    func getSearchMangaList(query: String?, page: Int, filters: [KomareelSourceKit.FilterValue]) async throws -> KomareelSourceKit.MangaPageResult {
         let catalog = catalog
         let query = query?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let matches = query.isEmpty
@@ -67,11 +67,11 @@ struct SampleVideoSourceRunner: VideoSourceRunner {
         return .init(entries: page == 1 && matches ? [catalog] : [], hasNextPage: false)
     }
 
-    func getMangaList(listing: AidokuRunner.Listing, page: Int) async throws -> AidokuRunner.MangaPageResult {
+    func getMangaList(listing: KomareelSourceKit.Listing, page: Int) async throws -> KomareelSourceKit.MangaPageResult {
         try await getSearchMangaList(query: nil, page: page, filters: [])
     }
 
-    func getMangaUpdate(manga: AidokuRunner.Manga, needsDetails: Bool, needsChapters: Bool) async throws -> AidokuRunner.Manga {
+    func getMangaUpdate(manga: KomareelSourceKit.Manga, needsDetails: Bool, needsChapters: Bool) async throws -> KomareelSourceKit.Manga {
         let catalog = catalog
         guard manga.key == catalog.key else { throw URLError(.resourceUnavailable) }
         var result = needsDetails ? manga.copy(from: catalog) : manga
@@ -81,11 +81,11 @@ struct SampleVideoSourceRunner: VideoSourceRunner {
         return result
     }
 
-    func getPageList(manga: AidokuRunner.Manga, chapter: AidokuRunner.Chapter) async throws -> [AidokuRunner.Page] {
-        throw AidokuRunner.SourceError.unimplemented
+    func getPageList(manga: KomareelSourceKit.Manga, chapter: KomareelSourceKit.Chapter) async throws -> [KomareelSourceKit.Page] {
+        throw KomareelSourceKit.SourceError.unimplemented
     }
 
-    func videoURL(manga: AidokuRunner.Manga, episode: AidokuRunner.Chapter) async throws -> URL {
+    func videoURL(manga: KomareelSourceKit.Manga, episode: KomareelSourceKit.Chapter) async throws -> URL {
         guard manga.key == catalog.key, let sample = Sample(rawValue: episode.key), let url = URL(string: sample.url) else {
             throw URLError(.resourceUnavailable)
         }

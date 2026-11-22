@@ -5,7 +5,7 @@
 //  Created by neldra on 5/24/26.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 import Nuke
 
@@ -38,7 +38,7 @@ enum CoverRecovery {
     static func recover(from error: Error, identifier: MangaIdentifier) async -> URL? {
         guard shouldRecover(from: error) else { return nil }
         guard await tracker.claim(identifier) else { return nil }
-        let stub = AidokuRunner.Manga(sourceKey: identifier.sourceKey, key: identifier.mangaKey, title: "")
+        let stub = KomareelSourceKit.Manga(sourceKey: identifier.sourceKey, key: identifier.mangaKey, title: "")
         let hasEditedCover = await CoreDataManager.shared.container.performBackgroundTask {
             CoreDataManager.shared.hasEditedKey(mangaId: identifier, key: .cover, context: $0)
         }

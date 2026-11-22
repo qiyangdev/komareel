@@ -5,14 +5,14 @@
 //  Created by Skitty on 8/21/23.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Combine
 import NukeUI
 import SafariServices
 import SwiftUI
 
 class NewSourceViewController: UIViewController {
-    let source: AidokuRunner.Source
+    let source: KomareelSourceKit.Source
     // if the listings/home should be hidden and the search view shown by default
     private let onlySearch: Bool
 
@@ -33,7 +33,7 @@ class NewSourceViewController: UIViewController {
     private lazy var searchViewController = SourceSearchViewController(source: source)
 
     // MARK: SwiftUI Bindings
-    private var listings: [AidokuRunner.Listing] = [] {
+    private var listings: [KomareelSourceKit.Listing] = [] {
         didSet {
             updateHostingControllers()
         }
@@ -53,7 +53,7 @@ class NewSourceViewController: UIViewController {
             handleFilterHeaderVisibility()
         }
     }
-    private var filters: [AidokuRunner.Filter]? {
+    private var filters: [KomareelSourceKit.Filter]? {
         didSet {
             updateHostingControllers()
         }
@@ -84,7 +84,7 @@ class NewSourceViewController: UIViewController {
             }
         )
     }
-    private var listingsBinding: Binding<[AidokuRunner.Listing]> {
+    private var listingsBinding: Binding<[KomareelSourceKit.Listing]> {
         .init(
             get: { [weak self] in self?.listings ?? [] },
             set: { [weak self] in self?.listings = $0 }
@@ -102,7 +102,7 @@ class NewSourceViewController: UIViewController {
             set: { [weak self] in self?.importing = $0 }
         )
     }
-    private var filtersBinding: Binding<[AidokuRunner.Filter]?> {
+    private var filtersBinding: Binding<[KomareelSourceKit.Filter]?> {
         .init(
             get: { [weak self] in self?.filters },
             set: { [weak self] in self?.filters = $0 }
@@ -194,7 +194,7 @@ class NewSourceViewController: UIViewController {
     private lazy var importHostingController = UIHostingController(rootView: importFileView)
 
     init(
-        source: AidokuRunner.Source,
+        source: KomareelSourceKit.Source,
         onlySearch: Bool? = nil,
         searchQuery: String? = nil
     ) {

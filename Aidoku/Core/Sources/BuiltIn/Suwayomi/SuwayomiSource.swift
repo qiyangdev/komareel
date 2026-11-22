@@ -5,16 +5,16 @@
 //  Created by skitty on 7/1/26.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 import UIKit
 
-extension AidokuRunner.Source {
+extension KomareelSourceKit.Source {
     static func suwayomi(
         key: String = "suwayomi",
         name: String,
         server: String
-    ) -> AidokuRunner.Source {
+    ) -> KomareelSourceKit.Source {
         .init(
             url: nil,
             key: key,
@@ -105,7 +105,7 @@ actor SuwayomiSourceRunner: Runner {
         }
     }
 
-    func getSearchMangaList(query: String?, page: Int, filters: [AidokuRunner.FilterValue]) async throws -> AidokuRunner.MangaPageResult {
+    func getSearchMangaList(query: String?, page: Int, filters: [KomareelSourceKit.FilterValue]) async throws -> KomareelSourceKit.MangaPageResult {
         struct Payload: Encodable {
             let variables: Variables
             let query = """
@@ -157,7 +157,7 @@ actor SuwayomiSourceRunner: Runner {
         return .init(entries: entries, hasNextPage: false)
     }
 
-    func getMangaUpdate(manga: AidokuRunner.Manga, needsDetails: Bool, needsChapters: Bool) async throws -> AidokuRunner.Manga {
+    func getMangaUpdate(manga: KomareelSourceKit.Manga, needsDetails: Bool, needsChapters: Bool) async throws -> KomareelSourceKit.Manga {
         guard let mangaId = Int(manga.key) else { throw SourceError.message("INVALID_KEY") }
 
         struct Payload: Encodable {
@@ -213,7 +213,7 @@ actor SuwayomiSourceRunner: Runner {
         return manga
     }
 
-    func getPageList(manga: AidokuRunner.Manga, chapter: AidokuRunner.Chapter) async throws -> [AidokuRunner.Page] {
+    func getPageList(manga: KomareelSourceKit.Manga, chapter: KomareelSourceKit.Chapter) async throws -> [KomareelSourceKit.Page] {
         guard let chapterId = Int(chapter.key) else { throw SourceError.message("INVALID_KEY") }
 
         struct Payload: Encodable {
@@ -240,7 +240,7 @@ actor SuwayomiSourceRunner: Runner {
         }
     }
 
-    func getMangaList(listing: AidokuRunner.Listing, page: Int) async throws -> AidokuRunner.MangaPageResult {
+    func getMangaList(listing: KomareelSourceKit.Listing, page: Int) async throws -> KomareelSourceKit.MangaPageResult {
         .init(entries: [], hasNextPage: false)
     }
 
@@ -408,14 +408,14 @@ actor SuwayomiSourceRunner: Runner {
 
 // MARK: Search Filters
 extension SuwayomiSourceRunner {
-    func getSearchFilters() async throws -> [AidokuRunner.Filter] {
+    func getSearchFilters() async throws -> [KomareelSourceKit.Filter] {
         async let categories = getCategories()
         async let tags = getTags()
 
         let categoryItems = try await categories
         let tagItems = try await tags
 
-        var filters: [AidokuRunner.Filter] = [
+        var filters: [KomareelSourceKit.Filter] = [
             .init(
                 id: "sort",
                 title: NSLocalizedString("SORT"),
@@ -474,7 +474,7 @@ extension SuwayomiSourceRunner {
         let localSort: (option: SortOption, ascending: Bool)?
     }
 
-    private func getSearchFilter(query: String?, filters: [AidokuRunner.FilterValue]) -> SearchFilter {
+    private func getSearchFilter(query: String?, filters: [KomareelSourceKit.FilterValue]) -> SearchFilter {
         var filterInput: [SuwayomiMangaFilterInput] = []
         var sortOption = SortOption.allCases[3]
         var sortAscending = false

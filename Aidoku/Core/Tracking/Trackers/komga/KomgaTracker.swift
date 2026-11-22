@@ -5,7 +5,7 @@
 //  Created by Skitty on 9/15/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 
 final class KomgaTracker: EnhancedTracker, PageTracker {
@@ -64,7 +64,7 @@ final class KomgaTracker: EnhancedTracker, PageTracker {
         }
     }
 
-    func search(for manga: AidokuRunner.Manga, includeNsfw: Bool) async throws -> [TrackSearchItem] {
+    func search(for manga: KomareelSourceKit.Manga, includeNsfw: Bool) async throws -> [TrackSearchItem] {
         let state = try await api.getState(sourceKey: manga.sourceKey, seriesId: manga.key)
         if state != nil {
             return [.init(id: "\(manga.sourceKey)\(idSeparator)\(manga.key)", tracked: true)]
@@ -91,7 +91,7 @@ final class KomgaTracker: EnhancedTracker, PageTracker {
         )
     }
 
-    func getProgress(trackId: String, chapters: [AidokuRunner.Chapter]) async throws -> [String: ChapterReadProgress] {
+    func getProgress(trackId: String, chapters: [KomareelSourceKit.Chapter]) async throws -> [String: ChapterReadProgress] {
         let (sourceKey, seriesId) = try getIdParts(from: trackId)
         return try await api.getSeriesReadProgress(sourceKey: sourceKey, seriesId: seriesId)
     }

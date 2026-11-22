@@ -15,7 +15,6 @@ extension Notification.Name {
     // sources
     static let updateSourceList = Self("updateSourceList")
     static let updateSourceLists = Self("updateSourceLists")
-    static let loadedSourceFilters = Self("loadedSourceFilters")
     static let sourceLoaded = Self("sourceLoaded")
     static let sourceUnloaded = Self("sourceUnloaded")
 

@@ -6,7 +6,7 @@
 //
 
 import CoreData
-import AidokuRunner
+import KomareelSourceKit
 
 extension CoreDataManager {
     /// Remove all source objects.
@@ -42,7 +42,7 @@ extension CoreDataManager {
 
     /// Creates a new source item.
     @discardableResult
-    func createSource(source: AidokuRunner.Source, context: NSManagedObjectContext) -> SourceObject {
+    func createSource(source: KomareelSourceKit.Source, context: NSManagedObjectContext) -> SourceObject {
         let object = SourceObject(context: context)
         object.load(from: source)
         return object

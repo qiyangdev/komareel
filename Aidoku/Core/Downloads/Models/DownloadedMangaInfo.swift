@@ -5,7 +5,7 @@
 //  Created by doomsboygaming on 6/25/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 
 /// Information about a downloaded manga with metadata and size details
@@ -55,7 +55,7 @@ struct DownloadedMangaInfo: Identifiable, Hashable {
         self.isInLibrary = isInLibrary
     }
 
-    func toManga() -> AidokuRunner.Manga {
+    func toManga() -> KomareelSourceKit.Manga {
         .init(
             sourceKey: sourceId,
             key: mangaId,
@@ -77,7 +77,7 @@ struct DownloadedChapterInfo: Identifiable, Hashable {
     /// Whether this is a download that stopped with pages missing rather than a complete chapter.
     let failed: Bool
 
-    let chapter: AidokuRunner.Chapter?
+    let chapter: KomareelSourceKit.Chapter?
 
     /// Computed property for display title with smart formatting
     var displayTitle: String {
@@ -144,7 +144,7 @@ struct DownloadedChapterInfo: Identifiable, Hashable {
         size: Int64,
         downloadDate: Date? = nil,
         failed: Bool = false,
-        chapter: AidokuRunner.Chapter? = nil
+        chapter: KomareelSourceKit.Chapter? = nil
     ) {
         self.id = chapterId
         self.chapterId = chapterId
@@ -157,7 +157,7 @@ struct DownloadedChapterInfo: Identifiable, Hashable {
         self.chapter = chapter
     }
 
-    func toChapter() -> AidokuRunner.Chapter {
+    func toChapter() -> KomareelSourceKit.Chapter {
         chapter ?? .init(
             key: chapterId,
             title: title,

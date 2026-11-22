@@ -5,18 +5,18 @@
 //  Created by Skitty on 4/28/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct SourceHomeContentView: View {
-    let source: AidokuRunner.Source
+    let source: KomareelSourceKit.Source
 
-    @Binding var listings: [AidokuRunner.Listing]
+    @Binding var listings: [KomareelSourceKit.Listing]
     @Binding var headerListingSelection: Int // used only for listing header
 
     @State private var home: Home?
     @State private var listingHome: Home? // Home-like layout for current listing
-    @State private var entries: [AidokuRunner.Manga] = []
+    @State private var entries: [KomareelSourceKit.Manga] = []
     @State private var containerWidth: CGFloat = 0
 
     @State private var hasLoaded = false
@@ -42,19 +42,19 @@ struct SourceHomeContentView: View {
 
     @StateObject private var path: NavigationCoordinator
 
-    private var currentListing: AidokuRunner.Listing? {
+    private var currentListing: KomareelSourceKit.Listing? {
         listing(for: listingSelection)
     }
 
-    private func listing(for selection: Int) -> AidokuRunner.Listing? {
+    private func listing(for selection: Int) -> KomareelSourceKit.Listing? {
         let listingIndex = selection - (source.features.providesHome ? 1 : 0)
         return listings[safe: listingIndex]
     }
 
     init(
-        source: AidokuRunner.Source,
+        source: KomareelSourceKit.Source,
         holdingViewController: UIViewController,
-        listings: Binding<[AidokuRunner.Listing]>,
+        listings: Binding<[KomareelSourceKit.Listing]>,
         headerListingSelection: Binding<Int>
     ) {
         self.source = source
@@ -77,7 +77,6 @@ struct SourceHomeContentView: View {
                     if let error {
                         ErrorView(
                             error: error,
-                            restart: { try await source.restart() },
                             retry: { await reload() }
                         )
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -296,18 +295,14 @@ extension SourceHomeContentView {
     }
 
     func loadHome() async {
-        await source.partialHomePublisher?.sink { @Sendable partialHome in
-            Task { @MainActor in
+        do {
+            let home = try await source.getHome { partialHome in
+                guard !Task.isCancelled else { return }
                 withAnimation {
                     self.home = partialHome
-                    if headerListingSelection == 0 {
-                        loading = false
-                    }
+                    if headerListingSelection == 0 { loading = false }
                 }
             }
-        }
-        do {
-            let home = try await source.getHome()
             withAnimation {
                 self.home = home
             }
@@ -335,7 +330,6 @@ extension SourceHomeContentView {
                 self.error = error
             }
         }
-        await source.partialHomePublisher?.removeSink()
 
         withAnimation {
             if headerListingSelection == 0 {

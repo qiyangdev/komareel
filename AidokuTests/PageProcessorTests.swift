@@ -6,7 +6,7 @@
 //
 
 @testable import Aidoku
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 import Nuke
 import Testing
@@ -33,7 +33,7 @@ struct PageInterceptorProcessorTests {
         }())
 
         let runner = TestableSourceRunner()
-        let source = AidokuRunner.Source.test(runner: runner)
+        let source = KomareelSourceKit.Source.test(runner: runner)
 
         let url = try #require(URL(string: "https://page-processor-test/image.png"))
 

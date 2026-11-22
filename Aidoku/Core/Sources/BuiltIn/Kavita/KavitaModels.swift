@@ -5,7 +5,7 @@
 //  Created by Skitty on 10/19/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 
 struct KavitaErrorResponse: Codable, Sendable {
@@ -181,15 +181,15 @@ extension KavitaSeries {
         baseUrl: URL,
         apiKey: String,
         metadata: KavitaSeriesMetadata? = nil
-    ) -> AidokuRunner.Manga {
-        let status: AidokuRunner.PublishingStatus = switch metadata?.publicationStatus {
+    ) -> KomareelSourceKit.Manga {
+        let status: KomareelSourceKit.PublishingStatus = switch metadata?.publicationStatus {
             case .ongoing: .ongoing
             case .hiatus: .hiatus
             case .completed, .ended: .completed
             case .cancelled: .cancelled
             default: .unknown
         }
-        let contentRating: AidokuRunner.ContentRating = if let ageRating = metadata?.ageRating {
+        let contentRating: KomareelSourceKit.ContentRating = if let ageRating = metadata?.ageRating {
             if ageRating >= 10 {
                 // mature 17+ or r18
                 .nsfw
@@ -247,8 +247,8 @@ struct KavitaVolume: Codable, Sendable {
 }
 
 extension KavitaVolume {
-    func intoChapters(baseUrl: URL, apiKey: String) -> [AidokuRunner.Chapter] {
-        chapters.compactMap { chapter -> AidokuRunner.Chapter? in
+    func intoChapters(baseUrl: URL, apiKey: String) -> [KomareelSourceKit.Chapter] {
+        chapters.compactMap { chapter -> KomareelSourceKit.Chapter? in
             let isEpub = chapter.files.contains(where: { $0.format == 3 })
             guard !isEpub else { return nil }
             let chapterNumber = Float(chapter.number) ?? 0

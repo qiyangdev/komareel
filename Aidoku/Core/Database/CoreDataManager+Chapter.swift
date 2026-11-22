@@ -6,7 +6,7 @@
 //
 
 import CoreData
-import AidokuRunner
+import KomareelSourceKit
 
 extension CoreDataManager {
     /// Remove all chapter objects.
@@ -58,7 +58,7 @@ extension CoreDataManager {
     /// Create a chapter object.
     @discardableResult
     func createChapter(
-        _ chapter: AidokuRunner.Chapter,
+        _ chapter: KomareelSourceKit.Chapter,
         mangaId: MangaIdentifier,
         sourceOrder: Int,
         mangaObject: MangaObject? = nil,
@@ -111,7 +111,7 @@ extension CoreDataManager {
     /// - Returns: New created chapters
     @discardableResult
     func setChapters(
-        _ chapters: [AidokuRunner.Chapter],
+        _ chapters: [KomareelSourceKit.Chapter],
         mangaId: MangaIdentifier,
         context: NSManagedObjectContext
     ) -> [ChapterObject] {

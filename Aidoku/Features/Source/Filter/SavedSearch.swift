@@ -5,7 +5,7 @@
 //  Created by Skitty on 3/2/26.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 
 struct SavedSearch: Codable {
     let name: String

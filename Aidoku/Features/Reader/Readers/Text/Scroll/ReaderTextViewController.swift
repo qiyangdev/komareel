@@ -5,7 +5,7 @@
 //  Created by Skitty on 5/13/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 import ZIPFoundation
 
@@ -19,7 +19,7 @@ class ReaderTextViewController: BaseViewController {
 
     /// A section of content in the scroll view representing one chapter.
     private struct ChapterSection {
-        let chapter: AidokuRunner.Chapter
+        let chapter: KomareelSourceKit.Chapter
         let pages: [Page]
         var hostingControllers: [UIHostingController<ReaderTextView>]
         /// Transition view shown after this section's content (between chapters).
@@ -31,11 +31,11 @@ class ReaderTextViewController: BaseViewController {
     private var sections: [ChapterSection] = []
 
     /// The chapter currently being read (based on scroll position).
-    private var chapter: AidokuRunner.Chapter?
+    private var chapter: KomareelSourceKit.Chapter?
     /// The chapter before the first loaded section (for the top transition).
-    private var previousChapter: AidokuRunner.Chapter?
+    private var previousChapter: KomareelSourceKit.Chapter?
     /// The chapter after the last loaded section (for the bottom transition).
-    private var nextChapter: AidokuRunner.Chapter?
+    private var nextChapter: KomareelSourceKit.Chapter?
 
     private var isLoadingChapter = false
     private var loadingNext = false
@@ -148,7 +148,7 @@ class ReaderTextViewController: BaseViewController {
         view.bounds.height
     }
 
-    init(source: AidokuRunner.Source?, manga: AidokuRunner.Manga) {
+    init(source: KomareelSourceKit.Source?, manga: KomareelSourceKit.Manga) {
         self.viewModel = .init(source: source, manga: manga)
         super.init()
     }
@@ -161,8 +161,8 @@ class ReaderTextViewController: BaseViewController {
 
     /// Create a full-screen-height transition view to be placed between sections.
     private func createInlineTransitionView(
-        finishedChapter: AidokuRunner.Chapter,
-        nextChapter: AidokuRunner.Chapter?
+        finishedChapter: KomareelSourceKit.Chapter,
+        nextChapter: KomareelSourceKit.Chapter?
     ) -> ReaderInfoPageView {
         let tv = ReaderInfoPageView(type: .next)
         tv.applyTextTheme()
@@ -474,7 +474,7 @@ extension ReaderTextViewController {
 
     // MARK: - Initial Chapter Load
 
-    func loadInitialChapter(_ chapter: AidokuRunner.Chapter, restorePosition: Bool = true) async {
+    func loadInitialChapter(_ chapter: KomareelSourceKit.Chapter, restorePosition: Bool = true) async {
         isLoadingChapter = true
         hasReachedEnd = false
         self.chapter = chapter
@@ -822,7 +822,7 @@ extension ReaderTextViewController: ReaderReaderDelegate {
         delegate?.setCurrentPage(page, position: nil)
     }
 
-    func setChapter(_ chapter: AidokuRunner.Chapter, startPage: Int) {
+    func setChapter(_ chapter: KomareelSourceKit.Chapter, startPage: Int) {
         guard chapter != viewModel.chapter else { return }
 
         Task {

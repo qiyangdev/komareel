@@ -6,7 +6,7 @@
 //
 
 import CoreData
-import AidokuRunner
+import KomareelSourceKit
 
 extension CoreDataManager {
     /// Remove all history objects.
@@ -38,7 +38,7 @@ extension CoreDataManager {
     /// Create a manga object.
     @discardableResult
     func createManga(
-        _ manga: AidokuRunner.Manga,
+        _ manga: KomareelSourceKit.Manga,
         context: NSManagedObjectContext
     ) -> MangaObject {
         let object = MangaObject(context: context)
@@ -47,7 +47,7 @@ extension CoreDataManager {
     }
 
     func getOrCreateManga(
-        _ manga: AidokuRunner.Manga,
+        _ manga: KomareelSourceKit.Manga,
         context: NSManagedObjectContext
     ) -> MangaObject {
         if let mangaObject = getManga(mangaId: manga.identifier, context: context) {

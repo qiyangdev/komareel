@@ -5,16 +5,16 @@
 //  Created by Skitty on 5/27/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct HomeGridView: View {
-    let source: AidokuRunner.Source
-    let entries: [AidokuRunner.Manga]
+    let source: KomareelSourceKit.Source
+    let entries: [KomareelSourceKit.Manga]
     let containerWidth: CGFloat
     @Binding var bookmarkedItems: Set<String>
     var loadMore: (() async -> Void)?
-    var onSelect: ((AidokuRunner.Manga) -> Void)?
+    var onSelect: ((KomareelSourceKit.Manga) -> Void)?
 
     @State private var loadingMore = false
     @State private var columns: [GridItem]
@@ -25,12 +25,12 @@ struct HomeGridView: View {
     static let spacing: CGFloat = OldMangaCollectionViewController.itemSpacing
 
     init(
-        source: AidokuRunner.Source,
-        entries: [AidokuRunner.Manga],
+        source: KomareelSourceKit.Source,
+        entries: [KomareelSourceKit.Manga],
         containerWidth: CGFloat,
         bookmarkedItems: Binding<Set<String>> = .constant([]),
         loadMore: (() async -> Void)? = nil,
-        onSelect: ((AidokuRunner.Manga) -> Void)? = nil
+        onSelect: ((KomareelSourceKit.Manga) -> Void)? = nil
     ) {
         self.source = source
         self.entries = entries
@@ -96,7 +96,7 @@ struct HomeGridView: View {
         }
     }
 
-    private func mangaGridItem(entry: AidokuRunner.Manga) -> some View {
+    private func mangaGridItem(entry: KomareelSourceKit.Manga) -> some View {
         let inLibrary = bookmarkedItems.contains(entry.key)
         return Button {
             if let onSelect {
@@ -119,7 +119,7 @@ struct HomeGridView: View {
     }
 
     @ViewBuilder
-    private func libraryActions(for entry: AidokuRunner.Manga, inLibrary: Bool) -> some View {
+    private func libraryActions(for entry: KomareelSourceKit.Manga, inLibrary: Bool) -> some View {
         // add a remove button for manga from the local source
         if entry.isLocal() {
             Button(role: .destructive) {

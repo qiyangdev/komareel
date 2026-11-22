@@ -5,13 +5,13 @@
 //  Created by Skitty on 5/20/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import MarkdownUI
 import SwiftUI
 
 struct ReaderPageDescriptionButtonView: View {
-    let source: AidokuRunner.Source?
-    let pages: [AidokuRunner.Page]
+    let source: KomareelSourceKit.Source?
+    let pages: [KomareelSourceKit.Page]
 
     @State private var showingDescription = false
 
@@ -37,8 +37,8 @@ struct ReaderPageDescriptionButtonView: View {
 }
 
 struct PageDescriptionView: View {
-    let source: AidokuRunner.Source?
-    let pages: [AidokuRunner.Page]
+    let source: KomareelSourceKit.Source?
+    let pages: [KomareelSourceKit.Page]
 
     @Environment(\.dismiss) private var dismiss
 
@@ -51,7 +51,6 @@ struct PageDescriptionView: View {
                 if let error {
                     ErrorView(
                         error: error,
-                        restart: { try await source?.restart() },
                         retry: {
                             self.error = nil
                             await loadDescription()
@@ -84,7 +83,7 @@ struct PageDescriptionView: View {
     func loadDescription() async {
         do {
             description = try await pages
-                .asyncCompactMap { (page: AidokuRunner.Page) async throws -> String? in
+                .asyncCompactMap { (page: KomareelSourceKit.Page) async throws -> String? in
                     if let description = page.description {
                         description
                     } else if page.hasDescription {

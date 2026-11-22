@@ -5,7 +5,7 @@
 //  Created by Skitty on 5/13/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 @preconcurrency import BackgroundTasks
 import Foundation
 
@@ -116,7 +116,7 @@ actor DownloadQueue {
     }
 
     @discardableResult
-    func add(chapters: [AidokuRunner.Chapter], manga: AidokuRunner.Manga, autoStart: Bool = true) async -> [Download] {
+    func add(chapters: [KomareelSourceKit.Chapter], manga: KomareelSourceKit.Manga, autoStart: Bool = true) async -> [Download] {
         var downloads: [Download] = []
         for chapter in chapters {
             let identifier = ChapterIdentifier(

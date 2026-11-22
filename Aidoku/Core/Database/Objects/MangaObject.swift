@@ -7,7 +7,7 @@
 
 import Foundation
 import CoreData
-import AidokuRunner
+import KomareelSourceKit
 
 @objc(MangaObject)
 public class MangaObject: NSManagedObject {
@@ -58,7 +58,7 @@ public class MangaObject: NSManagedObject {
         scanlatorFilter = manga.scanlatorFilter
     }
 
-    func load(from manga: AidokuRunner.Manga, sourceId: String? = nil, override: Bool = false) {
+    func load(from manga: KomareelSourceKit.Manga, sourceId: String? = nil, override: Bool = false) {
         let editedKeys = EditedKeys(rawValue: editedKeys)
         id = manga.key
         self.sourceId = sourceId ?? manga.sourceKey
@@ -133,7 +133,7 @@ public class MangaObject: NSManagedObject {
         )
     }
 
-    func toNewManga() -> AidokuRunner.Manga {
+    func toNewManga() -> KomareelSourceKit.Manga {
         let viewer: Viewer = switch viewer {
             case 0: .unknown
             case 1: .rightToLeft
@@ -142,7 +142,7 @@ public class MangaObject: NSManagedObject {
             case 4: .webtoon
             default: .unknown
         }
-        return AidokuRunner.Manga(
+        return KomareelSourceKit.Manga(
             sourceKey: sourceId,
             key: id,
             title: title,
@@ -152,8 +152,8 @@ public class MangaObject: NSManagedObject {
             description: desc,
             url: url.flatMap { URL(string: $0) },
             tags: tags,
-            status: AidokuRunner.PublishingStatus(rawValue: UInt8(status)) ?? .unknown,
-            contentRating: AidokuRunner.ContentRating(rawValue: UInt8(nsfw + 1)) ?? .unknown,
+            status: KomareelSourceKit.PublishingStatus(rawValue: UInt8(status)) ?? .unknown,
+            contentRating: KomareelSourceKit.ContentRating(rawValue: UInt8(nsfw + 1)) ?? .unknown,
             viewer: viewer,
             updateStrategy: neverUpdate ? .never : .always,
             nextUpdateTime: nextUpdateTime.flatMap { Int($0.timeIntervalSince1970) },

@@ -5,14 +5,14 @@
 //  Created by Skitty on 9/25/23.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Nuke
 import NukeUI
 import SwiftUI
 
 struct MangaCoverPageView: View {
-    let source: AidokuRunner.Source?
-    @State var manga: AidokuRunner.Manga
+    let source: KomareelSourceKit.Source?
+    @State var manga: KomareelSourceKit.Manga
     @State var inLibrary: Bool?
 
     @State private var hasEditedCover = false
@@ -24,7 +24,7 @@ struct MangaCoverPageView: View {
 
     @Environment(\.dismiss) private var dismiss
 
-    init(source: AidokuRunner.Source?, manga: AidokuRunner.Manga, inLibrary: Bool? = nil) {
+    init(source: KomareelSourceKit.Source?, manga: KomareelSourceKit.Manga, inLibrary: Bool? = nil) {
         self.source = source
         self._manga = State(initialValue: manga)
         self._inLibrary = State(initialValue: inLibrary)
@@ -41,7 +41,6 @@ struct MangaCoverPageView: View {
                     if let error {
                         ErrorView(
                             error: error,
-                            restart: { try await source?.restart() },
                             retry: loadCovers
                         )
                     } else {

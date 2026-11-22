@@ -5,7 +5,7 @@
 //  Created by Skitty on 3/25/24.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import AuthenticationServices
 import CommonCrypto
 import LocalAuthentication
@@ -13,9 +13,9 @@ import SafariServices
 import SwiftUI
 import WebKit
 
-/// View for a given AidokuRunner Setting.
+/// View for a given KomareelSourceKit Setting.
 struct SettingView: View {
-    let source: AidokuRunner.Source?
+    let source: KomareelSourceKit.Source?
     let setting: Setting
     var namespace: String?
     var onChange: ((String) -> Void)?
@@ -61,7 +61,7 @@ struct SettingView: View {
     private static var loginShimController = LoginShimViewController()
 
     init(
-        source: AidokuRunner.Source? = nil,
+        source: KomareelSourceKit.Source? = nil,
         setting: Setting,
         namespace: String? = nil,
         hidden: Binding<Bool> = .constant(false),
@@ -70,7 +70,7 @@ struct SettingView: View {
         self.source = source
 
         // localize the setting title
-        // used because the language setting comes from the AidokuRunner package, where it can't be localized
+        // used because the language setting comes from the KomareelSourceKit package, where it can't be localized
         var setting = setting
         setting.title = NSLocalizedString(setting.title)
 
@@ -869,6 +869,7 @@ extension SettingView {
                 SettingsStore.shared.remove(key: key)
                 username = ""
                 password = ""
+                handleValueChange()
                 if value.clearCookiesOnLogOut ?? false, let key = source?.key {
                     Task {
                         await WKWebsiteDataStore.forSource(key: key).clearRecords()
@@ -946,6 +947,7 @@ extension SettingView {
             SettingsStore.shared.set(key: key + Self.usernameKeySuffix, value: username)
             SettingsStore.shared.set(key: key + Self.passwordKeySuffix, value: password)
             SettingsStore.shared.set(key: key, value: "logged_in") // set key to indicate logged in
+            handleValueChange()
         }
         if let source, source.features.handlesBasicLogin {
             loginLoading = true
@@ -1271,7 +1273,7 @@ private struct ScrollOffsetPreferenceKey: PreferenceKey {
 }
 
 struct SettingPageDestination: View {
-    var source: AidokuRunner.Source?
+    var source: KomareelSourceKit.Source?
     let setting: Setting
     var namespace: String?
     var onChange: ((String) -> Void)?
@@ -1287,7 +1289,7 @@ struct SettingPageDestination: View {
     @Namespace private var scrollSpace
 
     init(
-        source: AidokuRunner.Source? = nil,
+        source: KomareelSourceKit.Source? = nil,
         setting: Setting,
         namespace: String? = nil,
         onChange: ((String) -> Void)? = nil,

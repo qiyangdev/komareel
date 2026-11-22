@@ -12,12 +12,12 @@
 	<array>
 		<dict>
 			<key>CFBundleTypeName</key>
-			<string>Aidoku Source</string>
+			<string>Komareel Source</string>
 			<key>LSHandlerRank</key>
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>app.aidoku.Aidoku.aix</string>
+				<string>dev.qiyang.komareel.krx</string>
 			</array>
 		</dict>
 		<dict>
@@ -120,17 +120,16 @@
 				<string>public.zip-archive</string>
 			</array>
 			<key>UTTypeDescription</key>
-			<string>Aidoku Source</string>
+			<string>Komareel Source</string>
 			<key>UTTypeIconFiles</key>
 			<array/>
 			<key>UTTypeIdentifier</key>
-			<string>app.aidoku.Aidoku.aix</string>
+			<string>dev.qiyang.komareel.krx</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
 				<array>
-					<string>aix</string>
-					<string>zip</string>
+					<string>krx</string>
 				</array>
 			</dict>
 		</dict>

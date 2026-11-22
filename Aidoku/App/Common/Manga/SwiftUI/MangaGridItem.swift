@@ -5,12 +5,12 @@
 //  Created by Skitty on 8/16/23.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 import NukeUI
 
 struct MangaGridItem: View {
-    var source: AidokuRunner.Source?
+    var source: KomareelSourceKit.Source?
     let title: String
     let coverImage: String
     var bookmarked: Bool = false

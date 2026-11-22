@@ -5,13 +5,13 @@
 //  Created by Skitty on 3/4/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct SearchFilterHeaderView: View {
-    let source: AidokuRunner.Source
+    let source: KomareelSourceKit.Source
 
-    @Binding var filters: [AidokuRunner.Filter]?
+    @Binding var filters: [KomareelSourceKit.Filter]?
     @Binding var search: String
     @Binding var enabledFilters: [FilterValue]
     @Binding var filtersEmpty: Bool

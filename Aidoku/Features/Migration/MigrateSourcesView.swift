@@ -5,7 +5,7 @@
 //  Created by skitty on 1/6/23.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct MigrateSourcesView: View {
@@ -14,12 +14,12 @@ struct MigrateSourcesView: View {
         var name: String?
         var langs: [String]
         var coverUrl: URL?
-        let source: AidokuRunner.Source?
+        let source: KomareelSourceKit.Source?
     }
 
     @State private var isLoading = true
     @State private var sources: [MigrateSourceInfo] = []
-    @State private var manga: [String: [AidokuRunner.Manga]] = [:]
+    @State private var manga: [String: [KomareelSourceKit.Manga]] = [:]
 
     @EnvironmentObject private var path: NavigationCoordinator
 
@@ -92,7 +92,7 @@ extension MigrateSourcesView {
     func loadSources() async {
         manga = await CoreDataManager.shared.container.performBackgroundTask { context in
             let objects = CoreDataManager.shared.getLibraryManga(context: context)
-            var manga: [String: [AidokuRunner.Manga]] = [:]
+            var manga: [String: [KomareelSourceKit.Manga]] = [:]
             for object in objects {
                 guard let mangaObject = object.manga else { continue }
                 var mangaArray = manga[mangaObject.sourceId] ?? []

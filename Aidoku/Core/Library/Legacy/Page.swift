@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import AidokuRunner
+import KomareelSourceKit
 
 struct Page: Hashable {
 
@@ -46,8 +46,8 @@ struct Page: Hashable {
 }
 
 extension Page {
-    func toNew() -> AidokuRunner.Page {
-        let content: AidokuRunner.PageContent = if let imageURL, let url = URL(string: imageURL) {
+    func toNew() -> KomareelSourceKit.Page {
+        let content: KomareelSourceKit.PageContent = if let imageURL, let url = URL(string: imageURL) {
             .url(url: url, context: context)
         } else if let text {
             .text(text)
@@ -58,7 +58,7 @@ extension Page {
         } else {
             .text("Invalid URL")
         }
-        return AidokuRunner.Page(
+        return KomareelSourceKit.Page(
             content: content,
             hasDescription: hasDescription,
             description: description

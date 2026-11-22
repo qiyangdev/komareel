@@ -6,10 +6,10 @@
 //
 
 import SwiftUI
-import AidokuRunner
+import KomareelSourceKit
 
 class SourceListingViewController: MangaListViewController {
-    init(source: AidokuRunner.Source, listing: AidokuRunner.Listing) {
+    init(source: KomareelSourceKit.Source, listing: KomareelSourceKit.Listing) {
         super.init(
             source: source,
             title: listing.name,

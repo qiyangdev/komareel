@@ -455,7 +455,7 @@
 "DISABLED" = "Cacat";
 "INVERT_TAP_ZONES" = "Balik Zona Keran";
 "ANIMATE_PAGE_TRANSITIONS" = "Animasi Transisi Halaman";
-"SOURCE_IMPORT_FAIL_TEXT" = "Gagal mengimpor sumber. Pastikan file aix Anda valid.";
+"SOURCE_IMPORT_FAIL_TEXT" = "Gagal mengimpor sumber. Pastikan file krx Anda valid.";
 "FILE_IMPORT_FAIL_TEXT" = "Gagal mengimpor file. Pastikan file tersebut adalah arsip CBZ atau ZIP yang valid yang berisi gambar.";
 "BACKUP_%@" = "Cadangan %@";
 "CREATE_BACKUP" = "Buat Cadangan";

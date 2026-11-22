@@ -3,7 +3,7 @@
 //  Aidoku
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import UIKit
 
 extension ReaderPagedTextViewController {
@@ -14,15 +14,15 @@ extension ReaderPagedTextViewController {
         }
 
         let direction: Direction
-        let chapter: AidokuRunner.Chapter?
+        let chapter: KomareelSourceKit.Chapter?
         weak var parentReader: ReaderPagedTextViewController?
 
         private var infoView: ReaderInfoPageView?
 
         init(
             direction: Direction,
-            chapter: AidokuRunner.Chapter?,
-            currentChapter: AidokuRunner.Chapter?,
+            chapter: KomareelSourceKit.Chapter?,
+            currentChapter: KomareelSourceKit.Chapter?,
             mangaId: MangaIdentifier,
             parentReader: ReaderPagedTextViewController?
         ) {

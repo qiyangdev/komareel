@@ -5,7 +5,7 @@
 //  Created by Skitty on 7/31/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Combine
 import SwiftUI
 
@@ -13,9 +13,9 @@ extension HistoryView {
     @MainActor
     class ViewModel: ObservableObject {
         @Published var filteredHistory: [Int: HistorySection] = [:]
-        @Published var sourceCache: [String: AidokuRunner.Source] = [:]
-        @Published var mangaCache: [MangaIdentifier: AidokuRunner.Manga] = [:]
-        @Published var chapterCache: [ChapterIdentifier: AidokuRunner.Chapter] = [:]
+        @Published var sourceCache: [String: KomareelSourceKit.Source] = [:]
+        @Published var mangaCache: [MangaIdentifier: KomareelSourceKit.Manga] = [:]
+        @Published var chapterCache: [ChapterIdentifier: KomareelSourceKit.Chapter] = [:]
 
         enum LoadingState {
             case idle  // more available to laod
@@ -341,7 +341,7 @@ extension HistoryView.ViewModel {
         }
         guard let source else { return }
 
-        let tempManga = AidokuRunner.Manga(sourceKey: mangaId.sourceKey, key: mangaId.mangaKey, title: "")
+        let tempManga = KomareelSourceKit.Manga(sourceKey: mangaId.sourceKey, key: mangaId.mangaKey, title: "")
         let needsManga = mangaCache[mangaId] == nil
 
         if let newManga = try? await source.getMangaUpdate(
@@ -399,8 +399,8 @@ extension HistoryView.ViewModel {
         var modifiedDays = refreshingDays
 
         var newHistoryData = await historyData
-        var newMangaCacheItems: [MangaIdentifier: AidokuRunner.Manga] = [:]
-        var newChapterCacheItems: [ChapterIdentifier: AidokuRunner.Chapter] = [:]
+        var newMangaCacheItems: [MangaIdentifier: KomareelSourceKit.Manga] = [:]
+        var newChapterCacheItems: [ChapterIdentifier: KomareelSourceKit.Chapter] = [:]
         var sourceKeys: Set<String> = []
 
         for obj in historyObj {
@@ -534,13 +534,13 @@ extension HistoryView.ViewModel {
         offset += value
     }
 
-    private func addMangaCacheItems(_ newItems: [MangaIdentifier: AidokuRunner.Manga]) {
+    private func addMangaCacheItems(_ newItems: [MangaIdentifier: KomareelSourceKit.Manga]) {
         for (key, manga) in newItems {
             mangaCache[key] = manga
         }
     }
 
-    private func addChapterCacheItems(_ newItems: [ChapterIdentifier: AidokuRunner.Chapter]) {
+    private func addChapterCacheItems(_ newItems: [ChapterIdentifier: KomareelSourceKit.Chapter]) {
         for (key, chapter) in newItems {
             chapterCache[key] = chapter
         }

@@ -5,7 +5,7 @@
 //  Created by Skitty on 1/9/23.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import CoreData
 
 final class HistoryManager: Sendable {
@@ -15,7 +15,7 @@ final class HistoryManager: Sendable {
 extension HistoryManager {
     func setProgress(
         chapterId: ChapterIdentifier,
-        chapter: AidokuRunner.Chapter,
+        chapter: KomareelSourceKit.Chapter,
         progress: Int,
         totalPages: Int? = nil,
         scrollPosition: Double? = nil,
@@ -73,7 +73,7 @@ extension HistoryManager {
 
     func addHistory(
         mangaId: MangaIdentifier,
-        chapters: [AidokuRunner.Chapter],
+        chapters: [KomareelSourceKit.Chapter],
         date: Date = Date(),
         skipTracker: Tracker? = nil
     ) async {

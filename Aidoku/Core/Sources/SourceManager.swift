@@ -5,7 +5,7 @@
 //  Created by Skitty on 1/10/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 import UIKit
 import ZIPFoundation
@@ -18,7 +18,8 @@ actor SourceManager {
 
     @MainActor var store: SourceStore { SourceStore.shared }
 
-    private var sourcesByKey: [String: AidokuRunner.Source] = [:]
+    private var sourcesByKey: [String: KomareelSourceKit.Source] = [:]
+    private var importingSourceKeys: Set<String> = []
     private var disabledSourceKeys: Set<String> = []
     private var sourceLanguageCodes: Set<String> = []
 
@@ -77,15 +78,13 @@ extension SourceManager {
 
         await publishSourceState()
         notifySourcesLoaded(keys: sourcesByKey.keys)
-
-        await loadLegacySourceFilters()
     }
 
-    private func getInstalledSources() async -> [String: AidokuRunner.Source] {
+    private func getInstalledSources() async -> [String: KomareelSourceKit.Source] {
         let objects: [SourceObjectData] = await CoreDataManager.shared.container.performBackgroundTask { context in
             CoreDataManager.shared.getSources(context: context).map { $0.toData() }
         }
-        var sourcesByKey: [String: AidokuRunner.Source] = [:]
+        var sourcesByKey: [String: KomareelSourceKit.Source] = [:]
         for dbSource in objects where !disabledSourceKeys.contains(dbSource.id) {
             if let source = await dbSource.toNewSource() {
                 if sourcesByKey[source.key] != nil {
@@ -99,19 +98,6 @@ extension SourceManager {
             }
         }
         return sourcesByKey
-    }
-
-    private func loadLegacySourceFilters() async {
-        await withTaskGroup(of: Void.self) { group in
-            for source in sourcesByKey.values {
-                if let legacySource = source.legacySource {
-                    group.addTask {
-                        _ = try? await legacySource.getFilters()
-                    }
-                }
-            }
-        }
-        NotificationCenter.default.post(name: .loadedSourceFilters, object: nil)
     }
 }
 
@@ -268,7 +254,7 @@ extension SourceManager {
         return SourceList(
             url: url,
             name: NSLocalizedString("LEGACY_SOURCE_LIST"),
-            sources: externalSources,
+            sources: externalSources.filter { $0.fileURL.map(KomareelSourcePackage.matches) ?? false },
             legacy: true
         )
     }
@@ -320,7 +306,7 @@ extension SourceManager {
         return infos
     }
 
-    func getLoadedSources(sorted: Bool = false) async -> [AidokuRunner.Source] {
+    func getLoadedSources(sorted: Bool = false) async -> [KomareelSourceKit.Source] {
         await waitForSourcesLoad()
         if sorted {
             return sourcesByKey.values
@@ -379,7 +365,7 @@ extension SourceManager {
         sourceListLanguageCodes
     }
 
-    func source(for key: String) async -> AidokuRunner.Source? {
+    func source(for key: String) async -> KomareelSourceKit.Source? {
         await waitForSourcesLoad()
         return sourcesByKey[key]
     }
@@ -452,95 +438,63 @@ extension SourceManager {
         return (stream, sources.count)
     }
 
-    func importSource(from url: URL) async -> AidokuRunner.Source? {
+    func importSource(from url: URL) async -> KomareelSourceKit.Source? {
         await waitForSourcesLoad()
 
-        // download and unzip source aix
+        guard KomareelSourcePackage.matches(url) else {
+            LogManager.logger.error("Unsupported source package. Expected .krx.")
+            return nil
+        }
+
         guard let temporaryDirectory = FileManager.default.createTemporaryDirectory() else { return nil }
-        var secured = false
-        var fileUrl = url
-        if !fileUrl.isFileURL {
-            do {
-                let (location, _) = try await URLSession.shared.download(for: URLRequest.from(url))
-                fileUrl = location
-            } catch {
-                LogManager.logger.error("Failed to download source from \(url.absoluteString): \(error)")
-                return nil
-            }
-        } else {
-            secured = url.startAccessingSecurityScopedResource()
-        }
+        let secured = url.isFileURL && url.startAccessingSecurityScopedResource()
         defer {
-            if secured {
-                url.stopAccessingSecurityScopedResource()
-            }
+            if secured { url.stopAccessingSecurityScopedResource() }
+            try? FileManager.default.removeItem(at: temporaryDirectory)
         }
+
         do {
-            try FileManager.default.unzipItem(at: fileUrl, to: temporaryDirectory)
+            let archive: URL
+            if url.isFileURL {
+                archive = url
+            } else {
+                let (location, response) = try await URLSession.shared.download(for: URLRequest.from(url))
+                guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+                    throw URLError(.badServerResponse)
+                }
+                archive = location
+            }
+            try KomareelSourcePackage.unpack(archive, to: temporaryDirectory)
         } catch {
-            LogManager.logger.error("Failed to unarchive source package: \(error)")
+            LogManager.logger.error("Failed to extract source package: \(error)")
             return nil
         }
 
-        // try initializing the source
-        let payload = temporaryDirectory.appendingPathComponent("Payload")
-        var newSource: AidokuRunner.Source?
-        let legacySource: Source?
-
-        do {
-            newSource = try await AidokuRunner.Source(url: payload)
-            legacySource = nil
-        } catch {
-            newSource = nil
-            legacySource = try? Source(from: payload)
-
-            if legacySource == nil {
-                LogManager.logger.error("Failed to load source: \(error)")
-                return nil
-            }
-        }
-
-        // ensure source key is valid
+        let payload = temporaryDirectory.appendingPathComponent("Payload", isDirectory: true)
+        let result: KomareelSourceKit.Source
         let sourceKey: String
-        if let newSource {
-            sourceKey = newSource.key
-        } else if let legacySource {
-            sourceKey = legacySource.id
-        } else {
-            return nil
-        }
-        guard isValidSourceKey(sourceKey) else {
-            LogManager.logger.error("Invalid source key: \(sourceKey)")
-            return nil
-        }
-
-        // move to final location
-        Self.directory.createDirectory()
-        let destination = Self.directory.appendingPathComponent(sourceKey)
-        if destination.exists {
-            try? FileManager.default.removeItem(at: destination)
-        }
+        let destination: URL
         do {
-            try FileManager.default.moveItem(at: payload, to: destination)
+            let files = try ScriptSourceRunner.loadFiles(at: payload)
+            sourceKey = files.manifest.info.id
+            guard isValidSourceKey(sourceKey), importingSourceKeys.insert(sourceKey).inserted else { return nil }
+            destination = Self.directory.appendingPathComponent(sourceKey, isDirectory: true)
+            result = ScriptSourceRunner.makeSource(from: files, at: destination)
         } catch {
-            LogManager.logger.error("Failed to unarchive source package: \(error)")
+            LogManager.logger.error("Failed to load source package: \(error)")
             return nil
         }
-        try? FileManager.default.removeItem(at: temporaryDirectory)
+        defer { importingSourceKeys.remove(sourceKey) }
 
-        // update initialized location
-        let result: AidokuRunner.Source
-        if newSource != nil {
-            do {
-                result = try await AidokuRunner.Source(key: sourceKey, url: destination)
-            } catch {
-                LogManager.logger.error("Failed to load moved source: \(error)")
-                return nil
+        do {
+            Self.directory.createDirectory()
+            if destination.exists {
+                _ = try FileManager.default.replaceItemAt(destination, withItemAt: payload)
+            } else {
+                try FileManager.default.moveItem(at: payload, to: destination)
             }
-        } else if let legacySource {
-            legacySource.url = destination
-            result = .legacy(source: legacySource)
-        } else {
+        } catch {
+            LogManager.logger.error("Failed to install source package: \(error)")
             return nil
         }
 
@@ -561,12 +515,6 @@ extension SourceManager {
         {
             Task { @MainActor in
                 UIApplication.shared.appDelegate?.handleSourceMigration(source: result)
-            }
-        }
-
-        if let legacySource {
-            Task {
-                _ = try? await legacySource.getFilters()
             }
         }
 
@@ -776,7 +724,7 @@ extension SourceManager {
 // MARK: Pinned Sources
 extension SourceManager {
     /// Gets a list of pinned sources.
-    func getPinned() -> [AidokuRunner.Source] {
+    func getPinned() -> [KomareelSourceKit.Source] {
         AppSettings.browse.pinnedList.get()
             .compactMap { sourcesByKey[$0] }
     }

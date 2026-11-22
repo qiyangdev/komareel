@@ -5,12 +5,12 @@
 //  Created by Skitty on 7/29/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct TrackerSearchView: View {
     let tracker: Tracker
-    let manga: AidokuRunner.Manga
+    let manga: KomareelSourceKit.Manga
 
     @State private var query: String
     @State private var includeNsfw: Bool
@@ -27,7 +27,7 @@ struct TrackerSearchView: View {
 
     @Environment(\.dismiss) private var dismiss
 
-    init(tracker: Tracker, manga: AidokuRunner.Manga) {
+    init(tracker: Tracker, manga: KomareelSourceKit.Manga) {
         self.tracker = tracker
         self.manga = manga
         self._query = State(initialValue: manga.title)

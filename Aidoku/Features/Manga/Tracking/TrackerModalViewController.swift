@@ -5,11 +5,11 @@
 //  Created by Skitty on 6/26/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 class TrackerModalViewController: MiniModalViewController {
-    let manga: AidokuRunner.Manga
+    let manga: KomareelSourceKit.Manga
 
     private lazy var swiftuiViewController: UIHostingController<TrackerListView> = {
         let swiftuiViewController = UIHostingController(rootView: TrackerListView(manga: manga))
@@ -20,7 +20,7 @@ class TrackerModalViewController: MiniModalViewController {
         return swiftuiViewController
     }()
 
-    init(manga: AidokuRunner.Manga) {
+    init(manga: KomareelSourceKit.Manga) {
         self.manga = manga
         super.init(nibName: nil, bundle: nil)
     }

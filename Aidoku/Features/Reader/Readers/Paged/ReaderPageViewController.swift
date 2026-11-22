@@ -5,7 +5,7 @@
 //  Created by Skitty on 8/15/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import UIKit
 
 class ReaderPageViewController: BaseObservingViewController {
@@ -38,15 +38,15 @@ class ReaderPageViewController: BaseObservingViewController {
         return reloadButton
     }()
 
-    var currentChapter: AidokuRunner.Chapter? {
+    var currentChapter: KomareelSourceKit.Chapter? {
         get { infoView?.currentChapter }
         set { infoView?.currentChapter = newValue }
     }
-    var previousChapter: AidokuRunner.Chapter? {
+    var previousChapter: KomareelSourceKit.Chapter? {
         get { infoView?.previousChapter }
         set { infoView?.previousChapter = newValue }
     }
-    var nextChapter: AidokuRunner.Chapter? {
+    var nextChapter: KomareelSourceKit.Chapter? {
         get { infoView?.nextChapter }
         set { infoView?.nextChapter = newValue }
     }

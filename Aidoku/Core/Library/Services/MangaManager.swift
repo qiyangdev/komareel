@@ -5,7 +5,7 @@
 //  Created by Skitty on 8/14/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import BackgroundTasks
 import CoreData
 import Nuke
@@ -26,16 +26,16 @@ actor MangaManager {
     private static let maxConcurrentLibraryUpdateTasks = 10
 
     nonisolated func getNextChapter(
-        manga: AidokuRunner.Manga,
-        chapters: [AidokuRunner.Chapter],
+        manga: KomareelSourceKit.Manga,
+        chapters: [KomareelSourceKit.Chapter],
         readingHistory: [String: (page: Int, date: Int)],
         sortAscending: Bool
-    ) -> AidokuRunner.Chapter? {
+    ) -> KomareelSourceKit.Chapter? {
         let resumeLastOpened = AppSettings.library.resumeLastOpenedChapter.get()
 
         // 1. Resume Reading: Find the most recently read chapter that isn't
         // completed, unless the "resume last opened" option is enabled.
-        var selectedChapter: AidokuRunner.Chapter?
+        var selectedChapter: KomareelSourceKit.Chapter?
         var selectedDate: Int = -1
 
         for chapter in chapters {
@@ -76,9 +76,9 @@ actor MangaManager {
     /// Fetches the stored chapters for a manga in the user's sort order, along with the next chapter to read.
     nonisolated func getNextChapter(
         mangaId: MangaIdentifier,
-        fallbackChapters: [AidokuRunner.Chapter]? = nil,
+        fallbackChapters: [KomareelSourceKit.Chapter]? = nil,
         fetchIfNeeded: Bool = false
-    ) async -> (chapters: [AidokuRunner.Chapter], nextChapter: AidokuRunner.Chapter?) {
+    ) async -> (chapters: [KomareelSourceKit.Chapter], nextChapter: KomareelSourceKit.Chapter?) {
         let readingHistory = await CoreDataManager.shared.getReadingHistory(mangaId: mangaId)
         var chapters = await CoreDataManager.shared.getChapters(mangaId: mangaId)
             .map { $0.toNew() }
@@ -88,7 +88,7 @@ actor MangaManager {
             if let fallbackChapters, !fallbackChapters.isEmpty {
                 chapters = fallbackChapters
             } else if fetchIfNeeded, let source = await SourceManager.shared.source(for: mangaId.sourceKey) {
-                let manga = AidokuRunner.Manga(sourceKey: mangaId.sourceKey, key: mangaId.mangaKey, title: "")
+                let manga = KomareelSourceKit.Manga(sourceKey: mangaId.sourceKey, key: mangaId.mangaKey, title: "")
                 let updatedManga = try? await source.getMangaUpdate(
                     manga: manga,
                     needsDetails: false,
@@ -107,7 +107,7 @@ actor MangaManager {
         let sortOption = ChapterSortOption(flags: filters.flags)
         let sortAscending = filters.flags & ChapterFlagMask.sortAscending != 0
 
-        let sortedChapters: [AidokuRunner.Chapter] = switch sortOption {
+        let sortedChapters: [KomareelSourceKit.Chapter] = switch sortOption {
             case .sourceOrder:
                 sortAscending ? chapters.reversed() : chapters
             case .chapter:
@@ -124,7 +124,7 @@ actor MangaManager {
                 }
         }
 
-        let manga = AidokuRunner.Manga(sourceKey: mangaId.sourceKey, key: mangaId.mangaKey, title: "")
+        let manga = KomareelSourceKit.Manga(sourceKey: mangaId.sourceKey, key: mangaId.mangaKey, title: "")
         let nextChapter = getNextChapter(
             manga: manga,
             chapters: sortedChapters,
@@ -139,8 +139,8 @@ actor MangaManager {
 // MARK: - Library Managing
 extension MangaManager {
     func addToLibrary(
-        manga: AidokuRunner.Manga,
-        chapters: [AidokuRunner.Chapter] = [],
+        manga: KomareelSourceKit.Manga,
+        chapters: [KomareelSourceKit.Chapter] = [],
         fetchMangaDetails: Bool = false
     ) async {
         var manga = manga
@@ -590,7 +590,7 @@ extension MangaManager {
         var pendingNotifications: [NotificationManager.NewChaptersSummary] = []
 
         let newDetails = await {
-            var results: [Int: AidokuRunner.Manga] = [:]
+            var results: [Int: KomareelSourceKit.Manga] = [:]
             let progress = Progress(totalUnitCount: Int64(total))
 
             for manga in filteredManga {
@@ -714,7 +714,7 @@ extension MangaManager {
 // MARK: - Detail Editing
 extension MangaManager {
     // sets uploaded cover image and returns the new cover url
-    func setCover(manga: AidokuRunner.Manga, cover: PlatformImage) async -> String? {
+    func setCover(manga: KomareelSourceKit.Manga, cover: PlatformImage) async -> String? {
         if manga.isLocal() {
             return await LocalFileManager.shared.setCover(for: manga.key, image: cover)
         }
@@ -754,7 +754,7 @@ extension MangaManager {
         return coverUrl
     }
 
-    func resetCover(manga: AidokuRunner.Manga) async -> String? {
+    func resetCover(manga: KomareelSourceKit.Manga) async -> String? {
         var cover: String?
         defer {
             // set new cover and get old cover url
@@ -790,9 +790,9 @@ extension MangaManager {
     func migrate(
         copy: Bool,
         forceRemoveFromLibrary: Bool = false,
-        fromSeries: [AidokuRunner.Manga],
-        toSeries: [MangaIdentifier: AidokuRunner.Manga?],
-        withChapters: [MangaIdentifier: [AidokuRunner.Chapter]] = [:],
+        fromSeries: [KomareelSourceKit.Manga],
+        toSeries: [MangaIdentifier: KomareelSourceKit.Manga?],
+        withChapters: [MangaIdentifier: [KomareelSourceKit.Chapter]] = [:],
         progressReport: (@Sendable (Float) -> Void)? = nil
     ) async {
         let newDetails = await fetchNewDetails(
@@ -806,7 +806,7 @@ extension MangaManager {
             }
         )
 
-        await withTaskGroup(of: (from: AidokuRunner.Manga, to: AidokuRunner.Manga)?.self) { group in
+        await withTaskGroup(of: (from: KomareelSourceKit.Manga, to: KomareelSourceKit.Manga)?.self) { group in
             let batchSize = 10
             var counter = fromSeries.count
 
@@ -851,10 +851,10 @@ extension MangaManager {
     private static func migrate(
         copy: Bool,
         forceRemoveFromLibrary: Bool,
-        from oldManga: AidokuRunner.Manga,
-        to newManga: AidokuRunner.Manga,
-        withChapters newChapters: [AidokuRunner.Chapter],
-    ) async -> (AidokuRunner.Manga, AidokuRunner.Manga)? {
+        from oldManga: KomareelSourceKit.Manga,
+        to newManga: KomareelSourceKit.Manga,
+        withChapters newChapters: [KomareelSourceKit.Chapter],
+    ) async -> (KomareelSourceKit.Manga, KomareelSourceKit.Manga)? {
         // migrate settings
         if let readingMode = UserDefaults.standard.string(forKey: "Reader.readingMode.\(oldManga.identifier)") {
             UserDefaults.standard.set(readingMode, forKey: "Reader.readingMode.\(newManga.identifier)")
@@ -892,7 +892,7 @@ extension MangaManager {
         }
 
         // migrate/copy data
-        let result: (AidokuRunner.Manga, AidokuRunner.Manga)? = await CoreDataManager.shared.container.performBackgroundTask { context in
+        let result: (KomareelSourceKit.Manga, KomareelSourceKit.Manga)? = await CoreDataManager.shared.container.performBackgroundTask { context in
             do {
                 // update manga object in library with new data
                 // remove old entry if the new one already exists in library
@@ -1059,17 +1059,17 @@ extension MangaManager {
     }
 
     private func fetchNewDetails(
-        fromSeries: [AidokuRunner.Manga],
-        toSeries: [MangaIdentifier: AidokuRunner.Manga?],
-        withChapters: [MangaIdentifier: [AidokuRunner.Chapter]],
+        fromSeries: [KomareelSourceKit.Manga],
+        toSeries: [MangaIdentifier: KomareelSourceKit.Manga?],
+        withChapters: [MangaIdentifier: [KomareelSourceKit.Chapter]],
         progressReport: (Int) -> Void
-    ) async -> [String: (AidokuRunner.Manga, [AidokuRunner.Chapter])] {
+    ) async -> [String: (KomareelSourceKit.Manga, [KomareelSourceKit.Chapter])] {
         await withTaskGroup(
-            of: (String, AidokuRunner.Manga, [AidokuRunner.Chapter])?.self,
-            returning: [String: (AidokuRunner.Manga, [AidokuRunner.Chapter])].self
+            of: (String, KomareelSourceKit.Manga, [KomareelSourceKit.Chapter])?.self,
+            returning: [String: (KomareelSourceKit.Manga, [KomareelSourceKit.Chapter])].self
         ) { group in
             let batchSize = 5
-            var ret: [String: (AidokuRunner.Manga, [AidokuRunner.Chapter])] = [:]
+            var ret: [String: (KomareelSourceKit.Manga, [KomareelSourceKit.Chapter])] = [:]
             var counter = 0
 
             for i in stride(from: 0, to: fromSeries.count, by: batchSize) {

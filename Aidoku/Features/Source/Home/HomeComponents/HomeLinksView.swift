@@ -5,12 +5,12 @@
 //  Created by Skitty on 1/1/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SafariServices
 import SwiftUI
 
 struct HomeLinksView: View {
-    let source: AidokuRunner.Source
+    let source: KomareelSourceKit.Source
     let component: HomeComponent
     let partial: Bool
 
@@ -19,7 +19,7 @@ struct HomeLinksView: View {
     @EnvironmentObject private var path: NavigationCoordinator
 
     init(
-        source: AidokuRunner.Source,
+        source: KomareelSourceKit.Source,
         component: HomeComponent,
         partial: Bool = false
     ) {

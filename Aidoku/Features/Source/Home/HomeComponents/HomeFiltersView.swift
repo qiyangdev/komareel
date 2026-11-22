@@ -6,10 +6,10 @@
 //
 
 import SwiftUI
-import AidokuRunner
+import KomareelSourceKit
 
 struct HomeFiltersView: View {
-    let source: AidokuRunner.Source
+    let source: KomareelSourceKit.Source
     let component: HomeComponent
     let partial: Bool
 
@@ -18,7 +18,7 @@ struct HomeFiltersView: View {
     @EnvironmentObject private var path: NavigationCoordinator
 
     init(
-        source: AidokuRunner.Source,
+        source: KomareelSourceKit.Source,
         component: HomeComponent,
         partial: Bool = false
     ) {

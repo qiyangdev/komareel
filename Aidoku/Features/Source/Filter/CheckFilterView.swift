@@ -5,11 +5,11 @@
 //  Created by Skitty on 3/14/24.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct CheckFilterView: View {
-    let filter: AidokuRunner.Filter
+    let filter: KomareelSourceKit.Filter
 
     @Binding var enabledFilters: [FilterValue]
 
@@ -19,7 +19,7 @@ struct CheckFilterView: View {
 
     @State private var state: Int
 
-    init(filter: AidokuRunner.Filter, enabledFilters: Binding<[FilterValue]>) {
+    init(filter: KomareelSourceKit.Filter, enabledFilters: Binding<[FilterValue]>) {
         self.filter = filter
         self._enabledFilters = enabledFilters
 
@@ -96,7 +96,7 @@ struct CheckFilterView: View {
 }
 
 struct CheckFilterGroupView: View {
-    let filter: AidokuRunner.Filter
+    let filter: KomareelSourceKit.Filter
 
     @Binding var state: Int
 
@@ -104,7 +104,7 @@ struct CheckFilterGroupView: View {
     private let canExclude: Bool
     private let defaultValue: Bool?
 
-    init(filter: AidokuRunner.Filter, state: Binding<Int>) {
+    init(filter: KomareelSourceKit.Filter, state: Binding<Int>) {
         self.filter = filter
         self._state = state
 

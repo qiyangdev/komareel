@@ -5,7 +5,7 @@
 //  Created by skitty on 8/25/26.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 
 struct BrowseSettings: Sendable {
@@ -21,7 +21,7 @@ struct BrowseSettings: Sendable {
     }
 
     let languages = SettingsKey<Set<String>>("Browse.languages", default: SourceLanguage.preferredCodes())
-    let contentRatings = SettingsKey<Set<AidokuRunner.SourceContentRating>>("Browse.contentRatings", default: [.safe, .containsNsfw])
+    let contentRatings = SettingsKey<Set<KomareelSourceKit.SourceContentRating>>("Browse.contentRatings", default: [.safe, .containsNsfw])
     let updateCount = SettingsKey<Int>("Browse.updateCount", default: 0)
     let pinnedList = SettingsKey<[String]>("Browse.pinnedList", default: [])
     let disabledSources = SettingsKey<Set<String>>("Browse.disabledSources", default: [])

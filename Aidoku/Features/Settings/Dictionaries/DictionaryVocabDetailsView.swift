@@ -5,7 +5,7 @@
 //  Created by skitty on 7/25/26.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 import UIKit
 
@@ -20,8 +20,8 @@ struct DictionaryVocabDetailsView: View {
     @State private var lookupEntries: [[String: Any]] = []
     @State private var popupHeight: CGFloat = 300
 
-    @State private var sourceManga: AidokuRunner.Manga?
-    @State private var sourceChapter: AidokuRunner.Chapter?
+    @State private var sourceManga: KomareelSourceKit.Manga?
+    @State private var sourceChapter: KomareelSourceKit.Chapter?
     @State private var sourceLoaded = false
 
     @State private var chapterOpened = false

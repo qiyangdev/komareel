@@ -5,16 +5,16 @@
 //  Created by Skitty on 5/22/25.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import Foundation
 import UIKit
 
-extension AidokuRunner.Source {
+extension KomareelSourceKit.Source {
     static func komga(
         key: String = "komga",
         name: String,
         server: String
-    ) -> AidokuRunner.Source {
+    ) -> KomareelSourceKit.Source {
         .init(
             url: nil,
             key: key,
@@ -110,7 +110,7 @@ actor KomgaSourceRunner: Runner {
         self.server = server
     }
 
-    func getSearchMangaList(query: String?, page: Int, filters: [AidokuRunner.FilterValue]) async throws -> AidokuRunner.MangaPageResult {
+    func getSearchMangaList(query: String?, page: Int, filters: [KomareelSourceKit.FilterValue]) async throws -> KomareelSourceKit.MangaPageResult {
         var lastWorkingMirrorCopy = lastWorkingMirror
         defer {
             lastWorkingMirror = lastWorkingMirrorCopy
@@ -150,7 +150,7 @@ actor KomgaSourceRunner: Runner {
         )
     }
 
-    func getMangaUpdate(manga: AidokuRunner.Manga, needsDetails: Bool, needsChapters: Bool) async throws -> AidokuRunner.Manga {
+    func getMangaUpdate(manga: KomareelSourceKit.Manga, needsDetails: Bool, needsChapters: Bool) async throws -> KomareelSourceKit.Manga {
         let baseUrl = try helper.getConfiguredServer()
 
         var lastWorkingMirrorCopy = lastWorkingMirror
@@ -189,7 +189,7 @@ actor KomgaSourceRunner: Runner {
         return manga
     }
 
-    func getPageList(manga: AidokuRunner.Manga, chapter: AidokuRunner.Chapter) async throws -> [AidokuRunner.Page] {
+    func getPageList(manga: KomareelSourceKit.Manga, chapter: KomareelSourceKit.Chapter) async throws -> [KomareelSourceKit.Page] {
         var lastWorkingMirrorCopy = lastWorkingMirror
         defer {
             lastWorkingMirror = lastWorkingMirrorCopy
@@ -219,7 +219,7 @@ actor KomgaSourceRunner: Runner {
         }
     }
 
-    func getMangaList(listing: AidokuRunner.Listing, page: Int) async throws -> AidokuRunner.MangaPageResult {
+    func getMangaList(listing: KomareelSourceKit.Listing, page: Int) async throws -> KomareelSourceKit.MangaPageResult {
         var lastWorkingMirrorCopy = lastWorkingMirror
         defer {
             lastWorkingMirror = lastWorkingMirrorCopy
@@ -227,7 +227,7 @@ actor KomgaSourceRunner: Runner {
         return try await helper.getMangaList(listing: listing, page: page, lastWorkingMirror: &lastWorkingMirrorCopy)
     }
 
-    func getSearchFilters() async throws -> [AidokuRunner.Filter] {
+    func getSearchFilters() async throws -> [KomareelSourceKit.Filter] {
         enum ResultType: String, CaseIterable {
             case libraries
             case genres
@@ -281,7 +281,7 @@ actor KomgaSourceRunner: Runner {
             }
             return result
         }
-        var filters: [AidokuRunner.Filter] = []
+        var filters: [KomareelSourceKit.Filter] = []
 
         if let libraryObjects = result[.libraries]?.libraries, libraryObjects.count > 1 {
             filters.append(
@@ -407,7 +407,7 @@ actor KomgaSourceRunner: Runner {
         return filters
     }
 
-    func getListings() async throws -> [AidokuRunner.Listing] {
+    func getListings() async throws -> [KomareelSourceKit.Listing] {
         var lastWorkingMirrorCopy = lastWorkingMirror
         defer {
             lastWorkingMirror = lastWorkingMirrorCopy
@@ -651,10 +651,10 @@ extension KomgaSourceRunner {
         ]
         var components: [HomeComponent?] = Array(repeating: nil, count: listingTypes.count)
 
-        try await withThrowingTaskGroup(of: (Int, AidokuRunner.Listing, [HomeComponent.Value.Link]).self) { [helper, sourceKey] taskGroup in
+        try await withThrowingTaskGroup(of: (Int, KomareelSourceKit.Listing, [HomeComponent.Value.Link]).self) { [helper, sourceKey] taskGroup in
             for (index, listingType) in listingTypes.enumerated() {
                 taskGroup.addTask { [self, lastWorkingMirror] in
-                    let listing = AidokuRunner.Listing(id: listingType.id, name: listingType.name, kind: .default)
+                    let listing = KomareelSourceKit.Listing(id: listingType.id, name: listingType.name, kind: .default)
 
                     if listingType.isBookBased {
                         let path: String
@@ -734,7 +734,7 @@ extension KomgaSourceRunner {
         return .init(components: components.compactMap { $0 })
     }
 
-    func getListingHome(listing: AidokuRunner.Listing) async throws -> Home? {
+    func getListingHome(listing: KomareelSourceKit.Listing) async throws -> Home? {
         let baseUrl = try helper.getConfiguredServer()
 
         // Check if there are multiple libraries
@@ -761,11 +761,11 @@ extension KomgaSourceRunner {
         // Create components for each listing type
         var components: [HomeComponent?] = Array(repeating: nil, count: listingTypes.count)
 
-        try await withThrowingTaskGroup(of: (Int, AidokuRunner.Listing, [HomeComponent.Value.Link]).self) { [helper, sourceKey] taskGroup in
+        try await withThrowingTaskGroup(of: (Int, KomareelSourceKit.Listing, [HomeComponent.Value.Link]).self) { [helper, sourceKey] taskGroup in
             for (index, listingType) in listingTypes.enumerated() {
                 taskGroup.addTask { [self, lastWorkingMirror] in
                     // Create a listing for this specific type within the library
-                    let componentListing = AidokuRunner.Listing(
+                    let componentListing = KomareelSourceKit.Listing(
                         id: "library-\(libraryId)-\(listingType.id)",
                         name: listingType.name,
                         kind: .default

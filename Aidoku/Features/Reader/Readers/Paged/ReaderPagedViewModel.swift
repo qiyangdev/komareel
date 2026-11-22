@@ -6,23 +6,23 @@
 //
 
 import Foundation
-import AidokuRunner
+import KomareelSourceKit
 
 @MainActor
 class ReaderPagedViewModel {
-    let source: AidokuRunner.Source?
-    let manga: AidokuRunner.Manga
+    let source: KomareelSourceKit.Source?
+    let manga: KomareelSourceKit.Manga
     let temporaryPageStore: ReaderTemporaryPageStore?
 
-    var chapter: AidokuRunner.Chapter?
+    var chapter: KomareelSourceKit.Chapter?
     var pages: [Page] = []
 
-    var preloadedChapter: AidokuRunner.Chapter?
+    var preloadedChapter: KomareelSourceKit.Chapter?
     var preloadedPages: [Page] = []
 
     init(
-        source: AidokuRunner.Source?,
-        manga: AidokuRunner.Manga,
+        source: KomareelSourceKit.Source?,
+        manga: KomareelSourceKit.Manga,
         temporaryPageStore: ReaderTemporaryPageStore? = nil
     ) {
         self.source = source
@@ -30,7 +30,7 @@ class ReaderPagedViewModel {
         self.temporaryPageStore = temporaryPageStore
     }
 
-    func loadPages(chapter: AidokuRunner.Chapter) async {
+    func loadPages(chapter: KomareelSourceKit.Chapter) async {
         if preloadedChapter == chapter {
             pages = preloadedPages
             preloadedPages = []
@@ -46,7 +46,7 @@ class ReaderPagedViewModel {
     }
 
     @discardableResult
-    func preload(chapter: AidokuRunner.Chapter) async -> [Page] {
+    func preload(chapter: KomareelSourceKit.Chapter) async -> [Page] {
         guard preloadedChapter != chapter else { return preloadedPages }
         preloadedChapter = nil
         let pages = await getPages(chapter: chapter)
@@ -55,7 +55,7 @@ class ReaderPagedViewModel {
         return pages
     }
 
-    private func getPages(chapter: AidokuRunner.Chapter) async -> [Page] {
+    private func getPages(chapter: KomareelSourceKit.Chapter) async -> [Page] {
         let sourceId = source?.key ?? manga.sourceKey
         let identifier = ChapterIdentifier(
             sourceKey: sourceId,

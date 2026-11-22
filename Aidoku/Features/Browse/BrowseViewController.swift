@@ -5,7 +5,7 @@
 //  Created by Skitty on 1/23/22.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SafariServices
 import SwiftUI
 
@@ -335,11 +335,7 @@ extension BrowseViewController {
             !item.info.disabled,
             let source = SourceManager.shared.store.source(for: item.info.sourceId)
         {
-            let vc: UIViewController = if let legacySource = source.legacySource {
-                SourceViewController(source: legacySource)
-            } else {
-                NewSourceViewController(source: source)
-            }
+            let vc = NewSourceViewController(source: source)
             navigationController?.pushViewController(vc, animated: true)
         }
         tableView.deselectRow(at: indexPath, animated: true)

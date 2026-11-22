@@ -7,17 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A650EC000000000000000003 /* CKomareelScript in Frameworks */ = {isa = PBXBuildFile; productRef = A650EC000000000000000002 /* CKomareelScript */; };
 		EE7A41CB2F5CF7710044AF4C /* CHoshiDicts in Frameworks */ = {isa = PBXBuildFile; productRef = EE7A41CA2F5CF7710044AF4C /* CHoshiDicts */; };
 		FB17114B296770CC00AD523D /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = FB17114A296770CC00AD523D /* NukeUI */; };
 		FB2C83992E43F074003CA85F /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = FB2C83982E43F074003CA85F /* SwiftSoup */; };
-		FB3737D12D17458400AB1551 /* AidokuRunner in Frameworks */ = {isa = PBXBuildFile; productRef = FB3737D02D17458400AB1551 /* AidokuRunner */; };
 		FB4EEBE027A4F5C1005081A3 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB4EEBDF27A4F5C1005081A3 /* CloudKit.framework */; };
 		FB662EDE2DA816CF00007514 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = FB662EDD2DA816CF00007514 /* MarkdownUI */; };
 		FB7B7ED8278CE949001E6EAF /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = FB7B7ED7278CE949001E6EAF /* ZIPFoundation */; };
 		FBAED40C2E3A762800B81E74 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = FBAED40B2E3A762800B81E74 /* SwiftUIIntrospect */; };
 		FBBCB31D2E08D6B000ED5CAB /* Gifu in Frameworks */ = {isa = PBXBuildFile; productRef = FBBCB31C2E08D6B000ED5CAB /* Gifu */; };
 		FBE53F0C29CC015E00899601 /* AsyncDisplayKit in Frameworks */ = {isa = PBXBuildFile; productRef = FBE53F0B29CC015E00899601 /* AsyncDisplayKit */; };
-		FBFDF5F82DF799180064F603 /* AidokuRunner in Frameworks */ = {isa = PBXBuildFile; productRef = FBFDF5F72DF799180064F603 /* AidokuRunner */; };
+		FBFDF5F82DF799180064F603 /* KomareelSourceKit in Frameworks */ = {isa = PBXBuildFile; productRef = FBFDF5F72DF799180064F603 /* KomareelSourceKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,15 +59,15 @@
 			files = (
 				FB17114B296770CC00AD523D /* NukeUI in Frameworks */,
 				FB662EDE2DA816CF00007514 /* MarkdownUI in Frameworks */,
-				FB3737D12D17458400AB1551 /* AidokuRunner in Frameworks */,
 				FBAED40C2E3A762800B81E74 /* SwiftUIIntrospect in Frameworks */,
 				EE7A41CB2F5CF7710044AF4C /* CHoshiDicts in Frameworks */,
-				FBFDF5F82DF799180064F603 /* AidokuRunner in Frameworks */,
+				FBFDF5F82DF799180064F603 /* KomareelSourceKit in Frameworks */,
 				FB4EEBE027A4F5C1005081A3 /* CloudKit.framework in Frameworks */,
 				FBBCB31D2E08D6B000ED5CAB /* Gifu in Frameworks */,
 				FBE53F0C29CC015E00899601 /* AsyncDisplayKit in Frameworks */,
 				FB7B7ED8278CE949001E6EAF /* ZIPFoundation in Frameworks */,
 				FB2C83992E43F074003CA85F /* SwiftSoup in Frameworks */,
+				A650EC000000000000000003 /* CKomareelScript in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -140,12 +140,12 @@
 			);
 			name = Aidoku;
 			packageProductDependencies = (
+				A650EC000000000000000002 /* CKomareelScript */,
 				FB7B7ED7278CE949001E6EAF /* ZIPFoundation */,
 				FB17114A296770CC00AD523D /* NukeUI */,
 				FBE53F0B29CC015E00899601 /* AsyncDisplayKit */,
-				FB3737D02D17458400AB1551 /* AidokuRunner */,
 				FB662EDD2DA816CF00007514 /* MarkdownUI */,
-				FBFDF5F72DF799180064F603 /* AidokuRunner */,
+				FBFDF5F72DF799180064F603 /* KomareelSourceKit */,
 				FBBCB31C2E08D6B000ED5CAB /* Gifu */,
 				FBAED40B2E3A762800B81E74 /* SwiftUIIntrospect */,
 				FB2C83982E43F074003CA85F /* SwiftSoup */,
@@ -248,11 +248,11 @@
 			);
 			mainGroup = FB1B4825277CE18D0056D02C;
 			packageReferences = (
+				A650EC000000000000000001 /* XCLocalSwiftPackageReference "KomareelScript" */,
 				FB7B7ED6278CE949001E6EAF /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				FB171149296770CC00AD523D /* XCRemoteSwiftPackageReference "Nuke" */,
 				FBE53F0A29CC015E00899601 /* XCRemoteSwiftPackageReference "Texture" */,
 				FB662EDC2DA816CF00007514 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
-				FBFDF5F62DF799180064F603 /* XCRemoteSwiftPackageReference "AidokuRunner" */,
 				FBBCB31B2E08D6AF00ED5CAB /* XCRemoteSwiftPackageReference "Gifu" */,
 				FBAED40A2E3A762800B81E74 /* XCRemoteSwiftPackageReference "swiftui-introspect" */,
 				FB2C83972E43F074003CA85F /* XCRemoteSwiftPackageReference "SwiftSoup" */,
@@ -664,6 +664,13 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		A650EC000000000000000001 /* XCLocalSwiftPackageReference "KomareelScript" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/KomareelScript;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		EE7A41EF2F5D20000044AF4C /* XCRemoteSwiftPackageReference "hoshidicts" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -729,17 +736,14 @@
 				minimumVersion = 3.1.1;
 			};
 		};
-		FBFDF5F62DF799180064F603 /* XCRemoteSwiftPackageReference "AidokuRunner" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Aidoku/AidokuRunner";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		A650EC000000000000000002 /* CKomareelScript */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A650EC000000000000000001 /* XCLocalSwiftPackageReference "KomareelScript" */;
+			productName = CKomareelScript;
+		};
 		EE7A41CA2F5CF7710044AF4C /* CHoshiDicts */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = EE7A41EF2F5D20000044AF4C /* XCRemoteSwiftPackageReference "hoshidicts" */;
@@ -754,10 +758,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = FB2C83972E43F074003CA85F /* XCRemoteSwiftPackageReference "SwiftSoup" */;
 			productName = SwiftSoup;
-		};
-		FB3737D02D17458400AB1551 /* AidokuRunner */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AidokuRunner;
 		};
 		FB662EDD2DA816CF00007514 /* MarkdownUI */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -784,10 +784,10 @@
 			package = FBE53F0A29CC015E00899601 /* XCRemoteSwiftPackageReference "Texture" */;
 			productName = AsyncDisplayKit;
 		};
-		FBFDF5F72DF799180064F603 /* AidokuRunner */ = {
+		FBFDF5F72DF799180064F603 /* KomareelSourceKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FBFDF5F62DF799180064F603 /* XCRemoteSwiftPackageReference "AidokuRunner" */;
-			productName = AidokuRunner;
+			package = A650EC000000000000000001 /* XCLocalSwiftPackageReference "KomareelScript" */;
+			productName = KomareelSourceKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

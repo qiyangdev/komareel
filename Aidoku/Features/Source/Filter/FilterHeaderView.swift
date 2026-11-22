@@ -5,12 +5,12 @@
 //  Created by Skitty on 9/17/23.
 //
 
-import AidokuRunner
+import KomareelSourceKit
 import SwiftUI
 
 struct FilterHeaderView: View {
     let sourceKey: String?
-    let filters: [AidokuRunner.Filter]
+    let filters: [KomareelSourceKit.Filter]
     @Binding var search: String
     @Binding var enabledFilters: [FilterValue]
     let onFilterButtonClick: (() -> Void)?
@@ -18,11 +18,11 @@ struct FilterHeaderView: View {
 
     @State private var showingSheet = false
 
-    private var sortedFilters: [AidokuRunner.Filter] {
+    private var sortedFilters: [KomareelSourceKit.Filter] {
         let enabledIDs = Set(enabledFilters.map(\.id))
 
-        var enabled: [AidokuRunner.Filter] = []
-        var disabled: [AidokuRunner.Filter] = []
+        var enabled: [KomareelSourceKit.Filter] = []
+        var disabled: [KomareelSourceKit.Filter] = []
 
         enabled.reserveCapacity(filters.count)
         disabled.reserveCapacity(filters.count)
@@ -40,7 +40,7 @@ struct FilterHeaderView: View {
 
     init(
         sourceKey: String? = nil,
-        filters: [AidokuRunner.Filter],
+        filters: [KomareelSourceKit.Filter],
         search: Binding<String> = .constant(""),
         enabledFilters: Binding<[FilterValue]>,
         onFilterButtonClick: (() -> Void)? = nil,
